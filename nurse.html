@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="th"><head>
+<title>Doctor Assist · พยาบาล</title>
+<!-- โหลด React จากไฟล์ในเครื่อง (ไม่ต้องใช้อินเทอร์เน็ต) -->
+<script>window.__resources={"https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js", "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js"};</script>
+<!-- เมื่อเปิดผ่าน index.html (อยู่ใน iframe): ซ่อนแถบบน และจัดกรอบมือถือให้พอดีจอ -->
+<script>if(window.parent!==window)document.documentElement.classList.add("embedded");</script>
+<style id="da-fit">html.embedded nav{display:none !important}html.embedded body{overflow:hidden}html.embedded div[style*="min-height: 100vh"]{padding:0 !important;display:flex !important;align-items:center;justify-content:center;height:100dvh;box-sizing:border-box}@media (max-width:520px){html.embedded div[style*="390px"][style*="844px"]{width:100vw !important;height:100dvh !important;border:0 !important;border-radius:0 !important;box-shadow:none !important}}@media (max-height:880px) and (min-width:521px){html.embedded div[style*="390px"][style*="844px"]{height:calc(100dvh - 24px) !important}}</style>
+<!-- เมื่อเปิดไฟล์นี้เดี่ยวๆ: เติมปุ่มสลับบทบาทในแถบบน -->
+<script>(function(){var R=[["patient", "ผู้ป่วย"], ["nurse", "พยาบาล"], ["doctor", "แพทย์"], ["pharmacist", "เภสัช"], ["admin", "Admin"]],me="nurse";setInterval(function(){var n=document.querySelector("nav");if(!n||n.querySelector("[data-role]"))return;var fs=n.querySelector("[data-fs]");R.forEach(function(r){var a=document.createElement("a");a.href=r[0]+".html";a.textContent=r[1];a.setAttribute("data-role",r[0]);var on=r[0]===me;a.style.cssText="height:40px;padding:0 16px;border-radius:99px;border:1px solid #4b5a64;display:flex;align-items:center;text-decoration:none;font-weight:600;font-size:16px;"+(on?"background:#fff;color:#1b2328":"color:#fff");n.insertBefore(a,fs||null);});},300);})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="assets/js/dc-runtime.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="assets/js/fullscreen.js"></script><script src="assets/js/voice-assist.js"></script><style>/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-cyrillic.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-cyrillic.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style><style>/* fallback */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 500;
+  src: url("assets/fonts/material-symbols-rounded-500-fallback.woff2") format('woff2');
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+</style><style>body{margin:0;background:#e1ebf7;font-family:'IBM Plex Sans Thai',Tahoma,sans-serif}button{font:inherit;cursor:pointer}a{color:#2f5fd0}a:hover{color:#1c3d94}.ms{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;line-height:1;white-space:nowrap;direction:ltr}</style></helmet>
+<nav style="position:sticky;top:0;z-index:10;background:#1c2b5a;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;font-family:'IBM Plex Sans Thai',sans-serif"><span style="color:#9fb1ba;font-size:14px;margin-right:4px">เลือกบทบาท</span></nav>
+<div style="min-height:100vh;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;color:#1c2b4a">
+<div style="width:390px;height:844px;position:relative;border-radius:40px;overflow:hidden;display:flex;flex-direction:column;border:8px solid #1c2b5a;box-shadow:0 20px 50px rgba(30,50,60,.25);background:#fbfcfb">
+<div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'IBM Plex Mono',monospace"><span>09:41</span><span>●●● 100%</span></div>
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;top:34px;bottom:0;z-index:5;overflow:hidden;background:linear-gradient(165deg,#f6faff 0%,#dbeafb 55%,#a9cbf3 100%);display:flex;flex-direction:column;align-items:center;padding:0 22px;box-sizing:border-box;color:#0b1a5c">
+<div style="position:absolute;left:-60px;top:70px;width:230px;height:230px;background:rgba(255,255,255,.35);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)"></div>
+<div style="position:absolute;right:-70px;top:150px;width:210px;height:210px;background:rgba(150,195,245,.3);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)"></div>
+<div style="position:absolute;right:30px;top:40px;width:70px;height:24px;background:rgba(120,170,235,.35);border-radius:4px"></div><div style="position:absolute;right:53px;top:17px;width:24px;height:70px;background:rgba(120,170,235,.35);border-radius:4px"></div>
+<div style="position:absolute;left:18px;bottom:210px;width:54px;height:18px;background:rgba(120,170,235,.3);border-radius:4px"></div><div style="position:absolute;left:36px;bottom:192px;width:18px;height:54px;background:rgba(120,170,235,.3);border-radius:4px"></div>
+<div style="position:relative;margin-top:92px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:50px;font-weight:800;letter-spacing:.01em;line-height:1">Dr.</span><svg width="60" height="16" sc-camel-view-box="0 0 60 16"><path d="M0 9h20l4-6 6 12 5-9 3 3h22" fill="none" stroke="#4f8fe0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div style="position:relative;margin-top:58px;font-size:32px;font-weight:700">ยินดีต้อนรับ</div>
+<div style="position:relative;margin-top:6px;font-size:16px;color:#4b5a64;text-align:center;line-height:1.5">กรุณาล็อกอินเพื่อเข้าสู่ระบบ Doctor Assist</div>
+<button sc-camel-on-click="{{ doLogin }}" style="position:relative;margin-top:32px;width:100%;height:68px;border:0;border-radius:99px;background:#3f7455;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:600;white-space:nowrap;padding:0 8px;box-shadow:0 10px 22px rgba(30,60,45,.35)"><span style="display:flex;align-items:baseline;gap:2px;font-size:12px;font-weight:700;letter-spacing:0">PROVIDER<b style="font-size:22px;font-style:italic;font-weight:800;color:#e8f06a">iD</b></span>Continue with ProviderID</button>
+<div style="position:relative;margin-top:44px;width:100%;box-sizing:border-box;border:2px solid #cfdcf0;border-radius:26px;background:rgba(238,244,254,.92);padding:18px 16px;display:flex;gap:14px;align-items:center"><span style="flex:none;width:48px;height:48px;border-radius:50%;background:#2f5fd0;color:#fff;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center">!</span><span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:17px;font-weight:700">การเข้าสู่ระบบด้วย Provider ID</span><span style="font-size:14px;line-height:1.5;color:#5a6676">ระบบจะนำท่านไปยังหน้า Provider ID เพื่อยืนยันตัวตนด้วยเลขบัตรประชาชน และ PIN</span></span></div>
+<span style="position:absolute;right:24px;bottom:18px;font-size:14px;color:#fff;font-weight:500">Version 1.0.0</span></div></sc-if>
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><div style="flex:none;padding:0 12px"><button sc-camel-on-click="{{ back }}" style="height:52px;padding:0 8px;border:0;background:none;color:#2f5fd0;font-weight:700;font-size:17px;display:flex;align-items:center"><span class="ms" style="font-size:30px">chevron_left</span>ย้อนกลับ</button></div></sc-if>
+<div style="flex:1;overflow:auto;display:flex;flex-direction:column;padding:10px 20px 16px;gap:12px">
+
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding-top:50px"><div style="width:110px;height:110px;border-radius:30px;background:#e1ecfb;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:66px;color:#2f5fd0">medical_services</span></div><div style="font-size:26px;font-weight:700">Doctor Assist</div><div style="font-size:17px;color:#4b5a64">สำหรับบุคลากร · พยาบาล</div></div>
+</sc-if>
+
+<sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:23px;font-weight:700;line-height:1.3">{{ form.title }}</div>
+<sc-if value="{{ form.sub }}" hint-placeholder-val="{{ false }}"><div style="font-size:15px;color:#4b5a64;margin-top:-6px">{{ form.sub }}</div></sc-if>
+<sc-for list="{{ form.fields }}" as="f" hint-placeholder-count="2"><label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;font-weight:600">{{ f.k }} <span style="color:#b3261e">*</span></span><sc-if value="{{ f.isSel }}" hint-placeholder-val="{{ false }}"><sc-raw-select value="{{ f.v }}" sc-camel-on-change="{{ f.on }}" style="height:60px;border:2px solid #2f5fd0;border-radius:14px;background:#fff;font:inherit;font-size:17px;padding:0 10px;width:100%"><sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select></sc-if><sc-if value="{{ f.isIn }}" hint-placeholder-val="{{ true }}"><input size="1" value="{{ f.v }}" sc-camel-on-change="{{ f.on }}" placeholder="{{ f.ph }}" style="height:60px;border:2px solid #2f5fd0;border-radius:14px;padding:0 14px;font:600 19px 'IBM Plex Mono',monospace;width:100%;box-sizing:border-box"></sc-if></label></sc-for>
+</sc-if>
+
+<sc-if value="{{ isOtp }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:23px;font-weight:700">ระบุรหัส OTP</div><div style="font-size:15px;color:#4b5a64;line-height:1.6">ส่งรหัสไปที่แอปหมอพร้อม หรือ LINE หมอพร้อมแล้ว</div>
+<input size="1" value="{{ otp }}" sc-camel-on-change="{{ setOtp }}" sc-camel-input-mode="numeric" sc-camel-max-length="6" placeholder="------" style="height:76px;border:3px solid #2f5fd0;border-radius:16px;text-align:center;font:600 32px 'IBM Plex Mono',monospace;letter-spacing:.3em;width:100%;box-sizing:border-box">
+<div style="font-size:16px;font-weight:600;text-align:center;color:{{ secsColor }}">{{ secsText }}</div>
+<button sc-camel-on-click="{{ resend }}" style="height:58px;border:2px solid #2f5fd0;border-radius:16px;background:#fff;color:#2f5fd0;font-size:17px;font-weight:700;opacity:{{ resendOp }}">ส่งรหัสอีกครั้ง</button>
+</sc-if>
+
+<sc-if value="{{ isUser }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="font-size:20px;font-weight:700;color:#0b1a5c">Doctor Assist</div><button sc-camel-on-click="{{ doLogout }}" style="min-height:44px;padding:0 12px;border:2px solid #cfdcf0;border-radius:22px;background:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;color:#1c2b4a;cursor:pointer"><span class="ms" style="font-size:22px">logout</span>ออกจากระบบ</button></div><div style="display:flex;align-items:center;gap:12px;background:#e1ecfb;border-radius:18px;padding:12px 14px"><span style="width:52px;height:52px;border-radius:50%;background:#c9d2de;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:34px;color:#fff">person</span></span><span style="flex:1;font-size:16px;font-weight:600;line-height:1.4">ยินดีต้อนรับ! นางสาว สุกัญญา พิมพ์ตีข้อ</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button sc-camel-on-click="{{ tabPid }}" style="height:54px;border:2px solid #2f5fd0;border-radius:14px;background:{{ tPid.bg }};color:{{ tPid.fg }};font-size:16px;font-weight:700">PROVIDER ID</button><button sc-camel-on-click="{{ tabGuest }}" style="height:54px;border:2px solid #2f5fd0;border-radius:14px;background:{{ tGuest.bg }};color:{{ tGuest.fg }};font-size:16px;font-weight:700">GUEST</button></div>
+<sc-if value="{{ userPid }}" hint-placeholder-val="{{ true }}"><div style="border:2px solid #cfdcf0;border-radius:20px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:12px;align-items:center"><span style="width:52px;height:52px;border-radius:14px;background:#2f5fd0;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:30px;color:#fff">apartment</span></span><span style="flex:1;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700">โรงพยาบาลทดสอบ Telemedicine</span><span style="font-size:14px;color:#4b5a64">DB605</span></span><span style="font-size:13px;font-weight:700;color:#2f5fd0;border:2px solid #2f5fd0;border-radius:99px;padding:2px 12px">พยาบาล</span></div><button sc-camel-on-click="{{ enter }}" style="height:54px;border:0;border-radius:14px;background:#2f5fd0;color:#fff;font-size:17px;font-weight:700">เข้าใช้งาน</button></div></sc-if>
+<sc-if value="{{ userGuest }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:flex-end"><button sc-camel-on-click="{{ openReqList }}" style="min-height:40px;padding:0 12px;border:2px solid #2f5fd0;border-radius:14px;background:#fff;color:#2f5fd0;font:700 13px inherit;font-family:inherit;display:flex;align-items:center;gap:6px;cursor:pointer"><span class="ms" style="font-size:22px">list_alt</span>รายการขอสิทธิ์ผู้ใช้งาน</button></div>
+<sc-for list="{{ guestCards }}" as="g" hint-placeholder-count="1"><div style="border:2px solid {{ g.bc }};border-radius:16px;background:#fff;padding:12px 14px;display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">{{ g.t }}</span><span style="font-size:13px;color:#4b5a64">{{ g.s }}</span><span style="align-self:flex-start;font-size:14px;font-weight:700;background:{{ g.tbg }};color:{{ g.tfg }};border-radius:99px;padding:2px 12px">{{ g.tag }}</span></div></sc-for>
+<sc-if value="{{ gshow }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid {{ gbc }};border-radius:20px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:12px;align-items:center"><span style="width:52px;height:52px;border-radius:14px;background:#2f5fd0;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:30px;color:#fff">apartment</span></span><span style="flex:1;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700">{{ gHosp }}</span><span style="font-size:14px;color:#4b5a64">{{ gCode }}</span></span><span style="font-size:13px;font-weight:700;color:#2f5fd0;border:2px solid #2f5fd0;border-radius:99px;padding:2px 12px">{{ gRole }}</span></div><button sc-camel-on-click="{{ enterGuest }}" style="height:54px;border:0;border-radius:14px;background:#2f5fd0;color:#fff;font-size:17px;font-weight:700">{{ gBtn }}</button></div></sc-if>
+
+
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ isQueue }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:24px;font-weight:700">จัดการคิว</span><span style="font-size:14px;color:#4b5a64">{{ dateText }}</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px;color:#4b5a64;white-space:nowrap">กรองตามแพทย์ :</span><sc-raw-select value="{{ fDoc }}" sc-camel-on-change="{{ setFDoc }}" style="flex:1;min-width:0;height:54px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;font:inherit;font-size:15px;padding:0 10px"><option value="all">ทั้งหมด</option><option value="w">พญ.วรรณา ใจดี</option><option value="t">นพ.ธีระ วงศ์ดี</option></sc-raw-select></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px;color:#4b5a64;white-space:nowrap">เลือกวันที่ :</span><button sc-camel-on-click="{{ toggleRange }}" style="flex:1;min-width:0;height:54px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:14px;font-weight:600;color:#1c2b4a"><span class="ms" style="font-size:26px">calendar_month</span><span style="flex:1;text-align:left;white-space:nowrap">{{ rangeText }}</span><span class="ms" style="font-size:24px">expand_more</span></button></div>
+<sc-if value="{{ showRange }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #cfdcf0;border-radius:18px;background:#fff;padding:12px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><button sc-camel-on-click="{{ prevR }}" style="width:48px;height:48px;border:2px solid #2f5fd0;border-radius:12px;background:#fff;color:#2f5fd0;display:flex;align-items:center;justify-content:center;opacity:{{ prevROp }}"><span class="ms" style="font-size:28px">chevron_left</span></button><span style="font-size:17px;font-weight:700">{{ rangeMonth }}</span><button sc-camel-on-click="{{ nextR }}" style="width:48px;height:48px;border:2px solid #2f5fd0;border-radius:12px;background:#fff;color:#2f5fd0;display:flex;align-items:center;justify-content:center;opacity:{{ nextROp }}"><span class="ms" style="font-size:28px">chevron_right</span></button></div><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px"><sc-for list="{{ weekHead }}" as="w" hint-placeholder-count="7"><span style="text-align:center;font-size:14px;font-weight:600;color:#4b5a64">{{ w.l }}</span></sc-for><sc-for list="{{ rangeCells }}" as="d" hint-placeholder-count="35"><button sc-camel-on-click="{{ d.on }}" style="aspect-ratio:1;min-height:40px;border:0;border-radius:10px;background:{{ d.bg }};color:{{ d.fg }};font-size:15px;font-weight:600;padding:0">{{ d.label }}</button></sc-for></div><div style="font-size:14px;color:#4b5a64;margin-top:8px;text-align:center">{{ rangeHint }}</div></div></sc-if>
+
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="2"><div style="border:2px solid {{ r.bc }};border-radius:18px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:17px;font-weight:700;line-height:1.4">{{ r.n }} / HN : <span style="color:{{ r.hnCol }}">{{ r.hnText }}</span> </div><div style="display:flex;align-items:center;gap:6px;font-size:15px;color:#4b5a64"><span class="ms" style="font-size:22px">schedule</span>{{ r.dt }} เวลา {{ r.tm }} น.</div><div style="display:flex;flex-wrap:wrap;gap:8px"><span style="font-size:14px;font-weight:600;background:#fde0ea;color:#d81b78;border-radius:99px;padding:6px 16px">ตรวจใหม่</span><span style="font-size:14px;font-weight:600;background:#e1ecfb;color:#1c3d94;border-radius:99px;padding:6px 16px">สิทธิ{{ r.right }}</span><sc-if value="{{ r.ok }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;font-weight:600;background:#e6f3ea;color:#1d5a37;border-radius:99px;padding:6px 16px">ยืนยันแล้ว</span></sc-if></div></div>
+
+<sc-if value="{{ r.isNew }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#2f5fd0;font-weight:600">นัดใหม่จากผู้ป่วย</div></sc-if>
+<sc-if value="{{ r.canManage }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ r.on }}" style="height:54px;border:0;border-radius:14px;background:#2f5fd0;color:#fff;font-size:17px;font-weight:700">จัดการคิว</button></sc-if>
+</div></sc-for>
+<sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="text-align:center;padding-top:30px;font-size:17px;color:#4b5a64">ไม่มีรายการ</div></sc-if>
+</sc-if>
+
+<sc-if value="{{ isSched }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700">ตารางนัดหมาย</div>
+<div style="font-size:14px;color:#4b5a64;margin-top:-6px">รายการนัดที่ยืนยันแล้ว {{ schedCount }} รายการ</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px;color:#4b5a64;white-space:nowrap;min-width:96px">เลือกวันที่ :</span><button sc-camel-on-click="{{ toggleRange }}" style="flex:1;min-width:0;height:54px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:14px;font-weight:600;color:#1c2b4a"><span class="ms" style="font-size:26px">calendar_month</span><span style="flex:1;text-align:left;white-space:nowrap">{{ rangeText }}</span><span class="ms" style="font-size:24px">expand_more</span></button></div>
+<sc-if value="{{ showRange }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #cfdcf0;border-radius:18px;background:#fff;padding:12px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><button sc-camel-on-click="{{ prevR }}" style="width:48px;height:48px;border:2px solid #2f5fd0;border-radius:12px;background:#fff;color:#2f5fd0;display:flex;align-items:center;justify-content:center;opacity:{{ prevROp }}"><span class="ms" style="font-size:28px">chevron_left</span></button><span style="font-size:17px;font-weight:700">{{ rangeMonth }}</span><button sc-camel-on-click="{{ nextR }}" style="width:48px;height:48px;border:2px solid #2f5fd0;border-radius:12px;background:#fff;color:#2f5fd0;display:flex;align-items:center;justify-content:center;opacity:{{ nextROp }}"><span class="ms" style="font-size:28px">chevron_right</span></button></div><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px"><sc-for list="{{ weekHead }}" as="w" hint-placeholder-count="7"><span style="text-align:center;font-size:14px;font-weight:600;color:#4b5a64">{{ w.l }}</span></sc-for><sc-for list="{{ rangeCells }}" as="d" hint-placeholder-count="35"><button sc-camel-on-click="{{ d.on }}" style="aspect-ratio:1;min-height:40px;border:0;border-radius:10px;background:{{ d.bg }};color:{{ d.fg }};font-size:15px;font-weight:600;padding:0">{{ d.label }}</button></sc-for></div><div style="font-size:14px;color:#4b5a64;margin-top:8px;text-align:center">{{ rangeHint }}</div></div></sc-if><div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px;color:#4b5a64;white-space:nowrap;min-width:96px">สิทธิการรักษา :</span><sc-raw-select value="{{ sRight }}" sc-camel-on-change="{{ setSRight }}" style="flex:1;min-width:0;height:54px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;font:inherit;font-size:15px;padding:0 10px"><option value="all">ทั้งหมด</option><option value="ประกันสังคม">ประกันสังคม</option><option value="ชำระเงินเอง">ชำระเงินเอง</option></sc-raw-select></div>
+
+<sc-for list="{{ sched }}" as="r" hint-placeholder-count="2"><div style="border:2px solid #cfdcf0;border-radius:18px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:10px">
+<div style="font-size:17px;font-weight:700;line-height:1.4">{{ r.n }} <span style="font-weight:500;color:#4b5a64">/ HN:</span> <span style="font-weight:500;color:#6f7d87">{{ r.hnText }} · {{ r.age }} ปี</span></div>
+<div style="display:flex;align-items:center;gap:6px;font-size:15px;color:#22313b"><span class="ms" style="font-size:22px">schedule</span>{{ r.dt }} {{ r.range }} น.</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><sc-if value="{{ r.isWait }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;font-weight:600;background:#fff3d6;color:#c77700;border-radius:99px;padding:6px 14px">รอคิวตรวจ</span></sc-if><sc-if value="{{ r.isPay }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:600;background:#ffe6cc;color:#d9500b;border-radius:99px;padding:6px 14px">รอชำระค่าบริการ</span></sc-if><span style="font-size:13px;font-weight:600;background:#fde0ea;color:#d81b78;border-radius:99px;padding:6px 14px">ตรวจใหม่</span><span style="font-size:13px;font-weight:600;background:#e1ecfb;color:#1c3d94;border-radius:99px;padding:6px 14px">สิทธิ{{ r.right }}</span></div>
+<div style="border-top:1px solid #dbe2e4;padding-top:10px;display:flex;flex-direction:column;gap:4px;font-size:15px"><span><b>อาการ</b> <span style="color:#4b5a64">: {{ r.sym }}</span></span><span><b>รายละเอียดอาการ</b> <span style="color:#4b5a64">: {{ r.sdet }}</span></span></div>
+</div></sc-for>
+<sc-if value="{{ schedEmpty }}" hint-placeholder-val="{{ false }}"><div style="text-align:center;padding-top:30px;font-size:17px;color:#4b5a64">ยังไม่มีนัดที่ยืนยัน</div></sc-if>
+</sc-if>
+
+<sc-if value="{{ isManage }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:21px;font-weight:700">จัดการคิวนัดหมาย</div>
+<div style="font-size:17px;font-weight:700;margin-top:2px">ข้อมูลผู้ป่วย</div>
+<div style="background:#eef4fb;border-radius:18px;padding:14px;display:flex;gap:12px;align-items:center"><span style="width:56px;height:56px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:34px;color:#2f5fd0">person</span></span><span style="display:flex;flex-direction:column;gap:3px;min-width:0;flex:1"><span style="font-size:14px;color:#6f7d87">ชื่อผู้ป่วย</span><span style="font-size:18px;font-weight:700">{{ cur.n }}</span><span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:14px;color:#6f7d87"><span class="ms" style="font-size:22px">credit_card</span>HN:<sc-if value="{{ needHn }}" hint-placeholder-val="{{ true }}"><input size="1" value="{{ hn }}" sc-camel-on-change="{{ setHn }}" sc-camel-input-mode="numeric" placeholder="กรอก HN" style="height:44px;width:150px;border:2px solid #2f5fd0;border-radius:10px;padding:0 10px;font:600 16px 'IBM Plex Mono',monospace;box-sizing:border-box"></sc-if><sc-if value="{{ hasHn }}" hint-placeholder-val="{{ false }}"><b style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#4b5a64">{{ hn }}</b></sc-if></span><sc-if value="{{ needHn }}" hint-placeholder-val="{{ true }}"></sc-if><span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px"><span class="ms" style="font-size:22px;color:#4b5a64">person</span><span style="color:#4b5a64">สิทธิ{{ cur.right }}</span><b>อายุ {{ cur.age }} ปี</b><span style="color:#6f7d87">ประเภท: <b style="color:#e5252a">ตรวจใหม่</b></span></span></span></div>
+
+<div style="font-size:17px;font-weight:700;margin-top:2px">ผู้ติดต่อฉุกเฉิน (ถ้ามี)</div>
+<div style="background:#eef4fb;border-radius:16px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:14px"><span class="ms" style="font-size:26px;color:#2f5fd0">contact_phone</span><span style="display:flex;flex-direction:column;line-height:1.4"><b style="font-size:15px">สมหญิง ใจงาม (ลูกสาว)</b><span style="color:#4b5a64">081-234-5678</span></span></div>
+<sc-if value="{{ showInfo }}" hint-placeholder-val="{{ false }}"><div style="background:#eef4fb;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;font-weight:700">อาการ</span><span style="font-size:15px">{{ cur.cc }}</span><div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-top:4px"><span style="font-size:16px;font-weight:600;color:#1c3d94">Vital Signs:</span><sc-for list="{{ vitItems }}" as="v" hint-placeholder-count="8"><span style="font-size:15px;white-space:nowrap"><b style="font-weight:600;color:#1c2b4a">{{ v.k }}</b> <span style="color:#6f7d87">: {{ v.v }}</span></span></sc-for></div></div></sc-if>
+
+<label style="display:flex;flex-direction:column;gap:6px"></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;font-weight:700">แผนก / คลินิก <span style="color:#b3261e">*</span></span><sc-raw-select value="{{ dept }}" sc-camel-on-change="{{ setDept }}" style="height:60px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;font:inherit;font-size:17px;padding:0 10px;width:100%"><option value="med">อายุรกรรม</option><option value="ortho">กระดูกและข้อ</option><option value="eye">จักษุ (ตา)</option></sc-raw-select></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;font-weight:700">แพทย์ <span style="color:#b3261e">*</span> <span style="font-size:13px;font-weight:500;color:#4b5a64">{{ docNote }}</span></span><sc-raw-select value="{{ doc }}" sc-camel-on-change="{{ setDoc }}" style="height:60px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;font:inherit;font-size:17px;padding:0 10px;width:100%"><option value="w">พญ.วรรณา ใจดี</option><option value="t">นพ.ธีระ วงศ์ดี</option></sc-raw-select></label>
+</sc-if>
+
+<sc-if value="{{ isReqList }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:12px;background:#eef4ff;border-radius:18px;padding:12px 14px"><span style="width:52px;height:52px;border-radius:14px;background:#2563eb;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:30px;color:#fff">assignment</span></span><span style="display:flex;flex-direction:column"><b style="font-size:19px;line-height:1.3">รายการขอสิทธิ์ผู้ใช้งาน</b><span style="font-size:13px;color:#5a6676">ทั้งหมด {{ reqCount }} รายการ</span></span></div>
+<sc-for list="{{ reqList }}" as="q" hint-placeholder-count="4"><div style="border:2px solid #dbe6f7;border-radius:18px;background:#fff;overflow:hidden;flex:none"><div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f7f9fd;border-bottom:1px solid #e3e9f3"><b style="font-size:16px;color:#2563eb">{{ q.n }}</b><span style="font-size:14px;font-weight:700;background:{{ q.tbg }};color:{{ q.tfg }};border-radius:99px;padding:2px 14px">{{ q.tag }}</span></div><div style="padding:12px 14px;display:flex;flex-direction:column;gap:12px"><sc-for list="{{ q.rows }}" as="r" hint-placeholder-count="4"><div style="display:flex;align-items:flex-start;gap:12px"><span class="ms" style="font-size:26px;color:#1a76d2;margin-top:2px">{{ r.ic }}</span><span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:14px;color:#5a6676">{{ r.l }}</span><span style="font-size:15px;font-weight:600;line-height:1.35">{{ r.v }}</span></span></div></sc-for></div></div></sc-for>
+</sc-if>
+<sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;padding-top:50px">
+<div style="width:128px;height:128px;border-radius:50%;background:#e6f3ea;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:76px;color:#2e7d4f">check_circle</span></div>
+<div style="font-size:26px;font-weight:700">ยืนยันนัดหมายแล้ว</div>
+<div style="font-size:17px;line-height:1.6;color:#4b5a64;white-space:pre-line">{{ doneText }}</div>
+<div style="width:100%;box-sizing:border-box;border:2px solid #cfdcf0;border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:center;font-size:15px;text-align:left"><span class="ms" style="font-size:28px;color:#2f5fd0">notifications_active</span>ส่งแจ้งเตือนผู้ป่วยทาง LINE และหมอพร้อมแล้ว</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDash }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700">แดชบอร์ด</div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px"><sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4"><div style="border-radius:16px;background:#fff;border:2px solid #e3e9f1;padding:10px;display:flex;align-items:center;gap:10px"><span style="width:46px;height:46px;border-radius:50%;background:{{ k.bg }};display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:28px;color:{{ k.fg }}">{{ k.icon }}</span></span><span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:13px;color:#4b5a64;line-height:1.25">{{ k.l }}</span><span style="display:flex;align-items:baseline;gap:4px"><b style="font-size:26px;line-height:1.1;color:{{ k.fg }}">{{ k.v }}</b><span style="font-size:13px;color:#6b7a90">เคส</span></span></span></div></sc-for></div>
+<div style="border:2px solid #e3e9f1;border-radius:16px;background:#fff;padding:14px"><div style="font-size:15px;font-weight:700;margin-bottom:10px">ปิดสิทธิ์สำเร็จ 30 วันล่าสุด</div><div style="display:flex;gap:6px"><div style="display:flex;flex-direction:column;justify-content:space-between;height:120px;font-size:12px;color:#6b7a90;text-align:right"><span>20</span><span>10</span><span>0</span></div><div style="flex:1;min-width:0"><div style="position:relative;height:120px;border-left:1px solid #cfd6df;border-bottom:1px solid #cfd6df;display:flex;align-items:flex-end;gap:2px;padding:0 2px;background:repeating-linear-gradient(to top,transparent 0 59px,#eef1f4 59px 60px)"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="30"><span style="flex:1;height:{{ b.h }}px;background:#22a06b;border-radius:2px 2px 0 0"></span></sc-for></div><div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7a90;margin-top:4px"><span>{{ dFrom }}</span><span>{{ dMid }}</span><span>{{ dTo }}</span></div></div></div></div>
+<div style="border:2px solid #e3e9f1;border-radius:16px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:700">สรุปสถานะ</div><div style="display:flex;justify-content:center"><div style="width:150px;height:150px;border-radius:50%;background:{{ donut }};display:flex;align-items:center;justify-content:center"><div style="width:100px;height:100px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:12px;color:#6b7a90">รวมทั้งหมด</span><b style="font-size:24px;line-height:1.1;color:#1c3d94">{{ total }}</b><span style="font-size:12px;color:#6b7a90">เคส</span></div></div></div><sc-for list="{{ stat }}" as="s" hint-placeholder-count="3"><div style="border:1.5px solid #dbe6f3;background:#f6f9fe;border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:13px"><span style="width:10px;height:10px;border-radius:50%;background:{{ s.c }};flex:none"></span><b style="flex:1;color:{{ s.c }}">{{ s.l }}</b><b>{{ s.n }} เคส</b><span style="font-size:13px;color:#6b7a90;min-width:46px;text-align:right">{{ s.p }}%</span></div></sc-for></div>
+<div style="font-size:17px;font-weight:700">ค้นหารายการปิดสิทธิ์</div>
+<input size="1" value="{{ q }}" sc-camel-on-change="{{ setQ }}" placeholder="HN / เลขเคส / Authen" style="height:56px;border:2px solid #2f5fd0;border-radius:14px;padding:0 14px;font:inherit;font-size:17px;width:100%;box-sizing:border-box">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:15px;font-weight:600">สถานะ</span><sc-raw-select value="{{ stf }}" sc-camel-on-change="{{ setStf }}" style="height:56px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;font:inherit;font-size:16px;padding:0 10px;width:100%"><sc-for list="{{ stOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select></label>
+<div style="border:2px solid #cfdcf0;border-radius:16px;background:#fff;padding:2px 12px"><sc-for list="{{ tbl }}" as="t" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #dbe2e4"><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:700;line-height:1.3"><span style="font:600 14px 'IBM Plex Mono',monospace;color:#1c2b4a">HN {{ t.hn }}</span> {{ t.nm }}</span><span style="font-size:13.5px;color:#4b5a64;line-height:1.4">เลขเคส {{ t.cs }} · แพทย์ {{ t.dc }}</span><span style="font-size:13.5px;color:#4b5a64;line-height:1.4">เวลาปิดสิทธิ์ {{ t.tm }}</span><span style="font-size:13.5px;color:#4b5a64;line-height:1.4">Authen Code {{ t.au }}</span></span><span style="font-size:14px;font-weight:700;border-radius:99px;padding:2px 10px;background:{{ t.bg }};color:{{ t.fg }}">{{ t.s }}</span></div></sc-for><sc-if value="{{ tblEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#4b5a64;font-size:15px">ไม่พบรายการ</div></sc-if></div>
+</sc-if>
+</div>
+<sc-if value="{{ cta }}" hint-placeholder-val="{{ false }}"><div style="flex:none;padding:12px 20px 18px;border-top:1px solid #dbe2e4;display:flex;gap:10px"><sc-if value="{{ cta.cancel }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ cta.cancelOn }}" style="flex:1;height:64px;border:2px solid #b3261e;border-radius:16px;background:#fff;color:#b3261e;font-size:17px;font-weight:700">ยกเลิก</button></sc-if><button sc-camel-on-click="{{ cta.on }}" style="flex:{{ cta.flex }};height:64px;border:0;border-radius:16px;background:{{ cta.bg }};color:#fff;font-size:18px;font-weight:700;opacity:{{ cta.op }}">{{ cta.label }}</button></div></sc-if>
+<sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}"><div style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid #cfdcf0;background:#fff;padding:6px 2px 14px"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="2"><button sc-camel-on-click="{{ n.on }}" style="min-height:64px;border:0;background:none;color:{{ n.fg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13px;font-weight:{{ n.w }}"><span class="ms" style="font-size:30px">{{ n.icon }}</span>{{ n.label }}</button></sc-for></div></sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="">
+class Component extends DCLogic {
+  init = { s:'login', hist:[], cid:'', pin:'', otp:'', secs:59, utab:'pid', hospital:'a', guest:{ unit:'a', right:'nurse' }, gstate:'none',
+    tab:'wait', sRight:'all', sStat:'all', day:26, rFrom:26, rTo:27, pend:false, rcal:false, cm:0, fDoc:'all', cur:null, hn:'', dept:'med', doc:'w', hosp:'a', showInfo:true, okIds:[], q:'', stf:'all' };
+  state = { ...this.init, bk:null };
+  componentDidMount() {
+    this.ld();
+    this.iv = setInterval(() => { this.ld(); if (this.state.s==='otp' && this.state.secs>0) this.setState(s => ({ secs:s.secs-1 })); }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  ld() { try { const v = JSON.parse(localStorage.getItem('da-booking') || 'null'); if (JSON.stringify(v) !== JSON.stringify(this.state.bk)) this.setState({ bk: v }); } catch (e) {} }
+  go = (s) => this.setState(st => ({ s, hist:[...st.hist, st.s] }));
+  back = () => this.setState(st => st.hist.length ? { s:st.hist[st.hist.length-1], hist:st.hist.slice(0,-1) } : {});
+  items() {
+    const others = [
+      { id:'p3', n:'บุญมี ศรีดี', t:'09:20', day:26, doc:'t', cc:'ติดตามเบาหวาน', hn:'650219', age:71, right:'ประกันสังคม', vit:'BP 130/84 · HR 76 · T 36.6 · SpO2 98 · RR 18 · Wt 62 · Ht 158 · BMI 24.8', confirmed:true, vst:'wait' },
+      { id:'p4', n:'อำนวย รักไทย', t:'09:40', day:26, doc:'w', cc:'ปวดหลัง', hn:'650377', age:58, right:'ชำระเงินเอง', vit:'BP 124/78 · HR 70 · T 36.5 · SpO2 99 · RR 16 · Wt 70 · Ht 170 · BMI 24.2', confirmed:true, vst:'pay' },
+      { id:'p1', n:'ประยุทธ มีสุข', t:'10:40', day:26, doc:'w', cc:'ปวดเข่า', hn:'650231', age:66, right:'ประกันสังคม', vit:'BP 128/80 · HR 72 · T 36.8 · SpO2 98 · RR 18 · Wt 66 · Ht 168 · BMI 23.4' },
+      { id:'p2', n:'มาลี สุขใจ', t:'10:50', day:26, doc:'t', cc:'เวียนหัว', hn:'', age:47, right:'ชำระเงินเอง', vit:'BP – · HR – · T – · SpO2 – · RR – · Wt 47 · Ht 153 · BMI 20.1' }];
+    const b = this.state.bk;
+    const live = b && b.booked ? [{ id:'live', n:b.name || 'สมศรี ใจงาม', t:(b.time||'—')+' น.', day:b.date||26, doc:'w', cc:[b.chips, b.symptom].filter(Boolean).join(' · ') || '—', vit:b.vitals || '—', hn:'', age:62, right:(b.right || 'ประกันสังคม').replace(/^สิทธิ/,''), sym:b.chips || '–', sdet:b.symptom || '–', isNew:true, confirmed:!!b.confirmed }] : [];
+    return [...live, ...others].map(x => ({ ...x, ok: x.confirmed || this.state.okIds.includes(x.id) }));
+  }
+  renderVals() {
+    const st = this.state, s = st.s;
+    const setF = k => e => this.setState({ [k]: e.target.value });
+    const dg = k => e => this.setState({ [k]: e.target.value.replace(/[^0-9]/g,'') });
+    const tb = on => ({ bg: on ? '#2f5fd0' : '#fff', fg: on ? '#fff' : '#1c3d94' });
+    const sel = (k, v, opts) => ({ isSel:true, isIn:false, k, v, opts, on:e => this.setState({ guest:{ ...st.guest, [v==='_'?'':'' ] : 0, ...{} } }) });
+
+    // forms
+    const forms = {
+      pid: { title:'เข้าสู่ระบบด้วย Provider ID', sub:'กรอกเลขบัตรประชาชนและ PIN', fields:[
+        { isIn:true, isSel:false, k:'เลขบัตรประชาชน', v:st.cid, ph:'13 หลัก', on:dg('cid') }, { isIn:true, isSel:false, k:'PIN', v:st.pin, ph:'6 หลัก', on:dg('pin') }] },
+      ask: { title:'ขอสิทธิ์เข้าใช้งาน', sub:'', fields:[
+        { isSel:true, isIn:false, k:'หน่วยบริการ', v:st.guest.unit, opts:[{ v:'a', l:'โรงพยาบาลทดสอบ Telemedicine' }, { v:'b', l:'รพ.ศรีสุข' }], on:e => this.setState({ guest:{ ...st.guest, unit:e.target.value } }) },
+        { isSel:true, isIn:false, k:'สิทธิ์ที่ต้องการ', v:st.guest.right, opts:[{ v:'nurse', l:'พยาบาล' }, { v:'doctor', l:'แพทย์' }, { v:'pharm', l:'เภสัช' }], on:e => this.setState({ guest:{ ...st.guest, right:e.target.value } }) }] }
+    };
+
+    // queue
+    const OFF = [0,31,61], DIM = [31,30,31];
+    const fmt = n => { const m = n<=31?0:n<=61?1:2; return String(n-OFF[m]).padStart(2,'0')+'/'+(10+m)+'/2569'; };
+    const dtext = n => { const m = n<=31?0:n<=61?1:2; return (n-OFF[m])+' '+['ต.ค.','พ.ย.','ธ.ค.'][m]+' 2569'; };
+    const pickDay = n => { if (!st.pend) this.setState({ rFrom:n, rTo:n, pend:true }); else this.setState({ rFrom:Math.min(st.rFrom,n), rTo:Math.max(st.rFrom,n), pend:false, rcal:false }); };
+    const rangeCells = [...Array.from({ length:new Date(2026,9+st.cm,1).getDay() }, () => ({ label:'', on:()=>{}, bg:'transparent', fg:'#22313b' })), ...Array.from({ length:DIM[st.cm] }, (_, i) => { const n = OFF[st.cm]+i+1, end = n===st.rFrom || n===st.rTo, mid = n>st.rFrom && n<st.rTo; return { label:String(i+1), on:()=>pickDay(n), bg: end?'#2f5fd0':mid?'#e1ecfb':'transparent', fg: end?'#fff':'#22313b' }; })];
+    const items = this.items().filter(x => (st.fDoc==='all' || x.doc===st.fDoc) && x.day>=st.rFrom && x.day<=st.rTo);
+    const all = this.items();
+    const wait = items.filter(x => !x.ok), ok = items.filter(x => x.ok);
+    const list = st.tab==='wait' ? wait : ok;
+    const open = x => () => this.setState({ s:'manage', hist:['queue'], cur:x, hn:x.hn, dept:'med', doc:'w', showInfo:true });
+    const rows = list.map(x => ({ n:x.n, hnText:x.hn || '-', hnCol:x.hn ? '#6f7d87' : '#6e420a', age:x.age, right:x.right, tm:String(x.t).replace(' น.',''), dt:dtext(x.day), ok:x.ok, t:x.t, cc:x.cc, isNew:!!x.isNew, canManage:!x.ok, on:open(x), bc: x.isNew && !x.ok ? '#2f5fd0' : '#cfdcf0',
+      tag: x.ok ? 'ยืนยันแล้ว' : (x.hn ? 'HN '+x.hn : 'ครั้งแรก · ไม่มี HN'), tbg: x.ok ? '#e6f3ea' : (x.hn ? '#e1ecfb' : '#fbefdc'), tfg: x.ok ? '#1d5a37' : (x.hn ? '#1c3d94' : '#6e420a') }));
+    const addMin = (tm, m) => { const [h, mi] = String(tm).replace(' น.','').split(':').map(Number); const v = h*60+mi+m; return String(Math.floor(v/60)).padStart(2,'0')+':'+String(v%60).padStart(2,'0'); };
+    const sched = all.filter(x => x.ok && (st.sRight==='all' || x.right===st.sRight) && x.day>=st.rFrom && x.day<=st.rTo).sort((a, b) => a.day-b.day || String(a.t).localeCompare(String(b.t))).map(x => { const tm = String(x.t).replace(' น.',''); return { n:x.n, hnText:x.hn || 'ยังไม่มี', age:x.age, right:x.right, dt:dtext(x.day), range:tm+' - '+addMin(tm,10), isWait:(x.vst||'wait')==='wait', isPay:x.vst==='pay', sym:x.sym || x.cc || '–', sdet:x.sdet || '–' }; });
+    const cur = st.cur || {};
+    const needHn = !cur.hn, canSave = !needHn || !!st.hn;
+
+    // guest cards
+    const guestCards = [];
+
+    // dashboard
+    const bars = Array.from({ length:30 }, (_, i) => ({ h: Math.round(120 * (0.08 + 0.8 * Math.abs(Math.sin(i * 1.7 + 1))) * (i > 20 ? 1 : 0.7)) }));
+    const dfm = n => { const x = new Date(2026, 9, 27 - n); return String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0'); };
+    const kpis = [{ l:'ปิดสิทธิ์แล้ว (วันนี้)', v:'12', icon:'check_circle', bg:'#e6f3ea', fg:'#1d9a5a' }, { l:'ปิดสิทธิ์แล้ว (สะสมทั้งหมด)', v:'348', icon:'layers', bg:'#e1ecfb', fg:'#1c5fd0' }, { l:'รอดำเนินการ', v:'5', icon:'hourglass_top', bg:'#fdf0d8', fg:'#d98a0b' }, { l:'ไม่สำเร็จ', v:'2', icon:'cancel', bg:'#fbe4e2', fg:'#d93025' }];
+    const stat0 = [{ l:'ปิดสิทธิ์สำเร็จ', n:341, c:'#22a06b' }, { l:'รอดำเนินการ / retry', n:5, c:'#f59e0b' }, { l:'ไม่สำเร็จ', n:2, c:'#e5484d' }];
+    const total = stat0.reduce((a, s) => a + s.n, 0); let acc = 0;
+    const stat = stat0.map(s => ({ ...s, p:(s.n / total * 100).toFixed(1) }));
+    const donut = 'conic-gradient(' + stat0.map(s => { const a = acc / total * 360; acc += s.n; return s.c + ' ' + a + 'deg ' + (acc / total * 360) + 'deg'; }).join(',') + ')';
+    const stMap = { ok:['สำเร็จ','#e6f3ea','#1d5a37'], wait:['รอดำเนินการ','#fbefdc','#6e420a'], fail:['ไม่สำเร็จ','#fbe4e2','#8c1d18'] };
+    const trows = [['650231','CS-0412','26 ต.ค.','ok'], ['650102','CS-0411','26 ต.ค.','wait'], ['650488','CS-0409','25 ต.ค.','ok'], ['650377','CS-0405','25 ต.ค.','fail'], ['650219','CS-0398','24 ต.ค.','ok']];
+    const q = st.q.trim().toLowerCase();
+    const EXT = { '650231':{ nm:'ประยุทธ มีสุข', dc:'พญ.วรรณา ใจดี', tm:'26/10/2569 09:42', au:'AU-71829' }, '650102':{ nm:'สมศรี ใจงาม', dc:'นพ.ธีระ วงศ์ดี', tm:'-', au:'-' }, '650488':{ nm:'บุญมี ศรีดี', dc:'พญ.วรรณา ใจดี', tm:'25/10/2569 14:15', au:'AU-71544' }, '650377':{ nm:'อำพร ดีเลิศ', dc:'นพ.ธีระ วงศ์ดี', tm:'25/10/2569 10:30', au:'-' }, '650219':{ nm:'สมชาย รักดี', dc:'พญ.วรรณา ใจดี', tm:'24/10/2569 11:05', au:'AU-70986' } };
+    const tbl = trows.filter(r => (st.stf==='all' || r[3]===st.stf) && (!q || r[0].includes(q) || r[1].toLowerCase().includes(q))).map(r => ({ hn:r[0], cs:r[1], ...EXT[r[0]], d:r[2], s:stMap[r[3]][0], bg:stMap[r[3]][1], fg:stMap[r[3]][2] }));
+    const stChips = [['all','ทั้งหมด'],['ok','สำเร็จ'],['wait','รอดำเนินการ'],['fail','ไม่สำเร็จ']].map(([k,l]) => ({ l, bg: st.stf===k?'#2f5fd0':'#fff', fg: st.stf===k?'#fff':'#1c3d94', on:()=>this.setState({ stf:k }) }));
+
+    // cta
+    const C = (label, on, bg, op=1, extra={}) => ({ label, on, bg: bg || '#2f5fd0', op, flex:1, cancel:false, cancelOn:()=>{}, ...extra });
+    let cta = null;
+    if (s==='login') cta = C('Continue with Provider ID', ()=>this.go('pid'));
+    if (s==='pid') cta = C('เข้าสู่ระบบ', ()=>this.setState({ s:'otp', hist:['login','pid'], secs:59, otp:'' }));
+    if (s==='otp') cta = C('ยืนยัน', ()=>this.setState({ s:'user', hist:[] }));
+    if (s==='user') cta = (st.utab==='guest' && st.gstate==='none') ? C('ขอสิทธิ์เข้าใช้งาน', ()=>this.go('ask'), '#2f5fd0') : null;
+    if (s==='reqlist') cta = C('ปิด', ()=>this.setState({ s:'user', hist:[] }), '#1a76d2');
+    if (s==='ask') cta = C('ส่งคำขอ', ()=>this.setState({ gstate:'pending', s:'user', hist:[] }));
+    if (s==='manage') cta = C('บันทึกจัดคิว', canSave ? () => {
+        if (cur.id==='live') { try { const b = JSON.parse(localStorage.getItem('da-booking')||'{}'); b.confirmed = true; b.doctor = st.doc; localStorage.setItem('da-booking', JSON.stringify(b)); } catch (e) {} }
+        this.setState({ s:'done', hist:[], okIds:[...st.okIds, cur.id] });
+      } : ()=>{}, '#2f5fd0', canSave?1:.4, { flex:1.6, cancel:true, cancelOn:()=>this.back() });
+    if (s==='done') cta = C('กลับไปคิวทั้งหมด', ()=>this.setState({ s:'queue', tab:'ok' }));
+    const nav = [['queue','จัดการคิว','event_note'],['sched','ตารางนัดหมาย','calendar_month'],['dash','แดชบอร์ด','dashboard']].map(([k,l,i]) => ({ label:l, icon:i, fg: s===k?'#2f5fd0':'#4b5a64', w: s===k?700:500, on:()=>this.setState({ s:k, hist:[] }) }));
+    return {
+      reset: () => this.setState({ ...this.init }),
+      doLogin: () => this.setState({ s:'user', hist:[] }), doLogout: () => this.setState({ s:'login', hist:[] }), enter: () => this.setState({ s:'queue', hist:[] }),
+      showBack: st.hist.length > 0 && s!=='done',
+      back: this.back, cta, nav, showNav: s==='queue' || s==='dash' || s==='sched',
+      isLogin: s==='login', isForm: !!forms[s], form: forms[s] || { title:'', sub:'', fields:[] },
+      isOtp: s==='otp', otp: st.otp, setOtp: dg('otp'), secsText: st.secs>0 ? 'ระบุรหัสภายใน '+st.secs+' วินาที' : 'หมดเวลา กดส่งรหัสอีกครั้ง', secsColor: st.secs>0 ? '#4b5a64' : '#b3261e',
+      resend: () => { if (st.secs===0) this.setState({ secs:59, otp:'' }); }, resendOp: st.secs===0 ? 1 : .4,
+      isUser: s==='user', tPid: tb(st.utab==='pid'), tGuest: tb(st.utab==='guest'), tabPid: () => this.setState({ utab:'pid' }), tabGuest: () => this.setState({ utab:'guest' }),
+      userPid: st.utab==='pid', userGuest: st.utab==='guest', hospital: st.hospital, setHospital: setF('hospital'),
+      openReqList: () => this.setState({ s:'reqlist', hist:['user'] }), isReqList: s==='reqlist', reqCount: 4,
+      reqList: [['พยาบาล','6 กรกฎาคม 2569','ok'],['แพทย์','6 กรกฎาคม 2569','ok'],['เภสัช','14 กรกฎาคม 2569','ok'],['พยาบาล','20 ตุลาคม 2569', st.gstate==='ok' ? 'ok' : 'wait']].map((r, i) => ({ n:'คำขอ #'+(i+1), tag: r[2]==='ok' ? 'อนุมัติ' : 'รออนุมัติ', tbg: r[2]==='ok' ? '#e3f5e8' : '#fbefdc', tfg: r[2]==='ok' ? '#1d7a3f' : '#6e420a', rows:[{ ic:'apartment', l:'หน่วยบริการ', v:'โรงพยาบาลทดสอบ Telemedicine' }, { ic:'badge', l:'สิทธิ์เข้าใช้งาน', v:r[0] }, { ic:'person', l:'ชื่อผู้ขอสิทธิ์', v:'นางสาว สุกัญญา พิมพ์ตีข้อ' }, { ic:'calendar_month', l:'วันที่ส่งคำขอสิทธิ์', v:r[1] }] })),
+      guestCards, gshow: st.gstate!=='none', gbc: st.gstate==='ok' ? '#2e7d4f' : '#cfdcf0', gBtn: st.gstate==='ok' ? 'เข้าใช้งาน' : 'จำลอง: อนุมัติคำขอ', gHosp: st.guest.unit==='a' ? 'โรงพยาบาลทดสอบ Telemedicine' : 'รพ.ศรีสุข', gCode: (st.guest.unit==='a' ? 'DB605' : 'DB112') + ' · ' + (st.gstate==='ok' ? 'อนุมัติแล้ว' : 'รออนุมัติ'), gRole: ({ nurse:'พยาบาล', doctor:'แพทย์', pharm:'เภสัช' })[st.guest.right], enterGuest: () => st.gstate==='ok' ? this.setState({ s:'queue', hist:[] }) : this.setState({ gstate:'ok' }), canAsk: st.gstate==='none', pending: st.gstate==='pending', askRight: () => this.go('ask'), approve: () => this.setState({ gstate:'ok' }),
+      weekHead:['อา','จ','อ','พ','พฤ','ศ','ส'].map(l => ({ l })), rangeText: fmt(st.rFrom)+' – '+fmt(st.rTo), showRange: st.rcal, toggleRange: () => this.setState({ rcal:!st.rcal, pend:false }),
+      rangeMonth: ['ตุลาคม','พฤศจิกายน','ธันวาคม'][st.cm]+' 2569', prevR: () => { if (st.cm>0) this.setState({ cm:st.cm-1 }); }, nextR: () => { if (st.cm<2) this.setState({ cm:st.cm+1 }); }, prevROp: st.cm>0?1:.3, nextROp: st.cm<2?1:.3,
+      rangeCells, rangeHint: st.pend ? 'เลือกวันสิ้นสุด' : 'เลือกวันเริ่มต้น แล้วเลือกวันสิ้นสุด',
+      sRight:st.sRight, sStat:st.sStat, setSRight:setF('sRight'), setSStat:setF('sStat'),
+      isSched: s==='sched', sched, schedCount: sched.length, schedEmpty: !sched.length,
+      isQueue: s==='queue', dateText: (st.day<=31 ? st.day+' ต.ค.' : st.day<=61 ? (st.day-31)+' พ.ย.' : (st.day-61)+' ธ.ค.')+' 2569', fDoc: st.fDoc, setFDoc: setF('fDoc'),
+      dateTabs: [...new Set([26, 27, ...(st.bk && st.bk.date ? [st.bk.date] : [])])].map(d => ({ label:(d===26?'วันนี้ ':d===27?'พรุ่งนี้ ':'')+(d<=31 ? d+' ต.ค.' : d<=61 ? (d-31)+' พ.ย.' : (d-61)+' ธ.ค.'), ...tb(st.day===d), on:()=>this.setState({ day:d }) })),
+      tabW: tb(st.tab==='wait'), tabO: tb(st.tab==='ok'), tabWait: () => this.setState({ tab:'wait' }), tabOk: () => this.setState({ tab:'ok' }),
+      waitCount: wait.length, okCount: ok.length, rows, empty: !rows.length,
+      vitItems: String(cur.vit || '').split(' · ').filter(Boolean).map(x => { const i = x.indexOf(' '); return { k:x.slice(0, i), v:x.slice(i+1) || '–' }; }),
+      isManage: s==='manage', cur, needHn, hn: st.hn, hasHn: !needHn, hnShow: st.hn || 'ยังไม่มี (กรอกด้านล่าง)', setHn: dg('hn'),
+      showInfo: st.showInfo, toggleInfo: () => this.setState({ showInfo:!st.showInfo }), infoIcon: st.showInfo ? 'expand_less' : 'expand_more',
+      hosp: st.hosp, setHosp: setF('hosp'), dept: st.dept, setDept: setF('dept'), doc: st.doc, setDoc: setF('doc'),
+      docNote: cur.isNew ? '(ผู้ป่วยไม่ระบุแพทย์ เลือกให้)' : '',
+      isDone: s==='done', doneText: (cur.n || '') + '\n' + (cur.t || '') + ' · ' + (st.doc==='w' ? 'พญ.วรรณา ใจดี' : 'นพ.ธีระ วงศ์ดี'),
+      isDash: s==='dash', stf: st.stf, setStf: setF('stf'), stOpts:[['all','ทั้งหมด'],['ok','สำเร็จ'],['wait','รอดำเนินการ'],['fail','ไม่สำเร็จ']].map(([v, l]) => ({ v, l })), kpis, bars, dFrom:dfm(29), dMid:dfm(15), dTo:dfm(0), donut, total, stat, q: st.q, setQ: setF('q'), stChips, tbl, tblEmpty: !tbl.length
+    };
+  }
+}
+</script>
+
+
+</body></html>

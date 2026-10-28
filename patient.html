@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="th"><head>
+<title>Doctor Assist · ผู้ป่วย</title>
+<!-- โหลด React จากไฟล์ในเครื่อง (ไม่ต้องใช้อินเทอร์เน็ต) -->
+<script>window.__resources={"https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js", "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js"};</script>
+<!-- เมื่อเปิดผ่าน index.html (อยู่ใน iframe): ซ่อนแถบบน และจัดกรอบมือถือให้พอดีจอ -->
+<script>if(window.parent!==window)document.documentElement.classList.add("embedded");</script>
+<style id="da-fit">html.embedded nav{display:none !important}html.embedded body{overflow:hidden}html.embedded div[style*="min-height: 100vh"]{padding:0 !important;display:flex !important;align-items:center;justify-content:center;height:100dvh;box-sizing:border-box}@media (max-width:520px){html.embedded div[style*="390px"][style*="844px"]{width:100vw !important;height:100dvh !important;border:0 !important;border-radius:0 !important;box-shadow:none !important}}@media (max-height:880px) and (min-width:521px){html.embedded div[style*="390px"][style*="844px"]{height:calc(100dvh - 24px) !important}}</style>
+<!-- เมื่อเปิดไฟล์นี้เดี่ยวๆ: เติมปุ่มสลับบทบาทในแถบบน -->
+<script>(function(){var R=[["patient", "ผู้ป่วย"], ["nurse", "พยาบาล"], ["doctor", "แพทย์"], ["pharmacist", "เภสัช"], ["admin", "Admin"]],me="patient";setInterval(function(){var n=document.querySelector("nav");if(!n||n.querySelector("[data-role]"))return;var fs=n.querySelector("[data-fs]");R.forEach(function(r){var a=document.createElement("a");a.href=r[0]+".html";a.textContent=r[1];a.setAttribute("data-role",r[0]);var on=r[0]===me;a.style.cssText="height:40px;padding:0 16px;border-radius:99px;border:1px solid #4b5a64;display:flex;align-items:center;text-decoration:none;font-weight:600;font-size:16px;"+(on?"background:#fff;color:#1b2328":"color:#fff");n.insertBefore(a,fs||null);});},300);})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="assets/js/dc-runtime.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script>window.ENH_NO_MIC=1;</script><script src="assets/js/voice-assist.js"></script><script src="assets/js/fullscreen.js"></script><style>/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-cyrillic.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-cyrillic.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style><style>/* fallback */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 500;
+  src: url("assets/fonts/material-symbols-rounded-500-fallback.woff2") format('woff2');
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+</style><style>body{margin:0;background:#e1ebf7;font-family:'IBM Plex Sans Thai',Tahoma,sans-serif}button{font:inherit;cursor:pointer}a{color:#2f5fd0}a:hover{color:#1c3d94}.ms{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;line-height:1;white-space:nowrap;direction:ltr}</style></helmet>
+<nav style="position:sticky;top:0;z-index:10;background:#1c2b5a;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;font-family:'IBM Plex Sans Thai',sans-serif"><span style="color:#9fb1ba;font-size:14px;margin-right:4px">เลือกบทบาท</span></nav>
+<div style="min-height:100vh;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:center;padding:24px;box-sizing:border-box">
+<div style="width:390px;height:844px;position:relative;border-radius:40px;overflow:hidden;display:flex;flex-direction:column;border:8px solid #1c2b5a;box-shadow:0 20px 50px rgba(30,50,60,.25);background:{{ c.bg }};color:{{ c.ink }}">
+<div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'IBM Plex Mono',monospace"><span>09:41</span><span>●●● 100%</span></div>
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;top:34px;bottom:0;z-index:5;overflow:hidden;background:linear-gradient(165deg,#f6faff 0%,#dbeafb 55%,#a9cbf3 100%);display:flex;flex-direction:column;align-items:center;padding:0 22px;box-sizing:border-box;color:#0b1a5c">
+<div style="position:absolute;left:-60px;top:70px;width:230px;height:230px;background:rgba(255,255,255,.35);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)"></div>
+<div style="position:absolute;right:-70px;top:150px;width:210px;height:210px;background:rgba(150,195,245,.3);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)"></div>
+<div style="position:absolute;right:30px;top:40px;width:70px;height:24px;background:rgba(120,170,235,.35);border-radius:4px"></div><div style="position:absolute;right:53px;top:17px;width:24px;height:70px;background:rgba(120,170,235,.35);border-radius:4px"></div>
+<div style="position:absolute;left:18px;bottom:210px;width:54px;height:18px;background:rgba(120,170,235,.3);border-radius:4px"></div><div style="position:absolute;left:36px;bottom:192px;width:18px;height:54px;background:rgba(120,170,235,.3);border-radius:4px"></div>
+<div style="position:relative;margin-top:92px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:50px;font-weight:800;letter-spacing:.01em;line-height:1">Dr.</span><svg width="60" height="16" sc-camel-view-box="0 0 60 16"><path d="M0 9h20l4-6 6 12 5-9 3 3h22" fill="none" stroke="#4f8fe0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div style="position:relative;margin-top:58px;font-size:32px;font-weight:700">ยินดีต้อนรับ</div>
+<div style="position:relative;margin-top:6px;font-size:16px;color:#4b5a64;text-align:center;line-height:1.5">กรุณาล็อกอินเพื่อเข้าสู่ระบบ Doctor Assist</div>
+<button sc-camel-on-click="{{ doLogin }}" style="position:relative;margin-top:32px;width:100%;height:68px;border:0;border-radius:99px;background:#3f7455;color:#fff;display:flex;align-items:center;justify-content:center;gap:14px;font-size:18px;font-weight:600;box-shadow:0 10px 22px rgba(30,60,45,.35)"><span style="display:flex;align-items:baseline;gap:2px;font-size:13px;font-weight:700;letter-spacing:.02em">HEALTH<b style="font-size:22px;font-style:italic;font-weight:800;color:#e8f06a">iD</b></span>Continue with HealthID</button>
+<div style="position:relative;margin-top:44px;width:100%;box-sizing:border-box;border:2px solid #cfdcf0;border-radius:26px;background:rgba(238,244,254,.92);padding:18px 16px;display:flex;gap:14px;align-items:center"><span style="flex:none;width:48px;height:48px;border-radius:50%;background:#2f5fd0;color:#fff;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center">!</span><span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:17px;font-weight:700">การเข้าสู่ระบบด้วย Health ID</span><span style="font-size:14px;line-height:1.5;color:#5a6676">ระบบจะนำท่านไปยังหน้า Health ID เพื่อยืนยันตัวตนด้วยเลขบัตรประชาชน และ PIN</span></span></div>
+<span style="position:absolute;right:24px;bottom:18px;font-size:14px;color:#fff;font-weight:500">Version 1.0.0</span></div></sc-if>
+
+<div style="flex:none;display:flex;align-items:center;gap:8px;padding:4px 12px">
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ back }}" style="height:52px;padding:0 8px;border:0;background:none;color:{{ c.pri }};font-weight:700;font-size:17px;display:flex;align-items:center"><span class="ms" style="font-size:30px">chevron_left</span>ย้อนกลับ</button></sc-if>
+<span style="flex:1"></span>
+
+
+</div>
+<sc-if value="{{ showSteps }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;padding:0 20px;display:flex;flex-direction:column;gap:6px"><span style="font-size:15px;color:{{ c.sub }};font-weight:600">ขั้นตอน {{ step }} จาก 5</span><div style="display:flex;gap:6px"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="5"><span style="flex:1;height:8px;border-radius:4px;background:{{ b.bg }}"></span></sc-for></div></div>
+</sc-if>
+<div style="flex:1;overflow:auto;display:flex;flex-direction:column"><div style="zoom:{{ zoom }};flex:1;display:flex;flex-direction:column;padding:14px 20px 20px;gap:14px">
+
+<sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700;line-height:1.3">{{ form.title }}</div>
+<sc-if value="{{ form.sub }}" hint-placeholder-val="{{ false }}"><div style="font-size: 14px; color: {{ c.sub }}; margin-top: -6px">{{ form.sub }}</div></sc-if>
+<sc-for list="{{ form.fields }}" as="f" hint-placeholder-count="3">
+<sc-if value="{{ f.head }}" hint-placeholder-val="{{ false }}"><div style="font-size:18px;font-weight:700;color:{{ c.pri }};margin-top:6px">{{ f.k }}</div></sc-if>
+<sc-if value="{{ f.input }}" hint-placeholder-val="{{ true }}"><label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;font-weight:600">{{ f.k }} <span style="color:#b3261e">{{ f.req }}</span></span><input size="1" value="{{ f.v }}" sc-camel-on-change="{{ f.on }}" placeholder="{{ f.ph }}" style="height:60px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};padding:0 14px;font:inherit;font-size:19px;font-weight:600;width:100%;box-sizing:border-box"></label></sc-if>
+<sc-if value="{{ f.isTri }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;font-weight:600">{{ f.k }} <span style="color:#b3261e">{{ f.req }}</span></span><div style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.5fr) minmax(0,1.1fr);gap:8px"><sc-raw-select value="{{ f.dv }}" sc-camel-on-change="{{ f.dOn }}" style="height:60px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:17px;font-weight:600;padding:0 6px;width:100%;min-width:0"><sc-for list="{{ f.dOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select><sc-raw-select value="{{ f.mv }}" sc-camel-on-change="{{ f.mOn }}" style="height:60px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:17px;font-weight:600;padding:0 6px;width:100%;min-width:0"><sc-for list="{{ f.mOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select><sc-raw-select value="{{ f.yv }}" sc-camel-on-change="{{ f.yOn }}" style="height:60px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:17px;font-weight:600;padding:0 6px;width:100%;min-width:0"><sc-for list="{{ f.yOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select></div></div></sc-if><sc-if value="{{ f.isSel }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;font-weight:600">{{ f.k }} <span style="color:#b3261e">{{ f.req }}</span></span><sc-raw-select value="{{ f.v }}" sc-camel-on-change="{{ f.on }}" style="height:60px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:18px;font-weight:600;padding:0 10px;width:100%"><sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select></label></sc-if><sc-if value="{{ f.isPair }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px"><label style="display:flex;flex-direction:column;gap:6px;min-width:0"><span style="font-size:16px;font-weight:600">{{ f.a.k }} <span style="color:#b3261e">{{ f.a.req }}</span></span><sc-raw-select value="{{ f.a.v }}" sc-camel-on-change="{{ f.a.on }}" style="height:56px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:16px;font-weight:600;padding:0 8px;width:100%;box-sizing:border-box"><sc-for list="{{ f.a.opts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select></label><label style="display:flex;flex-direction:column;gap:6px;min-width:0"><span style="font-size:16px;font-weight:600">{{ f.b.k }} <span style="color:#b3261e">{{ f.b.req }}</span></span><sc-if value="{{ f.b.isSelB }}" hint-placeholder-val="{{ false }}"><sc-raw-select value="{{ f.b.v }}" sc-camel-on-change="{{ f.b.on }}" style="height:56px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:16px;font-weight:600;padding:0 8px;width:100%;box-sizing:border-box"><sc-for list="{{ f.b.opts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select></sc-if><sc-if value="{{ f.b.isInB }}" hint-placeholder-val="{{ false }}"><input size="1" value="{{ f.b.v }}" sc-camel-on-change="{{ f.b.on }}" sc-camel-input-mode="numeric" placeholder="{{ f.b.ph }}" style="height:56px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:16px;font-weight:600;padding:0 8px;width:100%;box-sizing:border-box"></sc-if></label></div></sc-if><sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;font-weight:600">{{ f.k }} <span style="color:#b3261e">{{ f.req }}</span></span><textarea value="{{ f.v }}" sc-camel-on-change="{{ f.on }}" placeholder="{{ f.ph }}" style="min-height:96px;border:2px solid {{ c.line }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};padding:12px 14px;font:inherit;font-size:18px;line-height:1.5;resize:none"></textarea></label></sc-if><sc-if value="{{ f.isBtn }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ f.on }}" style="min-height:58px;border:2px dashed {{ c.pri }};border-radius:14px;background:transparent;color:{{ c.pri }};font-size:17px;font-weight:700">{{ f.k }}</button></sc-if></sc-for>
+</sc-if>
+
+<sc-if value="{{ isOtp }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700;line-height:1.3">ระบุรหัส OTP</div>
+<div style="font-size:16px;line-height:1.6;color:{{ c.sub }}">ส่งรหัสไปที่แอปหมอพร้อม หรือ LINE หมอพร้อมแล้ว</div>
+<input size="1" value="{{ otp }}" sc-camel-on-change="{{ setOtp }}" sc-camel-input-mode="numeric" sc-camel-max-length="6" placeholder="------" style="height:76px;border:3px solid {{ c.pri }};border-radius:16px;background:{{ c.card }};color:{{ c.ink }};text-align:center;font:600 32px 'IBM Plex Mono',monospace;letter-spacing:.3em;width:100%;box-sizing:border-box">
+<div style="font-size:17px;font-weight:600;text-align:center;color:{{ secsColor }}">{{ secsText }}</div>
+<button sc-camel-on-click="{{ resend }}" style="height:60px;border:2px solid {{ c.pri }};border-radius:16px;background:{{ c.card }};color:{{ c.pri }};font-size:18px;font-weight:700;opacity:{{ resendOp }}">ส่งรหัสอีกครั้ง</button>
+</sc-if>
+
+<sc-if value="{{ isPick }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700;line-height:1.3">{{ pick.title }}</div>
+<sc-if value="{{ pick.sub }}" hint-placeholder-val="{{ false }}"><div style="font-size:16px;color:{{ c.sub }};margin-top:-6px">{{ pick.sub }}</div></sc-if>
+<sc-for list="{{ pick.opts }}" as="o" hint-placeholder-count="2"><button sc-camel-on-click="{{ o.on }}" style="min-height:100px;border:{{ o.bw }}px solid {{ o.bc }};border-radius:18px;background:{{ o.bg }};color:{{ o.fg }};display:flex;align-items:center;gap:14px;padding:12px 16px;text-align:left"><span class="ms" style="font-size:46px;color:{{ o.ic }}">{{ o.icon }}</span><span style="display:flex;flex-direction:column;flex:1"><span style="font-size:20px;font-weight:700">{{ o.label }}</span><span style="font-size:15px;color:{{ o.dc }}">{{ o.desc }}</span></span></button></sc-for>
+</sc-if>
+
+<sc-if value="{{ isSym }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700;line-height:1.3">ข้อมูลร่างกายและอาการ</div>
+<div style="background:{{ c.soft }};border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px">
+<div style="font-size:18px;font-weight:700">ข้อมูลร่างกาย <span style="color:#b3261e">*</span></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px"><sc-for list="{{ body }}" as="f" hint-placeholder-count="2"><label style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:15px;font-weight:600">{{ f.k }} <span style="color:#b3261e">*</span></span><input size="1" value="{{ f.v }}" sc-camel-on-change="{{ f.on }}" sc-camel-input-mode="decimal" placeholder="{{ f.ph }}" style="height:60px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};padding:0 12px;font:inherit;font-size:22px;font-weight:700;width:100%;box-sizing:border-box"></label></sc-for></div>
+<div style="display:flex;justify-content:space-between;align-items:center;border-radius:12px;background:{{ c.card }};padding:10px 12px;font-size:16px"><span>BMI (คำนวณให้)</span><b style="font-size:20px">{{ bmiText }}</b></div>
+</div>
+<button sc-camel-on-click="{{ toggleVit }}" style="min-height:72px;border:2px solid {{ c.line }};border-radius:18px;background:{{ c.soft }};color:{{ c.ink }};display:flex;align-items:center;gap:12px;padding:8px 12px;text-align:left;flex:none"><span style="width:48px;height:48px;border-radius:50%;background:{{ c.card }};display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:30px;color:{{ c.pri }}">monitor_heart</span></span><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:700">สัญญาณชีพ</span><span style="font-size:14px;color:{{ c.sub }};line-height:1.35">{{ vitHint }}</span></span><span style="width:40px;height:40px;border-radius:50%;background:{{ c.card }};border:2px solid {{ c.line }};display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:28px;color:{{ c.pri }}">{{ vitIcon }}</span></span></button>
+<sc-if value="{{ showVit }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px"><sc-for list="{{ vitals }}" as="f" hint-placeholder-count="6"><label style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:14px;font-weight:600">{{ f.k }}</span><div style="display:flex;align-items:center;height:56px;border:2px solid {{ c.line }};border-radius:14px;background:{{ c.card }};padding:0 10px;gap:6px"><input size="1" value="{{ f.v }}" sc-camel-on-change="{{ f.on }}" sc-camel-input-mode="decimal" style="flex:1;min-width:0;border:0;outline:0;background:transparent;color:{{ c.ink }};font:inherit;font-size:20px;font-weight:700"><span style="font-size:14px;color:{{ c.sub }}">{{ f.u }}</span></div></label></sc-for></div></sc-if>
+<div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:18px;font-weight:700">ระบุอาการ</div></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><sc-for list="{{ chips }}" as="o" hint-placeholder-count="6"><button sc-camel-on-click="{{ o.on }}" style="position:relative;min-height:64px;border:{{ o.bw }}px solid {{ o.bc }};border-radius:16px;background:{{ o.bg }};color:{{ o.fg }};display:flex;align-items:center;justify-content:center;padding:8px 36px;font-size:19px;font-weight:700;line-height:1.2">{{ o.label }}<sc-if value="{{ o.on2 }}" hint-placeholder-val="{{ false }}"><span class="ms" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:24px">check_circle</span></sc-if></button></sc-for></div>
+<div style="font-size:18px;font-weight:700">รายละเอียดอาการ</div>
+<textarea value="{{ symptom }}" sc-camel-on-change="{{ setSymptom }}" placeholder="เช่น เป็นมา 3 วัน ไอตอนกลางคืน" style="min-height:100px;border:2px solid {{ c.line }};border-radius:16px;background:{{ c.card }};color:{{ c.ink }};padding:12px 14px;font:inherit;font-size:18px;line-height:1.5;resize:none"></textarea>
+<div style="font-size:18px;font-weight:700">ระบุแผนก / คลินิก <span style="color:#b3261e">*</span></div>
+<sc-raw-select value="{{ clinic }}" sc-camel-on-change="{{ setClinic }}" style="height:60px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:18px;font-weight:600;padding:0 10px;width:100%"><option value="na">ไม่ระบุคลินิก</option><option value="med">อายุรกรรม</option><option value="ortho">กระดูกและข้อ</option><option value="eye">จักษุ (ตา)</option></sc-raw-select>
+<div style="font-size:14px;color:{{ c.pri }};margin-top:-6px">หมายเหตุ: ถ้าเคยตรวจกับคลินิกไหนมาก่อน เลือกคลินิกนั้นได้ ไม่แน่ใจ เลือก “ไม่ระบุคลินิก”</div>
+<div style="font-size:18px;font-weight:700">ต้องการออกใบรับรองแพทย์ไหม <span style="color:#b3261e">*</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><sc-for list="{{ certOpts }}" as="o" hint-placeholder-count="2"><button sc-camel-on-click="{{ o.on }}" style="height:60px;border:{{ o.bw }}px solid {{ o.bc }};border-radius:16px;background:{{ o.bg }};color:{{ o.fg }};font-size:18px;font-weight:700">{{ o.label }}</button></sc-for></div>
+</sc-if>
+
+<sc-if value="{{ isTime }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700">เลือกวันและเวลา</div>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">โรงพยาบาล <span style="color:#b3261e">*</span></span><sc-raw-select value="{{ hospital }}" sc-camel-on-change="{{ setHospital }}" style="height:60px;border:2px solid {{ c.line }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:17px;font-weight:600;padding:0 10px;width:100%"><option value="a">โรงพยาบาลทดสอบ Telemedicine</option><option value="b">รพ.ศรีสุข</option></sc-raw-select></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:17px;font-weight:700">แพทย์ <span style="color:#b3261e">*</span></span><sc-raw-select value="{{ doctor }}" sc-camel-on-change="{{ setDoctor }}" style="height:60px;border:2px solid {{ c.line }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};font:inherit;font-size:17px;font-weight:600;padding:0 10px;width:100%" data-comment-anchor="3a47aa78fe-select"><option value="na">ไม่ระบุแพทย์</option><option value="w">พญ.วรรณา ใจดี</option><option value="t">นพ.ธีระ วงศ์ดี</option><option value="s">พญ.สุภาวดี รักษาดี</option></sc-raw-select></label>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:15px;font-weight:700;color:{{ c.pri }}">แพทย์ที่แนะนำ</span><sc-for list="{{ recs }}" as="r" hint-placeholder-count="3"><button sc-camel-on-click="{{ r.on }}" style="display:flex;align-items:center;gap:8px;text-align:left;border:2px solid {{ r.bc }};border-radius:14px;background:{{ r.bg }};padding:8px 12px;min-height:48px;color:{{ c.ink }};font:inherit;font-size:16px;cursor:pointer"><b style="flex:1">{{ r.n }}</b><span class="ms" style="font-size:26px;color:{{ c.pri }}">{{ r.ic }}</span></button></sc-for></div>
+
+<div style="background:{{ c.soft }};border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;display:flex;gap:10px"><span class="ms" style="font-size:26px;color:{{ c.warn }}">info</span><span>ถ้าไม่มีแพทย์ลงเวร ให้เลือก “ไม่ระบุแพทย์” พยาบาลจะเลือกแพทย์ให้</span></div>
+<div style="font-size:19px;font-weight:700">1. เลือกวันที่</div>
+<div style="border:3px solid {{ c.pri }};border-radius:18px;background:{{ c.selBg }};padding:14px;display:flex;align-items:center;gap:12px"><span class="ms" style="font-size:40px;color:{{ c.pri }}">calendar_month</span><span style="display:flex;flex-direction:column;flex:1"><span style="font-size:20px;font-weight:700">{{ dateLabel }}</span><span style="font-size:14px;color:{{ c.sub }}">{{ dateNote }}</span></span></div>
+<button sc-camel-on-click="{{ toggleCal }}" style="height:56px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.pri }};font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px"><span class="ms" style="font-size:28px">{{ calIcon }}</span>{{ calLabel }}</button>
+<sc-if value="{{ showCal }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid {{ c.line }};border-radius:18px;background:{{ c.card }};padding:12px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><button sc-camel-on-click="{{ prevMonth }}" style="width:52px;height:52px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.pri }};display:flex;align-items:center;justify-content:center;opacity:{{ prevOp }}"><span class="ms" style="font-size:30px">chevron_left</span></button><span style="font-size:18px;font-weight:700">{{ monthLabel }}</span><button sc-camel-on-click="{{ nextMonth }}" style="width:52px;height:52px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.pri }};display:flex;align-items:center;justify-content:center;opacity:{{ nextOp }}"><span class="ms" style="font-size:30px">chevron_right</span></button></div><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px"><sc-for list="{{ weekHead }}" as="w" hint-placeholder-count="7"><span style="text-align:center;font-size:13px;font-weight:600;color:{{ c.sub }}">{{ w.l }}</span></sc-for><sc-for list="{{ calCells }}" as="d" hint-placeholder-count="35"><button sc-camel-on-click="{{ d.on }}" style="aspect-ratio:1;min-height:44px;border:0;border-radius:12px;background:{{ d.bg }};color:{{ d.fg }};font-size:17px;font-weight:700;padding:0">{{ d.label }}</button></sc-for></div><div style="font-size:13px;color:{{ c.sub }};margin-top:8px;text-align:center">วันที่ผ่านมาแล้วเลือกไม่ได้</div></div></sc-if>
+<div style="font-size:19px;font-weight:700">2. เลือกช่วงเวลา</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><sc-for list="{{ periodOpts }}" as="p" hint-placeholder-count="2"><button sc-camel-on-click="{{ p.on }}" style="height:60px;border:{{ p.bw }}px solid {{ p.bc }};border-radius:14px;background:{{ p.bg }};color:{{ p.fg }};font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px"><span class="ms" style="font-size:28px;color:{{ p.ic }}">{{ p.icon }}</span>{{ p.label }}</button></sc-for></div>
+<div style="font-size:19px;font-weight:700">3. เลือกเวลา</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px"><sc-for list="{{ times }}" as="t" hint-placeholder-count="6"><button sc-camel-on-click="{{ t.on }}" style="height:62px;border:{{ t.bw }}px solid {{ t.bc }};border-radius:14px;background:{{ t.bg }};color:{{ t.fg }};font-size:19px;font-weight:700">{{ t.label }}</button></sc-for></div>
+</sc-if>
+
+<sc-if value="{{ isSum }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:10px"><span class="ms" style="font-size:36px;color:{{ c.pri }}">task_alt</span><span style="font-size:24px;font-weight:700">สรุปการนัดหมาย</span></div>
+<div style="display:flex;flex-direction:column;gap:10px;padding-bottom:14px;border-bottom:2px solid {{ c.line }}"><sc-for list="{{ top3 }}" as="r" hint-placeholder-count="3"><div style="display:flex;gap:14px;align-items:center"><span style="width:56px;height:56px;border-radius:14px;background:{{ c.soft }};display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:32px;color:{{ c.pri }}">{{ r.icon }}</span></span><span style="display:flex;flex-direction:column"><span style="font-size:14px;color:{{ c.sub }}">{{ r.k }}</span><span style="font-size:20px;font-weight:700;color:{{ r.color }}">{{ r.v }}</span></span></div></sc-for></div>
+<div style="background:{{ c.soft }};border-radius:20px;padding:6px 16px;display:flex;flex-direction:column"><sc-for list="{{ summary }}" as="r" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;gap:2px;padding:12px 0;border-bottom:1px solid {{ c.line }}"><span style="font-size:14px;color:{{ c.sub }}">{{ r.k }}</span><span style="font-size:18px;font-weight:600;color:{{ r.color }}">{{ r.v }}</span></div></sc-for><button sc-camel-on-click="{{ editAll }}" style="height:56px;margin:10px 0 8px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.pri }};font-size:17px;font-weight:700">แก้ไขข้อมูล</button></div>
+</sc-if>
+
+<sc-if value="{{ isAppt }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700;line-height:1.3">การนัดหมาย</div>
+<button sc-camel-on-click="{{ addAppt }}" style="min-height:64px;border:0;border-radius:16px;background:{{ c.pri }};color:{{ c.onPri }};font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px"><span class="ms" style="font-size:32px">add_circle</span>เพิ่มนัดหมาย</button>
+<div style="display:flex;flex-direction:column;gap:8px"><button sc-camel-on-click="{{ toggleR }}" style="min-height:58px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};display:flex;align-items:center;gap:10px;padding:0 12px;font-size:17px;font-weight:600"><span class="ms" style="font-size:30px;color:{{ c.pri }}">calendar_month</span><span style="flex:1;text-align:left">{{ rText }}</span><span class="ms" style="font-size:28px">{{ rIcon }}</span></button><sc-if value="{{ rcal }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid {{ c.line }};border-radius:18px;background:{{ c.card }};padding:12px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><button sc-camel-on-click="{{ prevRM }}" style="width:48px;height:48px;border:2px solid {{ c.pri }};border-radius:12px;background:{{ c.card }};color:{{ c.pri }};display:flex;align-items:center;justify-content:center;opacity:{{ prevRMOp }}"><span class="ms" style="font-size:28px">chevron_left</span></button><span style="font-size:17px;font-weight:700">{{ rMonth }}</span><button sc-camel-on-click="{{ nextRM }}" style="width:48px;height:48px;border:2px solid {{ c.pri }};border-radius:12px;background:{{ c.card }};color:{{ c.pri }};display:flex;align-items:center;justify-content:center;opacity:{{ nextRMOp }}"><span class="ms" style="font-size:28px">chevron_right</span></button></div><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px"><sc-for list="{{ weekHead }}" as="w" hint-placeholder-count="7"><span style="text-align:center;font-size:13px;font-weight:600;color:{{ c.sub }}">{{ w.l }}</span></sc-for><sc-for list="{{ rCells }}" as="d" hint-placeholder-count="35"><button sc-camel-on-click="{{ d.on }}" style="aspect-ratio:1;min-height:42px;border:0;border-radius:10px;background:{{ d.bg }};color:{{ d.fg }};font-size:16px;font-weight:700;padding:0">{{ d.label }}</button></sc-for></div><div style="font-size:13px;color:{{ c.sub }};margin:8px 0;text-align:center">{{ rHint }}</div><button sc-camel-on-click="{{ clearR }}" style="width:100%;height:52px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.pri }};font-size:16px;font-weight:700">ล้างตัวกรอง (ทุกวัน)</button></div></sc-if></div>
+<sc-for list="{{ apptCards }}" as="k" hint-placeholder-count="2"><div style="position:relative;border-radius:18px;background:{{ c.card }};border:2px solid {{ c.line }};box-shadow:0 4px 14px rgba(40,60,100,.14);padding:14px 14px 14px 22px;overflow:hidden;display:flex;flex-direction:column;gap:12px"><span style="position:absolute;left:0;top:0;bottom:0;width:8px;background:{{ k.bar }}"></span>
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="width:60px;height:60px;border-radius:50%;background:#c9d2de;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:40px;color:#fff">person</span></span>
+<span style="display:flex;flex-direction:column;gap:4px;min-width:0;flex:1"><span style="display:flex;justify-content:flex-end"><span style="font-size:14px;font-weight:700;padding:3px 12px;border-radius:99px;background:{{ k.sbg }};color:{{ k.sfg }}">{{ k.status }}</span></span>
+<span style="font-size:17px;font-weight:700;line-height:1.35">{{ k.name }}</span><span style="font-size:14px;color:{{ c.sub }}">แผนก / คลินิก: <b style="color:{{ c.ink }}">{{ k.clinic }}</b></span>
+<span style="display:flex;align-items:center;gap:6px;font-size:14px"><span class="ms" style="font-size:22px">calendar_month</span>วันที่ : {{ k.dt }}</span>
+<span style="display:flex;align-items:center;gap:6px;font-size:14px"><span class="ms" style="font-size:22px">schedule</span>เวลา {{ k.rng }} น.</span>
+<span style="display:flex;align-items:center;gap:6px;font-size:14px"><span class="ms" style="font-size:22px">{{ k.kindIcon }}</span>ประเภท : {{ k.kind }}</span></span></div>
+<sc-if value="{{ k.btn }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ k.on }}" style="height:58px;border:0;border-radius:99px;background:{{ k.btnBg }};color:{{ k.btnFg }};font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px"><span class="ms" style="font-size:28px">{{ k.btnIcon }}</span>{{ k.btnLabel }}</button></sc-if>
+</div></sc-for>
+<sc-if value="{{ apptEmpty }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding-top:30px"><span class="ms" style="font-size:72px;color:{{ c.sub }}">event_busy</span><div style="font-size:20px;font-weight:700">ยังไม่มีนัดที่ยืนยัน</div><div style="font-size:16px;line-height:1.6;color:{{ c.sub }}">{{ apptNote }}</div></div></sc-if>
+</sc-if>
+
+<sc-if value="{{ isPD }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700;line-height:1.3">รายละเอียดการชำระเงิน</div>
+<div style="border-radius:18px;background:{{ c.card }};border:2px solid {{ c.line }};overflow:hidden"><div style="padding:12px 16px;background:#e8f5ec;color:#17402a;font-size:16px;font-weight:700">รายละเอียดการนัดหมาย</div><div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px"><sc-for list="{{ pd.appt }}" as="r" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:12px;font-size:15px;line-height:1.4"><span style="font-weight:{{ r.w }};color:{{ c.ink }}">{{ r.k }}</span><span style="font-weight:600;text-align:right">{{ r.v }}</span></div></sc-for></div></div>
+<div style="border-radius:18px;background:{{ c.card }};border:2px solid {{ c.line }};overflow:hidden"><div style="padding:12px 16px;font-size:16px;font-weight:700;border-bottom:1px solid {{ c.line }}">รายละเอียดราคา</div><div style="padding:14px 16px;display:flex;flex-direction:column;gap:12px"><div style="font-size:16px;font-weight:700">ชำระเบิกได้</div><sc-for list="{{ pd.can }}" as="r" hint-placeholder-count="2"><div style="display:flex;justify-content:space-between;gap:12px;font-size:15px;line-height:1.4"><span style="color:{{ c.sub }}">{{ r.k }}</span><span style="font-weight:600;white-space:nowrap">{{ r.v }}</span></div></sc-for><div style="height:1px;background:{{ c.line }}"></div><div style="font-size:16px;font-weight:700">ชำระเบิกไม่ได้</div><sc-for list="{{ pd.cant }}" as="r" hint-placeholder-count="2"><div style="display:flex;justify-content:space-between;gap:12px;font-size:15px;line-height:1.4"><span style="color:{{ c.sub }}">{{ r.k }}</span><span style="font-weight:600;white-space:nowrap">{{ r.v }}</span></div></sc-for><div style="height:1px;background:{{ c.line }}"></div><div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700"><span>ส่วนลด</span><span>-</span></div><div style="height:1px;background:{{ c.line }}"></div><div style="display:flex;justify-content:space-between;font-size:15px;color:{{ c.sub }}"><span>ค่าธรรมเนียมการดำเนินการ</span><b style="color:#1f9d4a">ฟรี</b></div><div style="display:flex;justify-content:space-between;align-items:baseline;font-size:18px;font-weight:700"><span>ยอดรวมทั้งหมด</span><span style="font-size:26px;color:#e5252a">{{ pd.total }}</span></div></div></div>
+</sc-if>
+
+<sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700;line-height:1.3">{{ list.title }}</div>
+<sc-if value="{{ showMF }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><button sc-camel-on-click="{{ toggleR }}" style="min-height:58px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.ink }};display:flex;align-items:center;gap:10px;padding:0 12px;font-size:17px;font-weight:600"><span class="ms" style="font-size:30px;color:{{ c.pri }}">calendar_month</span><span style="flex:1;text-align:left">{{ rText }}</span><span class="ms" style="font-size:28px">{{ rIcon }}</span></button><sc-if value="{{ rcal }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid {{ c.line }};border-radius:18px;background:{{ c.card }};padding:12px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><button sc-camel-on-click="{{ prevRM }}" style="width:48px;height:48px;border:2px solid {{ c.pri }};border-radius:12px;background:{{ c.card }};color:{{ c.pri }};display:flex;align-items:center;justify-content:center;opacity:{{ prevRMOp }}"><span class="ms" style="font-size:28px">chevron_left</span></button><span style="font-size:17px;font-weight:700">{{ rMonth }}</span><button sc-camel-on-click="{{ nextRM }}" style="width:48px;height:48px;border:2px solid {{ c.pri }};border-radius:12px;background:{{ c.card }};color:{{ c.pri }};display:flex;align-items:center;justify-content:center;opacity:{{ nextRMOp }}"><span class="ms" style="font-size:28px">chevron_right</span></button></div><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px"><sc-for list="{{ weekHead }}" as="w" hint-placeholder-count="7"><span style="text-align:center;font-size:13px;font-weight:600;color:{{ c.sub }}">{{ w.l }}</span></sc-for><sc-for list="{{ rCells }}" as="d" hint-placeholder-count="35"><button sc-camel-on-click="{{ d.on }}" style="aspect-ratio:1;min-height:42px;border:0;border-radius:10px;background:{{ d.bg }};color:{{ d.fg }};font-size:16px;font-weight:700;padding:0">{{ d.label }}</button></sc-for></div><div style="font-size:13px;color:{{ c.sub }};margin:8px 0;text-align:center">{{ rHint }}</div><button sc-camel-on-click="{{ clearR }}" style="width:100%;height:52px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ c.card }};color:{{ c.pri }};font-size:16px;font-weight:700">ล้างตัวกรอง (ทุกวัน)</button></div></sc-if></div></sc-if>
+<sc-if value="{{ list.sub }}" hint-placeholder-val="{{ false }}"><div style="font-size:16px;color:{{ c.sub }};margin-top:-6px">{{ list.sub }}</div></sc-if>
+<sc-if value="{{ list.avatar }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:14px"><span style="width:84px;height:84px;border-radius:50%;background:{{ c.soft }};display:flex;align-items:center;justify-content:center;position:relative;flex:none"><span class="ms" style="font-size:50px;color:{{ c.pri }}">person</span><span style="position:absolute;right:-2px;bottom:-2px;width:36px;height:36px;border-radius:50%;background:{{ c.pri }};color:{{ c.onPri }};display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:22px">photo_camera</span></span></span><span style="font-size:20px;font-weight:700">{{ list.avatar }}</span></div></sc-if>
+<sc-for list="{{ list.pays }}" as="p" hint-placeholder-count="1"><div style="position:relative;border-radius:18px;background:{{ c.card }};border:2px solid {{ c.line }};box-shadow:0 4px 14px rgba(40,60,100,.14);overflow:hidden"><span style="position:absolute;left:0;top:0;bottom:0;width:8px;background:{{ p.bar }}"></span><div style="padding:10px 14px 10px 22px;background:{{ c.soft }};display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-size:13px;color:{{ c.sub }}">รหัสนัดหมาย: <b style="color:{{ c.ink }}">{{ p.code }}</b></span><span style="font-size:14px;font-weight:700;padding:3px 12px;border-radius:99px;background:{{ p.sbg }};color:{{ p.sfg }};border:1px solid {{ p.sbd }};white-space:nowrap">{{ p.st }}</span></div><div style="padding:12px 14px 14px 22px;display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:12px;align-items:center"><span style="width:52px;height:52px;border-radius:50%;background:{{ p.ibg }};display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:30px;color:{{ p.ic }}">payments</span></span><span style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:16px;font-weight:700;line-height:1.35">{{ p.name }}</span><span style="font-size:14px;color:{{ c.sub }}">แผนก / คลินิก: <b style="color:{{ c.ink }}">{{ p.clinic }}</b></span><span style="font-size:14px;display:flex;align-items:center;gap:6px"><span class="ms" style="font-size:21px">calendar_month</span>วันที่นัดหมาย: <b>{{ p.dt }}</b></span><span style="font-size:14px;display:flex;align-items:center;gap:6px"><span class="ms" style="font-size:21px">schedule</span>เวลา: <b>{{ p.tm }} น.</b></span></span></div><div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid {{ c.line }};padding-top:10px"><span style="font-size:14px;color:{{ c.sub }}">{{ p.dueLabel }}: <b style="color:{{ p.ic }}">{{ p.dueVal }}</b></span><span style="display:flex;align-items:baseline;gap:8px"><span style="font-size:14px;font-weight:700">ยอดรวม</span><span style="font-size:26px;font-weight:700;color:{{ c.pri }}">฿ {{ p.amt }}</span></span></div><sc-if value="{{ p.btn }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ p.on }}" style="height:58px;border:0;border-radius:99px;background:#f2561d;color:#fff;font-size:19px;font-weight:700">ชำระเงินทันที</button></sc-if></div></div></sc-for>
+<sc-for list="{{ list.groups }}" as="g" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:18px;font-weight:700;color:{{ c.pri }}">{{ g.title }}</div><div style="background:{{ c.soft }};border-radius:20px;padding:4px 16px;display:flex;flex-direction:column"><sc-for list="{{ g.info }}" as="r" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;padding:12px 0;border-bottom:1px solid {{ c.line }}"><span style="font-size:14px;color:{{ c.sub }}">{{ r.k }}</span><span style="font-size:{{ r.fs }}px;font-weight:600">{{ r.v }}</span></div></sc-for></div><sc-if value="{{ g.btn }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ g.btn.on }}" style="min-height:58px;border:2px dashed {{ c.pri }};border-radius:16px;background:transparent;color:{{ c.pri }};font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px"><span class="ms" style="font-size:28px">{{ g.btn.icon }}</span>{{ g.btn.label }}</button></sc-if></div></sc-for>
+<sc-if value="{{ list.chips.length }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ list.chips }}" as="h" hint-placeholder-count="3"><button sc-camel-on-click="{{ h.on }}" style="min-height:48px;padding:6px 14px;border:2px solid {{ c.pri }};border-radius:99px;background:{{ h.bg }};color:{{ h.fg }};font-size:15px;font-weight:700">{{ h.label }}</button></sc-for></div></sc-if>
+<sc-if value="{{ list.info.length }}" hint-placeholder-val="{{ false }}"><div style="background:{{ c.soft }};border-radius:20px;padding:4px 16px;display:flex;flex-direction:column"><sc-for list="{{ list.info }}" as="r" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:2px;padding:12px 0;border-bottom:1px solid {{ c.line }}"><span style="font-size:14px;color:{{ c.sub }}">{{ r.k }}</span><span style="font-size:{{ r.fs }}px;font-weight:600">{{ r.v }}</span></div></sc-for></div></sc-if>
+<sc-for list="{{ list.cards }}" as="k" hint-placeholder-count="2"><div style="border:2px solid {{ k.bc }};border-radius:20px;background:{{ c.card }};padding:14px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:12px;align-items:center"><span class="ms" style="font-size:40px;color:{{ k.ic }}">{{ k.icon }}</span><span style="display:flex;flex-direction:column;flex:1;min-width:0"><span style="font-size:19px;font-weight:700;line-height:1.3">{{ k.t }}</span><span style="font-size:14px;color:{{ c.sub }};line-height:1.4">{{ k.s }}</span></span></div>
+<sc-if value="{{ k.tag }}" hint-placeholder-val="{{ false }}"><div style="align-self:flex-start;font-size:13px;font-weight:700;background:{{ k.tbg }};color:{{ k.tfg }};border-radius:99px;padding:2px 12px">{{ k.tag }}</div></sc-if>
+<sc-if value="{{ k.btns.length }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px"><sc-for list="{{ k.btns }}" as="b" hint-placeholder-count="1"><button sc-camel-on-click="{{ b.on }}" style="flex:1;min-height:54px;border:2px solid {{ c.pri }};border-radius:14px;background:{{ b.bg }};color:{{ b.fg }};font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px"><span class="ms" style="font-size:26px">{{ b.icon }}</span>{{ b.label }}</button></sc-for></div></sc-if>
+</div></sc-for>
+<sc-if value="{{ list.empty }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding-top:30px"><span class="ms" style="font-size:72px;color:{{ c.sub }}">{{ list.emptyIcon }}</span><div style="font-size:20px;font-weight:700">{{ list.empty }}</div><div style="font-size:16px;line-height:1.6;color:{{ c.sub }}">{{ list.emptyNote }}</div></div></sc-if>
+<sc-if value="{{ list.btn }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ list.btn.on }}" style="min-height:58px;border:2px dashed {{ c.pri }};border-radius:16px;background:transparent;color:{{ c.pri }};font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px"><span class="ms" style="font-size:28px">{{ list.btn.icon }}</span>{{ list.btn.label }}</button></sc-if>
+</sc-if>
+
+<sc-if value="{{ isMsg }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;padding-top:30px">
+<div style="width:128px;height:128px;border-radius:50%;background:{{ c.soft }};display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:76px;color:{{ msg.color }}">{{ msg.icon }}</span></div>
+<div style="font-size:26px;font-weight:700;line-height:1.3">{{ msg.title }}</div>
+<div style="font-size:18px;line-height:1.6;color:{{ c.sub }};white-space:pre-line">{{ msg.body }}</div>
+<sc-if value="{{ msg.demo }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ msg.demoOn }}" style="min-height:52px;padding:0 16px;border:2px dashed {{ c.sub }};border-radius:14px;background:none;color:{{ c.sub }};font-size:14px;font-weight:600">{{ msg.demo }}</button></sc-if>
+<sc-if value="{{ msg.alt }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ msg.altOn }}" style="height:60px;width:100%;border:2px solid {{ c.pri }};border-radius:16px;background:{{ c.card }};color:{{ c.pri }};font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px"><span class="ms" style="font-size:28px">call</span>{{ msg.alt }}</button></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isTele }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-height:420px;border-radius:22px;background:repeating-linear-gradient(45deg,#1c2a31 0 10px,#22323a 10px 20px);position:relative;display:flex;align-items:center;justify-content:center"><span style="font:500 12px 'IBM Plex Mono',monospace;color:#9fb1ba">วิดีโอแพทย์</span><div style="position:absolute;left:12px;top:12px;background:rgba(0,0,0,.6);color:#fff;border-radius:12px;padding:8px 12px;font-size:16px;font-weight:600">พญ.วรรณา ใจดี</div><div style="position:absolute;right:12px;bottom:12px;width:96px;height:128px;border-radius:14px;background:#36505a;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font:500 10px 'IBM Plex Mono',monospace;color:#cfdce2">กล้องคุณ</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+<button sc-camel-on-click="{{ toggleMic }}" style="height:84px;border:2px solid {{ c.line }};border-radius:18px;background:{{ c.card }};color:{{ c.ink }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:14px;font-weight:600"><span class="ms" style="font-size:34px">{{ micIcon }}</span>{{ micLabel }}</button>
+<button style="height:84px;border:2px solid {{ c.line }};border-radius:18px;background:{{ c.card }};color:{{ c.ink }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:14px;font-weight:600"><span class="ms" style="font-size:34px">videocam</span>กล้องเปิด</button>
+<button sc-camel-on-click="{{ endCall }}" style="height:84px;border:0;border-radius:18px;background:#b3261e;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:14px;font-weight:700"><span class="ms" style="font-size:34px">call_end</span>วางสาย</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isQr }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:24px;font-weight:700">สแกน QR เพื่อชำระเงิน</div>
+<div style="border-radius:20px;background:#fff;padding:18px;display:flex;flex-direction:column;align-items:center;gap:10px;color:#1c2b4a"><div style="width:220px;height:220px;border-radius:12px;background:repeating-linear-gradient(45deg,#d8dee2 0 8px,#eef1f2 8px 16px);display:flex;align-items:center;justify-content:center;font:500 12px 'IBM Plex Mono',monospace;color:#4b5a64">QR พร้อมเพย์</div><div style="font-size:30px;font-weight:700">{{ payAmt }} บาท</div></div>
+<div style="font-size:16px;color:{{ c.sub }};text-align:center;line-height:1.6">เปิดแอปธนาคาร แล้วสแกน QR นี้<br>ระบบจะแจ้งอัตโนมัติเมื่อชำระสำเร็จ</div>
+<button sc-camel-on-click="{{ payOk }}" style="min-height:52px;border:2px dashed {{ c.sub }};border-radius:14px;background:none;color:{{ c.sub }};font-size:14px;font-weight:600">จำลอง: ชำระเงินสำเร็จ</button>
+</sc-if>
+
+</div></div>
+<sc-if value="{{ cta }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;padding:12px 20px 18px;border-top:1px solid {{ c.line }}"><button sc-camel-on-click="{{ cta.on }}" style="width:100%;height:64px;border:0;border-radius:16px;background:{{ cta.bg }};color:{{ cta.fg }};font-size:20px;font-weight:700;opacity:{{ cta.op }}">{{ cta.label }}</button></div>
+</sc-if>
+<sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid {{ c.line }};background:{{ c.card }};padding:6px 2px 14px"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="5"><button sc-camel-on-click="{{ n.on }}" style="min-height:64px;border:0;background:none;color:{{ n.fg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13px;font-weight:{{ n.w }};line-height:1.2;padding:0 2px;position:relative"><span class="ms" style="font-size:30px">{{ n.icon }}</span>{{ n.label }}<sc-if value="{{ n.dot }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:4px;right:18px;width:12px;height:12px;border-radius:50%;background:#b3261e"></span></sc-if></button></sc-for></div>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="">
+class Component extends DCLogic {
+  init = { s:'login', hist:[], zoom:0, hc:false, cid:'', pin:'', otp:'', secs:59, first:true,
+    reg:{ fname:'', lname:'', cid:'', birth:'', phone:'', addr:'', zip:'', prov:'', dist:'', sub:'', ename:'', ephone:'' }, addrOpen:false,
+    vitOpen:false, payCur:null, rFrom:null, rTo:null, rpend:false, rcal:false, rm:2, svc:'new', clinic:'na', cert:false, weight:'', height:'', vit:{}, chips:['เจ็บคอ'], symptom:'', hospital:'a', doctor:'na',
+    date:26, month:0, cal:false, period:'am', time:null, booked:false, confirmed:false, visited:false, paid:false, mic:true, docFilter:'all', profTab:'info',
+    conds:['ความดันโลหิตสูง'], allergies:['Penicillin'] };
+  ADDR = {
+    'กรุงเทพมหานคร':{ 'ดุสิต':['ดุสิต','วชิรพยาบาล','สวนจิตรลดา'], 'บางรัก':['มหาพฤฒาราม','สีลม','สุริยวงศ์','บางรัก','สี่พระยา'], 'จตุจักร':['ลาดยาว','จันทรเกษม','จตุจักร','จอมพล','เสนานิคม'] },
+    'เชียงใหม่':{ 'เมืองเชียงใหม่':['ศรีภูมิ','พระสิงห์','หายยา','ช้างม่อย','ช้างคลาน'], 'สันทราย':['สันทรายหลวง','สันทรายน้อย','สันพระเนตร','สันนาเม็ง'], 'หางดง':['หางดง','หนองแก๋ว','หารแก้ว','หนองตอง'] },
+    'ขอนแก่น':{ 'เมืองขอนแก่น':['ในเมือง','สำราญ','โคกสี','ท่าพระ','บ้านทุ่ม'], 'ชุมแพ':['ชุมแพ','โนนหัน','นาหนองทุ่ม','ไชยสอ'], 'น้ำพอง':['น้ำพอง','วังชัย','หนองกุง','บัวใหญ่'] },
+    'นครราชสีมา':{ 'เมืองนครราชสีมา':['ในเมือง','โพธิ์กลาง','หนองจะบก','หัวทะเล'], 'ปากช่อง':['ปากช่อง','กลางดง','จันทึก','วังกะทะ'], 'สีคิ้ว':['สีคิ้ว','บ้านหัน','กุดน้อย','ลาดบัวขาว'] },
+    'ชลบุรี':{ 'เมืองชลบุรี':['บางปลาสร้อย','มะขามหย่ง','บ้านโขด','แสนสุข','บ้านสวน'], 'ศรีราชา':['ศรีราชา','สุรศักดิ์','ทุ่งสุขลา','บึง'], 'บางละมุง':['บางละมุง','หนองปรือ','หนองปลาไหล','โป่ง','เขาไม้แก้ว'] },
+    'ภูเก็ต':{ 'เมืองภูเก็ต':['ตลาดใหญ่','ตลาดเหนือ','ราไวย์','วิชิต','ฉลอง'], 'กะทู้':['กะทู้','ป่าตอง','กมลา'], 'ถลาง':['เทพกระษัตรี','ศรีสุนทร','เชิงทะเล','ป่าคลอก','ไม้ขาว','สาคู'] },
+    'สงขลา':{ 'เมืองสงขลา':['บ่อยาง','เขารูปช้าง','เกาะแต้ว','พะวง','ทุ่งหวัง'], 'หาดใหญ่':['หาดใหญ่','ควนลัง','คูเต่า','คอหงส์','คลองแห'], 'สะเดา':['สะเดา','ปริก','พังลา','สำนักแต้ว','ทุ่งหมอ'] } };
+  state = { ...this.init };
+  componentDidMount() {
+    this.iv = setInterval(() => {
+      try { const b = JSON.parse(localStorage.getItem('da-booking')||'null'); if (b && b.confirmed && this.state.booked && !this.state.confirmed) this.setState({ confirmed:true }); } catch (e) {}
+      if (this.state.s==='otp' && this.state.secs>0) this.setState(s => ({ secs:s.secs-1 }));
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  go = (s) => this.setState(st => ({ s, hist:[...st.hist, st.s] }));
+  tab = (s) => this.setState({ s, hist:[] });
+  back = () => this.setState(st => st.hist.length ? { s:st.hist[st.hist.length-1], hist:st.hist.slice(0,-1) } : {});
+  renderVals() {
+    const st = this.state, hc = st.hc;
+    const c = hc ? { bg:'#000', ink:'#fff', sub:'#e8e8e8', pri:'#ffd60a', onPri:'#000', soft:'#1f1f1f', line:'#fff', card:'#000', ok:'#ffd60a', warn:'#ffd60a', sel:'#ffd60a', selBg:'#2a2400' }
+                 : { bg:'#fbfcfb', ink:'#1c2b4a', sub:'#4b5a64', pri:'#2f5fd0', onPri:'#fff', soft:'#e1ecfb', line:'#cfdcf0', card:'#fff', ok:'#2e7d4f', warn:'#b06a12', sel:'#1c3d94', selBg:'#e1ecfb' };
+    const opt = (sel, o) => ({ ...o, bw: sel?3:2, bc: sel?c.pri:c.line, bg: sel?c.selBg:c.card, fg: sel?c.sel:c.ink, ic: sel?c.sel:c.pri, dc: sel?c.ink:c.sub });
+    const set = (k, v) => () => this.setState({ [k]: v });
+    const digits = k => e => this.setState({ [k]: e.target.value.replace(/[^0-9]/g,'') });
+    const setR = k => e => this.setState({ reg:{ ...st.reg, [k]: e.target.value } });
+    const s = st.s;
+    const w = parseFloat(st.weight), h = parseFloat(st.height) / 100;
+    const bmi = w > 0 && h > 0 ? w / (h*h) : null;
+    const bmiText = bmi ? bmi.toFixed(1) + (bmi < 18.5 ? ' · ผอม' : bmi < 23 ? ' · ปกติ' : bmi < 25 ? ' · ท้วม' : ' · อ้วน') : '—';
+    const mo = st.month || 0, MS = ['ต.ค.','พ.ย.','ธ.ค.'], ML = ['ตุลาคม','พฤศจิกายน','ธันวาคม'], DIM = [31,30,31], OFF = [0,31,61];
+    const dow = ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'][new Date(2026, 9+mo, st.date).getDay()];
+    const first = new Date(2026, 9+mo, 1).getDay();
+    const calCells = [...Array.from({ length:first }, () => ({ label:'', on:()=>{}, bg:'transparent', fg:c.ink })), ...Array.from({ length:DIM[mo] }, (_, i) => { const n = i+1, past = mo===0 && n < 26, a = st.date===n; return { label:String(n), on: past ? ()=>{} : ()=>this.setState({ date:n, time:null, cal:false }), bg: a?c.pri:'transparent', fg: a?c.onPri:(past?'#9aa6ad':c.ink) }; })];
+    const dateFull = dow+' '+st.date+' '+ML[mo]+' 2569';
+    const apptText = dow + ' ' + st.date + ' ' + MS[mo] + ' · ' + (st.time || '10:30') + ' น.';
+    const clinicLabel = { med:'อายุรกรรม', ortho:'กระดูกและข้อ', eye:'จักษุ (ตา)', na:'ไม่ระบุคลินิก (พยาบาลเลือกให้)' }[st.clinic];
+    const hospLabel = st.hospital==='a' ? 'โรงพยาบาลทดสอบ Telemedicine' : 'รพ.ศรีสุข';
+    const docLabel = st.doctor==='na' ? 'ไม่ระบุแพทย์' : ({ w:'พญ.วรรณา ใจดี', t:'นพ.ธีระ วงศ์ดี', s:'พญ.สุภาวดี รักษาดี' })[st.doctor] || 'พญ.วรรณา ใจดี';
+    const none = { btns:[], tag:'', tbg:'', tfg:'', bc:c.line, ic:c.pri };
+    const mkList = o => ({ pays:[], groups:[], sub:'', avatar:'', chips:[], info:[], cards:[], empty:'', emptyIcon:'', emptyNote:'', btn:null, ...o });
+    const row = (k, v, fs=20) => ({ k, v, fs });
+
+    // forms
+    const inp = (k, v, on, ph, req) => ({ input:true, head:false, isBtn:false, isArea:false, isSel:false, isPair:false, k, v, on, ph, req: req ? '*' : '' });
+    const tri = (k, v, set) => { const [d, m, y] = (v||'').split('/'); const Y = new Date().getFullYear()+543; const MN = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+      const o = (a, l) => [{ v:'', l }, ...a.map(([v, t]) => ({ v:String(v), l:t }))];
+      const mk = (i, arr) => e => { const p = [d||'', m||'', y||'']; p[i] = e.target.value; set(p.join('/')); };
+      return { input:false, head:false, isBtn:false, isArea:false, isSel:false, isPair:false, isTri:true, k, req:'*', dv:d||'', mv:m||'', yv:y||'', dOpts:o(Array.from({ length:31 }, (_, i) => [i+1, String(i+1)]), 'วัน'), mOpts:o(MN.map((n, i) => [i+1, n]), 'เดือน'), yOpts:o(Array.from({ length:111 }, (_, i) => [Y-i, String(Y-i)]), 'ปี พ.ศ.'), dOn:mk(0), mOn:mk(1), yOn:mk(2) }; };
+    const area = (k, v, on, ph) => ({ input:false, head:false, isBtn:false, isArea:true, isSel:false, isPair:false, k, v, on, ph, req:'*' });
+    const selF = (k, v, opts, on, ph) => ({ input:false, head:false, isBtn:false, isArea:false, isSel:true, k, v, opts:[{ v:'', l:ph }, ...opts.map(o => ({ v:o, l:o }))], on, req:'*' });
+    const ps = (k, v, opts, on, ph) => ({ k, v, opts:[{ v:'', l:ph }, ...opts.map(o => ({ v:o, l:o }))], on, req:'*', isSelB:true, isInB:false });
+    const pi = (k, v, on, ph) => ({ k, v, on, ph, req:'*', isSelB:false, isInB:true, opts:[] });
+    const pair = (a, b) => ({ input:false, head:false, isBtn:false, isArea:false, isSel:false, isPair:true, a, b });
+    const abtn = (k, on) => ({ input:false, head:false, isBtn:true, isArea:false, k, on });
+    const head = k => ({ head:true, input:false, isBtn:false, isArea:false, isSel:false, isPair:false, k });
+    const regName = ((st.reg.fname||'')+' '+(st.reg.lname||'')).trim() || 'สมศรี ใจงาม';
+    const bkk = st.reg.prov==='กรุงเทพมหานคร';
+    const addrFull = [st.reg.addr, st.reg.sub && (bkk?'แขวง':'ต.')+st.reg.sub, st.reg.dist && (bkk?'เขต':'อ.')+st.reg.dist, st.reg.prov && (bkk?'':'จ.')+st.reg.prov, st.reg.zip].filter(Boolean).join(' ');
+    const canReg = !!(st.reg.fname && st.reg.lname && st.reg.cid.length===13 && /^\d+\/\d+\/\d+$/.test(st.reg.birth||'') && st.reg.phone && st.reg.addr && st.reg.prov && st.reg.dist && st.reg.sub && st.reg.zip.length===5);
+    const cidSet = e => this.setState({ reg:{ ...st.reg, cid:e.target.value.replace(/[^0-9]/g,'').slice(0,13) } });
+    const mkReg = emerg => [head('ข้อมูลผู้ป่วย'), inp('ชื่อ', st.reg.fname, setR('fname'), 'เช่น สมศรี', true), inp('นามสกุล', st.reg.lname, setR('lname'), 'เช่น ใจงาม', true), inp('เลขบัตรประจำตัวประชาชน (13 หลัก)', st.reg.cid, cidSet, 'x-xxxx-xxxxx-xx-x', true), tri('วันเกิด', st.reg.birth, v => this.setState({ reg:{ ...st.reg, birth:v } })), inp('เบอร์โทรศัพท์', st.reg.phone, setR('phone'), '08x-xxx-xxxx', true),
+      area('ที่อยู่ (ที่สามารถติดต่อได้)', st.reg.addr, setR('addr'), 'บ้านเลขที่ หมู่ ถนน'),
+      pair(ps('จังหวัด', st.reg.prov, Object.keys(this.ADDR), e => this.setState({ reg:{ ...st.reg, prov:e.target.value, dist:'', sub:'' } }), 'เลือก'), ps('อำเภอ/เขต', st.reg.dist, st.reg.prov ? Object.keys(this.ADDR[st.reg.prov]) : [], e => this.setState({ reg:{ ...st.reg, dist:e.target.value, sub:'' } }), 'เลือก')),
+      pair(ps('ตำบล/แขวง', st.reg.sub, st.reg.prov && st.reg.dist ? this.ADDR[st.reg.prov][st.reg.dist] : [], e => this.setState({ reg:{ ...st.reg, sub:e.target.value } }), 'เลือก'), pi('รหัสไปรษณีย์', st.reg.zip, e => this.setState({ reg:{ ...st.reg, zip:e.target.value.replace(/[^0-9]/g,'').slice(0,5) } }), '5 หลัก')),
+      ...(emerg ? [head('ผู้ติดต่อฉุกเฉิน (ถ้ามี)'), inp('ชื่อผู้ติดต่อ', st.reg.ename, setR('ename'), 'เช่น ลูกสาว'), inp('เบอร์ผู้ติดต่อ', st.reg.ephone, setR('ephone'), '08x-xxx-xxxx')] : [])];
+    const regFields = mkReg(true);
+    const forms = {
+      hid: { title:'เข้าสู่ระบบด้วย Health ID', sub:'กรอกเลขบัตรประชาชนและ PIN', fields:[inp('เลขบัตรประชาชน', st.cid, digits('cid'), '13 หลัก', true), inp('PIN', st.pin, digits('pin'), '6 หลัก', true)] },
+      reg: { title:'กรอกข้อมูลผู้ป่วย', sub:'ตรวจสอบและแก้ไขข้อมูลก่อนบันทึก', fields:regFields },
+      profEdit: { title:'แก้ไขข้อมูลส่วนตัว', sub:'ช่องที่มี * ต้องกรอก', fields:mkReg(true) }
+    };
+
+    // pick screens
+    const picks = {
+      svc: { title:'ต้องการรับบริการแบบไหน', sub:'', opts:[
+        opt(st.svc==='new',{label:'ตรวจใหม่',desc:'มีอาการใหม่ อยากปรึกษาแพทย์',icon:'add_circle',on:set('svc','new')})] },
+      right: { title:'สิทธิการรักษาของคุณ', sub:'ระบบตรวจจากเลขบัตรประชาชนและเลือกสิทธิให้แล้ว กด “ถัดไป” ได้เลย', opts:[
+        opt(true,{label:'ประกันสังคม',desc:'รพ.ศรีสุข',icon:'verified',on:()=>{}})] }
+    };
+    const stepOf = { svc:1, right:2, sym:3, time:4, sum:5 };
+    const step = stepOf[s];
+
+    // symptom
+    const body = [{ k:'น้ำหนัก (กก.)', v:st.weight, ph:'58', on:digits('weight') }, { k:'ส่วนสูง (ซม.)', v:st.height, ph:'155', on:digits('height') }];
+    const vitals = [['hr','ชีพจร (HR)','ครั้ง/นาที'],['sbp','ความดันบน','mmHg'],['dbp','ความดันล่าง','mmHg'],['temp','อุณหภูมิ','°C'],['o2','ออกซิเจน','%'],['rr','การหายใจ','ครั้ง/นาที']]
+      .map(([k,l,u]) => ({ k:l, u, v: st.vit[k] || '', on: e => this.setState({ vit:{ ...this.state.vit, [k]: e.target.value.replace(/[^0-9.]/g,'') } }) }));
+    const chips = [['ปวดหัว','sentiment_stressed'],['เป็นไข้','thermostat'],['เจ็บคอ','sick'],['ปวดท้อง','gastroenterology'],['ท้องเสีย','water_drop'],['ผื่นขึ้น','dermatology']]
+      .map(([l,i]) => { const on = st.chips.includes(l); return opt(on, { label:l, icon: on ? 'check_box' : i, sicon:i, on2:on, on: () => this.setState({ chips: on ? this.state.chips.filter(x=>x!==l) : [...this.state.chips, l] }) }); });
+
+    // time
+    const dayOpts = [['จ.',26],['อ.',27],['พ.',28],['พฤ.',29],['ศ.',30]].map(([d,n]) => { const a = st.date===n; return { dow:d, n, on:()=>this.setState({ date:n }), bw:a?3:2, bc:a?c.pri:c.line, bg:a?c.pri:c.card, fg:a?c.onPri:c.ink }; });
+    const periodOpts = [['am','ช่วงเช้า','wb_twilight'],['pm','ช่วงบ่าย','light_mode']].map(([k,l,i]) => opt(st.period===k,{ label:l, icon:i, on:()=>this.setState({ period:k, time:null }) }));
+    const slots = { am:['09:00','09:10','09:20','09:30','09:40','09:50','10:00','10:10','10:20','10:30','10:40','10:50'], pm:['13:00','13:10','13:20','13:30','13:40','13:50','14:00','14:10','14:20','14:30','14:40','14:50'] }[st.period];
+    const times = slots.map(t => opt(st.time===t, { label:t, on:set('time',t) }));
+
+    // summary
+    const rightLabel = 'ประกันสังคม';
+    const top3 = [
+      { icon:'calendar_month', k:'วันที่นัดหมาย', v:dateFull, color:c.ink },
+      { icon:'schedule', k:'เวลาที่นัดหมาย', v:(st.time||'—')+' น.', color:c.ink },
+      { icon:'medical_services', k:'แพทย์ผู้ทำการรักษา', v:docLabel, color:c.pri }];
+    const vitText = [['ชีพจร',st.vit.hr,''],['ความดัน',st.vit.sbp&&st.vit.dbp?st.vit.sbp+'/'+st.vit.dbp:'',''],['อุณหภูมิ',st.vit.temp,'°C'],['ออกซิเจน',st.vit.o2,'%'],['หายใจ',st.vit.rr,'']].filter(x=>x[1]).map(x=>x[0]+' '+x[1]+x[2]).join(' · ') || 'ไม่ได้ระบุ';
+    const summary = [
+      { k:'โรงพยาบาล', v:hospLabel }, { k:'ประเภทบริการ', v: st.svc==='new'?'ตรวจใหม่':'ตามนัดเดิม', color:'#d81b78' },
+      { k:'สิทธิการรักษา', v:rightLabel }, { k:'อาการ', v:[st.chips.join(', '), st.symptom].filter(Boolean).join(' · ') || '—' },
+      { k:'แผนก / คลินิก', v:clinicLabel }, { k:'น้ำหนัก / ส่วนสูง / BMI', v:(st.weight||'—')+' กก. · '+(st.height||'—')+' ซม. · '+bmiText },
+      { k:'สัญญาณชีพ', v:vitText }, { k:'ใบรับรองแพทย์', v: st.cert?'ต้องการ':'ไม่ต้องการ' }].map(r => ({ color:c.ink, ...r }));
+
+    // lists
+    const tag = (t, ok) => ({ tag:t, tbg: ok?'#e6f3ea':'#fbefdc', tfg: ok?'#1d5a37':'#6e420a' });
+    const btn = (label, icon, on, primary) => ({ label, icon, on, bg: primary?c.pri:c.card, fg: primary?c.onPri:c.pri });
+    const dkLive = 2026*10000+(9+mo+1)*100+st.date;
+    const inR = x => st.rFrom==null || ((x.dk||dkLive)>=st.rFrom && (x.dk||dkLive)<=st.rTo);
+    const fk = k => String(k%100).padStart(2,'0')+'/'+String(Math.floor(k/100)%100).padStart(2,'0')+'/2569';
+    const rmi = st.rm, rmon = 7+rmi, rfirst = new Date(2026, rmon, 1).getDay(), rdim = new Date(2026, rmon+1, 0).getDate();
+    const rKey = d => 2026*10000+(rmon+1)*100+d;
+    const pickR = k => { if (!st.rpend) this.setState({ rFrom:k, rTo:k, rpend:true }); else this.setState({ rFrom:Math.min(st.rFrom,k), rTo:Math.max(st.rFrom,k), rpend:false, rcal:false }); };
+    const rCells = [...Array.from({ length:rfirst }, () => ({ label:'', on:()=>{}, bg:'transparent', fg:c.ink })), ...Array.from({ length:rdim }, (_, i) => { const k = rKey(i+1), end = k===st.rFrom || k===st.rTo, mid = st.rFrom!=null && k>st.rFrom && k<st.rTo; return { label:String(i+1), on:()=>pickR(k), bg: end?c.pri:mid?c.selBg:'transparent', fg: end?c.onPri:c.ink }; })];
+    let pdData = { appt:[], can:[], cant:[] };
+    const apptCards = [];
+    let list = null;
+    if (s==='appt') {
+      const am = (tm, m) => { const [h, mi] = tm.split(':').map(Number); const v = h*60+mi+m; return String(Math.floor(v/60)).padStart(2,'0')+':'+String(v%60).padStart(2,'0'); };
+      const tm = st.time || '10:30';
+      const base = { name:'นางสาว '+(regName || 'สมศรี ใจงาม'), clinic:{ med:'อายุรกรรม', ortho:'กระดูกและข้อ', eye:'จักษุ (ตา)', na:'ไม่ระบุคลินิก' }[st.clinic], dt:st.date+' '+MS[mo]+' 2569', rng:tm+' - '+am(tm,30), kind: st.svc==='new'?'ตรวจใหม่':'ตามนัดเดิม', kindIcon:'videocam', btn:false, on:()=>{}, btnLabel:'เข้าปรึกษาออนไลน์', btnIcon:'videocam', btnBg:'#1f9d4a', btnFg:'#fff' };
+      const S = { ok:{ status:'ยืนยันแล้ว', bar:'#1f9d4a', sbg:'#e3f5e8', sfg:'#17743a' }, pay:{ status:'รอชำระเงิน', bar:'#f59e0b', sbg:'#fff3d6', sfg:'#9a5b00' }, done:{ status:'เสร็จสิ้น', bar:'#9aa6ad', sbg:'#eef1f1', sfg:'#4b5a64' } };
+      if (st.confirmed) apptCards.push({ ...base, ...(st.paid ? S.done : st.visited ? S.pay : S.ok), btn: !st.visited, on:()=>this.go('teleIntro') });
+      if (st.paid) apptCards.push({ ...base, ...S.pay, status:'กำลังจัดส่งยา', kind:'จัดส่งยา · ถึงประมาณ 14:30 น.', kindIcon:'local_shipping' });
+      if (st.booked && !st.confirmed) apptCards.unshift({ ...base, ...S.pay, status:'รอพยาบาลยืนยัน', btn:false });
+      apptCards.push({ ...base, ...S.ok, dk:20261030, dt:'30 ต.ค. 2569', rng:'09:30 - 10:00', clinic:'อายุรกรรม', kind:'ตรวจใหม่', btn:true, on:()=>{}, btnLabel:'ยังไม่ถึงเวลาตรวจ', btnIcon:'lock_clock', btnBg:'#e3e6ea', btnFg:'#4b5a64' });
+      apptCards.push({ ...base, ...S.done, dk:20260912, dt:'12 ก.ย. 2569', rng:'10:00 - 10:30', clinic:'อายุรกรรม', kind:'ตรวจใหม่', btn:false });
+      if (st.rFrom!=null) apptCards.splice(0, apptCards.length, ...apptCards.filter(x => inR(x)));
+    } else if (s==='pay') {
+      const clinicT = { med:'อายุรกรรม', ortho:'กระดูกและข้อ', eye:'จักษุ (ตา)', na:'อายุรกรรม' }[st.clinic];
+      const UP = { bar:'#f2561d', st:'รอชำระเงิน', sbg:'#fff3d6', sfg:'#9a5b00', sbd:'#f1d28a', ibg:'#fde9dc', ic:'#f2561d', dueLabel:'ชำระก่อน', dueVal:'–', btn:true };
+      const PD = { bar:'#1f9d4a', st:'ชำระแล้ว', sbg:'#e3f5e8', sfg:'#17743a', sbd:'#a8dcb8', ibg:'#e3f5e8', ic:'#1f9d4a', dueLabel:'ชำระเมื่อ', btn:false };
+      const goP = p => () => this.setState(s0 => ({ s:'payDetail', hist:[...s0.hist, s0.s], payCur:p }));
+      const pays = [
+        ...(st.visited && !st.paid ? [{ ...UP, code:'DA-20261026-004', dk:dkLive, dt:dateFull.replace(/^\S+ /,''), tm:(st.time||'10:30'), amt:'300', on:()=>{} }] : []),
+        { ...UP, code:'DA-20261020-002', dk:20261020, dt:'20 ต.ค. 2569', tm:'10:30', amt:'300', on:()=>{} },
+        ...(st.visited && st.paid ? [{ ...PD, code:'DA-20261026-004', dk:dkLive, dt:dateFull.replace(/^\S+ /,''), tm:(st.time||'10:30'), amt:'300', dueVal:dateFull.replace(/^\S+ /,''), on:()=>{} }] : []),
+        { ...PD, code:'DA-20260912-001', dk:20260912, dt:'12 ก.ย. 2569', tm:'10:00', amt:'350', dueVal:'12 ก.ย. 2569', on:()=>{} },
+        { ...PD, code:'DA-20260803-001', dk:20260803, dt:'3 ส.ค. 2569', tm:'09:30', amt:'200', dueVal:'3 ส.ค. 2569', on:()=>{} } ].filter(inR).map(p => ({ ...p, name:'นางสาว '+regName, clinic:clinicT, on: p.btn ? goP(p) : ()=>{} }));
+      list = mkList({ pays, title:'ชำระเงิน', sub:'รายการค่าบริการ', empty: pays.length?'':'ไม่มีรายการ', emptyIcon:'receipt_long', emptyNote:'หลังพบแพทย์เสร็จ รายการชำระเงินจะแสดงที่นี่' });
+    } else if (s==='payDetail') {
+      const pdt = dateFull.replace(/^\S+ /,'');
+      const pc = st.payCur || { code:'DA-20261026-004', dt:pdt, tm:(st.time||'10:30'), amt:'300' };
+      const half = '฿ '+(Number(pc.amt)/2);
+      pdData = { total:'฿'+pc.amt, appt:[{ k:'รหัสนัดหมาย', v:pc.code, w:700 }, { k:'แพทย์ผู้ทำการรักษา', w:600, v: docLabel==='ไม่ระบุแพทย์' ? 'พญ.วรรณา ใจดี' : docLabel }, { k:'วันที่นัดหมาย', w:600, v:pc.dt }, { k:'เวลา', w:600, v:pc.tm+' น.' }],
+        can:[{ k:'ค่าบริการ Telemedicine', v:half }, { k:'ค่าบริการในเวลาราชการ', v:half }], cant:[{ k:'ค่ายา (ยานอกบัญชี) (ยังไม่รู้ key)', v:'-' }] };
+    } else if (s==='docs') {
+      const f = st.docFilter;
+      const mk = (type, icon, t, sub, m) => ({ type, dk:m, ...none, icon, t, s:sub, btns:[btn('ดู','visibility',()=>{}),btn('พิมพ์','print',()=>{}),btn('ดาวน์โหลด','download',()=>{})] });
+      let cards0 = st.paid ? [ ...(st.cert ? [mk('cert','clinical_notes','ใบรับรองแพทย์','พญ.วรรณา ใจดี · '+st.date+' '+MS[mo]+' 2569')] : []), mk('rx','medication','ใบสั่งยา','Paracetamol, Dextromethorphan · '+st.date+' ต.ค. 2569') ] : [];
+      let cards = [...cards0, mk('cert','clinical_notes','ใบรับรองแพทย์','พญ.วรรณา ใจดี · 12 ก.ย. 2569',20260912), mk('rx','medication','ใบสั่งยา','Amlodipine 5 mg · 12 ก.ย. 2569',20260912), mk('rx','medication','ใบสั่งยา','Paracetamol 500 mg · 3 ส.ค. 2569',20260803)];
+      if (st.rFrom!=null) cards = cards.filter(x => inR(x));
+      if (f!=='all') cards = cards.filter(x => x.type===f);
+      const chp = [['all','ทั้งหมด'],['cert','ใบรับรองแพทย์'],['rx','ใบสั่งยา']].map(([k,l]) => ({ label:l, on:set('docFilter',k), bg: f===k?c.pri:c.card, fg: f===k?c.onPri:c.pri }));
+      list = mkList({ title:'เอกสารออนไลน์', chips:chp, cards, empty: cards.length?'':'ยังไม่มีเอกสาร', emptyIcon:'description', emptyNote:'เอกสารจะแสดงหลังชำระเงินเรียบร้อย' });
+    } else if (s==='prof') {
+      const titles = { info:'ข้อมูลส่วนตัว', auth:'ยืนยันตัวตนและสิทธิ', hist:'ประวัติ / แพ้ยา' };
+      const groups = ['info','auth','hist'].map(pt => {
+
+      let info = [], b = null;
+      if (pt==='info') { info = [row('ชื่อ-นามสกุล', regName), row('เลขบัตรประชาชน', (st.reg.cid||'3102045678901') ? (st.reg.cid||'3102045678901').replace(/(\d)(\d{4})(\d{5})(\d{2})(\d)/,'$1-$2-$3-$4-$5') : '—'), row('วันเกิด', st.reg.birth || '12/03/2507'), row('เบอร์โทรศัพท์', st.reg.phone || '081-234-5678'), row('ที่อยู่', addrFull || '123/4 หมู่ 5 ต.ในเมือง อ.เมืองขอนแก่น จ.ขอนแก่น 40000'), row('ผู้ติดต่อฉุกเฉิน', st.reg.ename ? st.reg.ename+' · '+st.reg.ephone : 'สมชาย ใจงาม (บุตรชาย) · 089-876-5432')]; b = { label:'แก้ไขข้อมูลส่วนตัว', icon:'edit', on:()=>this.go('profEdit') }; }
+      if (pt==='auth') info = [row('การยืนยันตัวตน', 'ยืนยันด้วย Health ID แล้ว'), row('สิทธิการรักษา', 'ประกันสังคม · รพ.ศรีสุข')];
+      if (pt==='hist') { info = [row('โรคประจำตัว', st.conds.join(', ')||'ไม่มี'), row('แพ้ยา', st.allergies.join(', ')||'ไม่มี'), row('ประวัติการรักษา', 'ตรวจล่าสุด 12 ก.ย. · ความดันโลหิตสูง')]; b = { label:'เพิ่มโรคประจำตัว', icon:'add', on:()=>{ const more = ['เบาหวาน','ไขมันในเลือดสูง','โรคหัวใจ'].find(x => !st.conds.includes(x)); if (more) this.setState({ conds:[...st.conds, more] }); } }; }
+        return { title:titles[pt], info, btn:b };
+      });
+      list = mkList({ title:'ข้อมูลส่วนตัว', avatar:regName, groups });
+    }
+
+    // messages
+    const msgs = {
+      wait: { icon:'hourglass_top', color:c.warn, title:'ส่งนัดเรียบร้อย', body:'พยาบาลกำลังตรวจสอบ\nเมื่อยืนยันแล้ว จะแจ้งทาง LINE\nและแอปหมอพร้อม', demo:'จำลอง: พยาบาลยืนยันนัด', demoOn:()=>{ try { const b = JSON.parse(localStorage.getItem('da-booking')||'{}'); b.confirmed = true; localStorage.setItem('da-booking', JSON.stringify({ ...b, cert:st.cert })); } catch (e) {} this.setState({ confirmed:true }); } },
+      teleIntro: { icon:'videocam', color:c.ok, title:'พร้อมพบแพทย์แล้ว', body: 'พญ.วรรณา ใจดี\n'+apptText },
+      paidMsg: { icon:'check_circle', color:c.ok, title:'ชำระเงินสำเร็จ', body:'ใบรับรองแพทย์และใบสั่งยา\nอยู่ในเมนู “เอกสารออนไลน์”' }
+    };
+    const msgFull = k => msgs[k] ? { demo:'', demoOn:()=>{}, alt:'', altOn:()=>{}, ...msgs[k] } : {};
+
+    // cta
+    const nextOf = { svc:'right', right:'sym', sym:'time', time:'sum' };
+    const ok = s==='time' ? !!st.time : true;
+    const C = (label, on, bg, op=1) => ({ label, on, bg: bg || c.pri, fg: c.onPri, op });
+    let cta = null;
+    if (s==='hid') cta = C('เข้าสู่ระบบ', ()=>this.setState({ s:'otp', hist:[...st.hist, 'hid'], secs:59, otp:'' }));
+    if (s==='otp') cta = C('ยืนยัน', ()=>this.setState({ s: st.first?'reg':'appt', hist:[] }));
+    if (s==='reg') cta = C('บันทึกข้อมูล', ()=>this.setState({ s:'appt', hist:[], first:false }), c.ok);
+    if (s==='profEdit') cta = C('บันทึกข้อมูล', ()=>this.setState({ s:'prof', hist:[] }), c.ok);
+    if (nextOf[s]) cta = C('ถัดไป', ok ? ()=>this.go(nextOf[s]) : ()=>{}, c.pri, ok?1:.4);
+    if (s==='sum') cta = C('ยืนยันการนัดหมาย', ()=>{ try { localStorage.setItem('da-booking', JSON.stringify({ booked:true, confirmed:false, name:regName, date:OFF[mo]+st.date, time:st.time, chips:st.chips.join(', '), symptom:st.symptom, right:rightLabel, cert:st.cert, vitals:'BP '+(st.vit.sbp&&st.vit.dbp?st.vit.sbp+'/'+st.vit.dbp:'–')+' · HR '+(st.vit.hr||'–')+' · T '+(st.vit.temp||'–')+' · SpO2 '+(st.vit.o2||'–')+' · RR '+(st.vit.rr||'–')+' · Wt '+(st.weight||'–')+' · Ht '+(st.height||'–')+' · BMI '+(bmi?bmi.toFixed(1):'–') })); } catch (e) {} this.setState({ booked:true, s:'wait', hist:[] }); }, c.ok);
+    if (s==='wait') cta = C('ไปหน้าการนัดหมาย', ()=>this.tab('appt'));
+    if (s==='teleIntro') cta = C('เริ่มต้นพบแพทย์ทางวิดีโอ', ()=>this.go('tele'), c.ok);
+    if (s==='payDetail') cta = C('ชำระเงิน ฿'+(st.payCur ? st.payCur.amt : '300'), ()=>this.go('qr'), c.ok);
+    if (s==='paidMsg') cta = C('ดูเอกสารออนไลน์', ()=>this.tab('docs'));
+
+    const navDef = [['appt','การนัดหมาย','event_available'],['pay','ชำระเงิน','payments'],['docs','เอกสารออนไลน์','description'],['prof','ข้อมูลส่วนตัว','person']];
+    const nav = navDef.map(([k,l,i]) => { const a = s===k; return { label:l, icon:i, fg: a?c.pri:c.sub, w: a?700:500, dot: (k==='pay' && st.visited && !st.paid) || (k==='appt' && st.confirmed && !st.visited),
+      on: k==='svc' ? ()=>this.setState({ s:'svc', hist:['appt'] }) : ()=>this.tab(k) }; });
+    const mainTabs = ['appt','pay','docs','prof'];
+    const zooms = [1, 1.15, 1.3];
+    return {
+      isLogin: s==='login', doLogin: () => this.setState({ s: st.first?'reg':'appt', hist:[] }),
+      c, step, zoom: zooms[st.zoom], zoomLabel: ['ก+','ก++','ก'][st.zoom],
+      toggleZoom: () => this.setState({ zoom:(st.zoom+1)%3 }), toggleHc: () => this.setState({ hc:!hc }),
+      reset: () => this.setState({ ...this.init }), back: this.back,
+      showBack: st.hist.length > 0 && !mainTabs.includes(s) && s!=='login',
+      showSteps: !!step, bars: [1,2,3,4,5].map(i => ({ bg: i<=step ? c.pri : (hc?'#555':'#d5dcdf') })),
+      isForm: !!forms[s], form: forms[s] || { title:'', sub:'', fields:[] },
+      isOtp: s==='otp', otp: st.otp, setOtp: digits('otp'),
+      secsText: st.secs>0 ? 'ระบุรหัสภายใน '+st.secs+' วินาที' : 'หมดเวลา กดส่งรหัสอีกครั้ง', secsColor: st.secs>0 ? c.sub : '#b3261e',
+      resend: () => { if (st.secs===0) this.setState({ secs:59, otp:'' }); }, resendOp: st.secs===0 ? 1 : .4,
+      isPick: !!picks[s], pick: picks[s] || { title:'', sub:'', opts:[] },
+      showVit: st.vitOpen, toggleVit: () => this.setState({ vitOpen:!st.vitOpen }), vitIcon: st.vitOpen ? 'expand_less' : 'expand_more', vitHint: st.vitOpen ? 'ถ้าไม่ทราบ ข้ามได้' : (Object.values(st.vit).some(Boolean) ? 'กรอกแล้ว · กดเพื่อแก้ไข' : 'มีเครื่องวัดที่บ้าน? กดเพื่อกรอก'),
+      isSym: s==='sym', body, vitals, chips, bmiText, symptom: st.symptom, setSymptom: e => this.setState({ symptom: e.target.value }),
+      clinic: st.clinic, setClinic: e => this.setState({ clinic: e.target.value }),
+      certOpts: [opt(st.cert,{label:'ต้องการ',on:set('cert',true)}), opt(!st.cert,{label:'ไม่ต้องการ',on:set('cert',false)})],
+      isTime: s==='time', hospital: st.hospital, doctor: st.doctor, setHospital: e => this.setState({ hospital:e.target.value }), setDoctor: e => this.setState({ doctor:e.target.value }), recs: [['w','พญ.วรรณา ใจดี'],['t','นพ.ธีระ วงศ์ดี'],['s','พญ.สุภาวดี รักษาดี']].map(([k, n]) => ({ n, on:() => this.setState({ doctor:k }), bc: st.doctor===k ? c.pri : c.line, bg: st.doctor===k ? c.selBg : c.card, ic: st.doctor===k ? 'check_circle' : 'radio_button_unchecked' })), recBc: st.doctor==='w' ? c.pri : c.line, recBg: st.doctor==='w' ? c.selBg : c.card, recIcon: st.doctor==='w' ? 'check_circle' : 'radio_button_unchecked',
+      periodOpts, times, calCells, weekHead:['อา','จ','อ','พ','พฤ','ศ','ส'].map(l => ({ l })),
+      dateLabel: dateFull, dateNote: mo===0 && st.date===26 ? 'วันนี้' : 'วันที่เลือก', monthLabel: ML[mo]+' 2569',
+      prevMonth: () => { if (mo>0) this.setState({ month:mo-1 }); }, nextMonth: () => { if (mo<2) this.setState({ month:mo+1 }); }, prevOp: mo>0?1:.3, nextOp: mo<2?1:.3,
+      showCal: st.cal, toggleCal: () => this.setState({ cal:!st.cal }), calIcon: st.cal ? 'expand_less' : 'edit_calendar', calLabel: st.cal ? 'ปิดปฏิทิน' : 'เปลี่ยนวันที่',
+      isSum: s==='sum', top3, summary, editAll: () => this.setState({ s:'svc', hist:['appt'] }),
+      rText: st.rFrom==null ? 'เลือกวันที่' : (st.rFrom===st.rTo ? fk(st.rFrom) : fk(st.rFrom)+' – '+fk(st.rTo)), rIcon: st.rcal ? 'expand_less' : 'expand_more', toggleR: () => this.setState({ rcal:!st.rcal, rpend:false }), rcal: st.rcal, rCells, rMonth:['สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'][rmi]+' 2569',
+      prevRM: () => { if (rmi>0) this.setState({ rm:rmi-1 }); }, nextRM: () => { if (rmi<4) this.setState({ rm:rmi+1 }); }, prevRMOp: rmi>0?1:.3, nextRMOp: rmi<4?1:.3, rHint: st.rpend ? 'เลือกวันสิ้นสุด' : 'แตะวันเริ่มต้น แล้วแตะวันสิ้นสุด', clearR: () => this.setState({ rFrom:null, rTo:null, rpend:false, rcal:false }), showMF: s==='pay' || s==='docs',
+      addAppt: () => this.setState({ s:'svc', hist:['appt'] }),
+      isPD: s==='payDetail', pd: pdData, payAmt: st.payCur ? st.payCur.amt : '300',
+      isAppt: s==='appt', apptCards, apptEmpty: !apptCards.length, apptNote: st.booked ? 'นัดของคุณรอพยาบาลยืนยัน เมื่อยืนยันแล้วจะแสดงที่นี่' : 'ถ้าต้องการพบแพทย์ กดปุ่ม “เพิ่มนัดหมาย” ด้านบน',
+      isList: !!list, list: list || mkList({}),
+      isMsg: !!msgs[s], msg: msgFull(s),
+      isTele: s==='tele', micIcon: st.mic?'mic':'mic_off', micLabel: st.mic?'ไมค์เปิด':'ไมค์ปิด',
+      toggleMic: () => this.setState({ mic:!st.mic }), endCall: () => this.setState({ visited:true, s:'pay', hist:[] }),
+      isQr: s==='qr', payOk: () => this.setState({ paid:true, s:'paidMsg', hist:[] }),
+      cta, nav, showNav: mainTabs.includes(s)
+    };
+  }
+}
+</script>
+
+
+</body></html>

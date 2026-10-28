@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Doctor Assist Prototype</title>
+<style>
+  html,body{margin:0;height:100%;background:#e6e9e8;font-family:'IBM Plex Sans Thai',Tahoma,sans-serif}
+  #bar{height:56px;box-sizing:border-box;background:#1b2328;padding:8px 12px;display:flex;gap:8px;align-items:center;justify-content:center;overflow-x:auto}
+  #bar button{height:40px;padding:0 16px;border-radius:99px;border:1px solid #4b5a64;background:transparent;color:#fff;font:600 16px Tahoma,sans-serif;white-space:nowrap;cursor:pointer;flex:none}
+  #bar button.on{background:#fff;color:#1b2328;font-weight:700}
+  #bar button.fs{background:#2f5fd0;border-color:#2f5fd0}
+  #stage{height:calc(100% - 56px);position:relative}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none}
+  iframe.on{display:block}
+  body.full #bar{display:none}
+  body.full #stage{height:100%}
+  #x{display:none;position:fixed;right:8px;top:3px;z-index:9;width:30px;height:30px;border-radius:50%;border:0;background:rgba(27,35,40,.55);color:#fff;font-size:16px;cursor:pointer}
+  body.full #x{display:block}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="stage"></div>
+<button id="x" aria-label="ย่อ">✕</button>
+<script>
+  // บทบาททั้งหมด: [ชื่อไฟล์, ป้ายบนปุ่ม]  — เพิ่ม/ลดบทบาทได้ที่นี่
+  var ROLES = [
+    ['patient',    'ผู้ป่วย'],
+    ['nurse',      'พยาบาล'],
+    ['doctor',     'แพทย์'],
+    ['pharmacist', 'เภสัช'],
+    ['admin',      'Admin']
+  ];
+  var bar = document.getElementById('bar'), stage = document.getElementById('stage'), frames = {}, buttons = {};
+
+  // โหลดแต่ละบทบาทเมื่อกดครั้งแรก (lazy load)
+  function load(k) {
+    var f = frames[k];
+    if (!f.getAttribute('src')) f.src = k + '.html';
+  }
+  function show(k) {
+    load(k);
+    for (var i in frames) {
+      frames[i].className = i === k ? 'on' : '';
+      buttons[i].className = i === k ? 'on' : '';
+    }
+    try { localStorage.setItem('da-role', k); } catch (e) {}
+  }
+  ROLES.forEach(function (r) {
+    var b = document.createElement('button');
+    b.textContent = r[1];
+    b.onclick = function () { show(r[0]); };
+    bar.appendChild(b); buttons[r[0]] = b;
+    var f = document.createElement('iframe');
+    f.setAttribute('allow', 'microphone;fullscreen');
+    f.title = r[1];
+    stage.appendChild(f); frames[r[0]] = f;
+  });
+
+  // ปุ่มเต็มจอ
+  var fb = document.createElement('button');
+  fb.textContent = 'เต็มจอ'; fb.className = 'fs';
+  fb.onclick = function () { setFull(true); };
+  bar.appendChild(fb);
+  function setFull(on) {
+    document.body.classList.toggle('full', on);
+    try {
+      if (on && document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(function () {});
+      if (!on && document.fullscreenElement) document.exitFullscreen().catch(function () {});
+    } catch (e) {}
+  }
+  document.getElementById('x').onclick = function () { setFull(false); };
+  document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement) document.body.classList.remove('full'); });
+
+  // เปิดบทบาทล่าสุดที่เคยดู
+  var start = 'patient';
+  try { start = localStorage.getItem('da-role') || start; } catch (e) {}
+  show(frames[start] ? start : 'patient');
+</script>
+</body>
+</html>

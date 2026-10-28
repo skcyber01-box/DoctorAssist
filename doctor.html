@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="th"><head>
+<title>Doctor Assist · แพทย์</title>
+<!-- โหลด React จากไฟล์ในเครื่อง (ไม่ต้องใช้อินเทอร์เน็ต) -->
+<script>window.__resources={"https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js", "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js"};</script>
+<!-- เมื่อเปิดผ่าน index.html (อยู่ใน iframe): ซ่อนแถบบน และจัดกรอบมือถือให้พอดีจอ -->
+<script>if(window.parent!==window)document.documentElement.classList.add("embedded");</script>
+<style id="da-fit">html.embedded nav{display:none !important}html.embedded body{overflow:hidden}html.embedded div[style*="min-height: 100vh"]{padding:0 !important;display:flex !important;align-items:center;justify-content:center;height:100dvh;box-sizing:border-box}@media (max-width:520px){html.embedded div[style*="390px"][style*="844px"]{width:100vw !important;height:100dvh !important;border:0 !important;border-radius:0 !important;box-shadow:none !important}}@media (max-height:880px) and (min-width:521px){html.embedded div[style*="390px"][style*="844px"]{height:calc(100dvh - 24px) !important}}</style>
+<!-- เมื่อเปิดไฟล์นี้เดี่ยวๆ: เติมปุ่มสลับบทบาทในแถบบน -->
+<script>(function(){var R=[["patient", "ผู้ป่วย"], ["nurse", "พยาบาล"], ["doctor", "แพทย์"], ["pharmacist", "เภสัช"], ["admin", "Admin"]],me="doctor";setInterval(function(){var n=document.querySelector("nav");if(!n||n.querySelector("[data-role]"))return;var fs=n.querySelector("[data-fs]");R.forEach(function(r){var a=document.createElement("a");a.href=r[0]+".html";a.textContent=r[1];a.setAttribute("data-role",r[0]);var on=r[0]===me;a.style.cssText="height:40px;padding:0 16px;border-radius:99px;border:1px solid #4b5a64;display:flex;align-items:center;text-decoration:none;font-weight:600;font-size:16px;"+(on?"background:#fff;color:#1b2328":"color:#fff");n.insertBefore(a,fs||null);});},300);})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="assets/js/dc-runtime.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="assets/js/fullscreen.js"></script><script src="assets/js/voice-assist.js"></script><style>/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-cyrillic.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-500-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-cyrillic.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-mono-600-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-400-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-500-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-600-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-cyrillic-ext.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* thai */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-thai.woff2") format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-thai-700-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style><style>/* fallback */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 500;
+  src: url("assets/fonts/material-symbols-rounded-500-fallback.woff2") format('woff2');
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+</style><style>body{margin:0;background:#e1ebf7;font-family:'IBM Plex Sans Thai',Tahoma,sans-serif}button{font:inherit;cursor:pointer}a{color:#2f5fd0}a:hover{color:#1c3d94}.ms{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;line-height:1;white-space:nowrap;direction:ltr}</style></helmet>
+<nav style="position:sticky;top:0;z-index:10;background:#1c2b5a;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;font-family:'IBM Plex Sans Thai',sans-serif"><span style="color:#9fb1ba;font-size:14px;margin-right:4px">เลือกบทบาท</span></nav>
+<div style="min-height:100vh;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;color:#1c2b4a">
+<div style="width:390px;height:844px;position:relative;border-radius:40px;overflow:hidden;display:flex;flex-direction:column;border:8px solid #1c2b5a;box-shadow:0 20px 50px rgba(30,50,60,.25);background:#fbfcfb">
+<div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 13px 'IBM Plex Mono',monospace"><span>09:41</span><span>●●● 100%</span></div>
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;top:34px;bottom:0;z-index:5;overflow:hidden;background:linear-gradient(165deg,#f6faff 0%,#dbeafb 55%,#a9cbf3 100%);display:flex;flex-direction:column;align-items:center;padding:0 22px;box-sizing:border-box;color:#0b1a5c">
+<div style="position:absolute;left:-60px;top:70px;width:230px;height:230px;background:rgba(255,255,255,.35);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)"></div>
+<div style="position:absolute;right:-70px;top:150px;width:210px;height:210px;background:rgba(150,195,245,.3);clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)"></div>
+<div style="position:absolute;right:30px;top:40px;width:70px;height:24px;background:rgba(120,170,235,.35);border-radius:4px"></div><div style="position:absolute;right:53px;top:17px;width:24px;height:70px;background:rgba(120,170,235,.35);border-radius:4px"></div>
+<div style="position:absolute;left:18px;bottom:210px;width:54px;height:18px;background:rgba(120,170,235,.3);border-radius:4px"></div><div style="position:absolute;left:36px;bottom:192px;width:18px;height:54px;background:rgba(120,170,235,.3);border-radius:4px"></div>
+<div style="position:relative;margin-top:92px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:50px;font-weight:800;letter-spacing:.01em;line-height:1">Dr.</span><svg width="60" height="16" sc-camel-view-box="0 0 60 16"><path d="M0 9h20l4-6 6 12 5-9 3 3h22" fill="none" stroke="#4f8fe0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div style="position:relative;margin-top:58px;font-size:32px;font-weight:700">ยินดีต้อนรับ</div>
+<div style="position:relative;margin-top:6px;font-size:16px;color:#4b5a64;text-align:center;line-height:1.5">กรุณาล็อกอินเพื่อเข้าสู่ระบบ Doctor Assist</div>
+<button sc-camel-on-click="{{ doLogin }}" style="position:relative;margin-top:32px;width:100%;height:68px;border:0;border-radius:99px;background:#3f7455;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:600;white-space:nowrap;padding:0 8px;box-shadow:0 10px 22px rgba(30,60,45,.35)"><span style="display:flex;align-items:baseline;gap:2px;font-size:12px;font-weight:700;letter-spacing:0">PROVIDER<b style="font-size:22px;font-style:italic;font-weight:800;color:#e8f06a">iD</b></span>Continue with ProviderID</button>
+<div style="position:relative;margin-top:44px;width:100%;box-sizing:border-box;border:2px solid #cfdcf0;border-radius:26px;background:rgba(238,244,254,.92);padding:18px 16px;display:flex;gap:14px;align-items:center"><span style="flex:none;width:48px;height:48px;border-radius:50%;background:#2f5fd0;color:#fff;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center">!</span><span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:17px;font-weight:700">การเข้าสู่ระบบด้วย Provider ID</span><span style="font-size:14px;line-height:1.5;color:#5a6676">ระบบจะนำท่านไปยังหน้า Provider ID เพื่อยืนยันตัวตนด้วยเลขบัตรประชาชน และ PIN</span></span></div>
+<span style="position:absolute;right:24px;bottom:18px;font-size:14px;color:#fff;font-weight:500">Version 1.0.0</span></div></sc-if>
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><div style="flex:none;padding:0 12px;display:flex;align-items:center;justify-content:space-between;gap:8px"><button sc-camel-on-click="{{ back }}" style="height:52px;padding:0 8px;border:0;background:none;color:#2f5fd0;font-weight:700;font-size:17px;display:flex;align-items:center"><span class="ms" style="font-size:30px">chevron_left</span>ย้อนกลับ</button><sc-if value="{{ topRight }}" hint-placeholder-val="{{ false }}"><span style="display:flex;flex-direction:column;align-items:flex-end;text-align:right"><span style="font-size:12px;color:#6b7a90">แพทย์ผู้ตรวจ</span><b style="font-size:14px;line-height:1.3">{{ topRight }}</b></span></sc-if></div></sc-if>
+<div style="flex:1;overflow:auto;display:flex;flex-direction:column;padding:10px 12px 16px;gap:12px">
+<sc-for list="{{ blocks }}" as="b" hint-placeholder-count="3">
+<sc-if value="{{ b.isHead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:20px;font-weight:700;color:#0b1a5c">Doctor Assist</div><button sc-camel-on-click="{{ b.on }}" style="min-height:44px;padding:0 12px;border:2px solid #cfdcf0;border-radius:22px;background:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;color:#1c2b4a;cursor:pointer"><span class="ms" style="font-size:22px">logout</span>ออกจากระบบ</button></div><div style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;align-items:center;gap:12px;background:#e1ecfb;border-radius:18px;padding:12px 14px"><span style="width:52px;height:52px;border-radius:50%;background:#c9d2de;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:34px;color:#fff">person</span></span><span style="flex:1;font-size:16px;font-weight:600;line-height:1.4">{{ b.k }}</span></div></div></div></sc-if>
+<sc-if value="{{ b.isTabs }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><sc-for list="{{ b.chips }}" as="h" hint-placeholder-count="2"><button sc-camel-on-click="{{ h.on }}" style="height:54px;border:2px solid #2f5fd0;border-radius:14px;background:{{ h.bg }};color:{{ h.fg }};font-size:16px;font-weight:700">{{ h.label }}</button></sc-for></div></sc-if>
+<sc-if value="{{ b.isHosp }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid {{ b.bc }};border-radius:20px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:12px;align-items:center"><span style="width:52px;height:52px;border-radius:14px;background:#2f5fd0;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:30px;color:#fff">apartment</span></span><span style="flex:1;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700">{{ b.t }}</span><span style="font-size:14px;color:#4b5a64">{{ b.s }}</span></span><span style="font-size:13px;font-weight:700;color:#2f5fd0;border:2px solid #2f5fd0;border-radius:99px;padding:2px 12px">{{ b.tag }}</span></div><button sc-camel-on-click="{{ b.on }}" style="height:54px;border:0;border-radius:14px;background:#2f5fd0;color:#fff;font-size:17px;font-weight:700">{{ b.btnLabel }}</button></div></sc-if>
+<sc-if value="{{ b.isSched }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid {{ b.bc }};border-radius:18px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:10px"><div style="font-size:17px;font-weight:700;line-height:1.4">{{ b.n }} <span style="font-weight:500;color:#4b5a64">/ HN:</span> <span style="font-weight:500;color:#6f7d87">{{ b.hnText }} · {{ b.age }} ปี</span></div><div style="display:flex;align-items:center;gap:6px;font-size:15px;color:#22313b"><span class="ms" style="font-size:22px">schedule</span>{{ b.dt }} {{ b.range }} น.</div><div style="display:flex;flex-wrap:wrap;gap:8px"><span style="font-size:13px;font-weight:600;background:{{ b.stBg }};color:{{ b.stFg }};border-radius:99px;padding:6px 14px">{{ b.stText }}</span><span style="font-size:13px;font-weight:600;background:{{ b.kBg }};color:{{ b.kFg }};border-radius:99px;padding:6px 14px">{{ b.kind }}</span><span style="font-size:13px;font-weight:600;background:#e1ecfb;color:#1c3d94;border-radius:99px;padding:6px 14px">สิทธิ{{ b.right }}</span></div><div style="border-top:1px solid #dbe2e4;padding-top:10px;display:flex;flex-direction:column;gap:4px;font-size:15px"><span><b>อาการ</b> <span style="color:#4b5a64">: {{ b.sym }}</span></span><span><b>รายละเอียดอาการ</b> <span style="color:#4b5a64">: {{ b.sdet }}</span></span></div><sc-if value="{{ b.note }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:#6e420a">{{ b.note }}</span></sc-if><sc-if value="{{ b.btns.length }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ b.btns }}" as="x" hint-placeholder-count="1"><button sc-camel-on-click="{{ x.on }}" style="flex:1 1 40%;min-height:54px;border:2px solid {{ x.bc }};border-radius:14px;background:{{ x.bg }};color:{{ x.fg }};font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px;opacity:{{ x.op }}"><span class="ms" style="font-size:24px">{{ x.icon }}</span>{{ x.label }}</button></sc-for></div></sc-if></div></sc-if>
+<sc-if value="{{ b.isCal }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:15px;font-weight:600">{{ b.label }}</span><button sc-camel-on-click="{{ b.tog }}" style="min-height:56px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;color:#1c2b4a;display:flex;align-items:center;gap:10px;padding:0 12px;font-size:16px;font-weight:600"><span class="ms" style="font-size:28px;color:#2f5fd0">calendar_month</span><span style="flex:1;text-align:left">{{ b.text }}</span><span class="ms" style="font-size:26px">expand_more</span></button><sc-if value="{{ b.open }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #cfdcf0;border-radius:18px;background:#fff;padding:12px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><button sc-camel-on-click="{{ b.prev }}" style="width:48px;height:48px;border:2px solid #2f5fd0;border-radius:12px;background:#fff;color:#2f5fd0;display:flex;align-items:center;justify-content:center;opacity:{{ b.pOp }}"><span class="ms" style="font-size:28px">chevron_left</span></button><span style="font-size:17px;font-weight:700">{{ b.month }}</span><button sc-camel-on-click="{{ b.next }}" style="width:48px;height:48px;border:2px solid #2f5fd0;border-radius:12px;background:#fff;color:#2f5fd0;display:flex;align-items:center;justify-content:center;opacity:{{ b.nOp }}"><span class="ms" style="font-size:28px">chevron_right</span></button></div><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px"><span style="text-align:center;font-size:14px;color:#4b5a64">อา</span><span style="text-align:center;font-size:14px;color:#4b5a64">จ</span><span style="text-align:center;font-size:14px;color:#4b5a64">อ</span><span style="text-align:center;font-size:14px;color:#4b5a64">พ</span><span style="text-align:center;font-size:14px;color:#4b5a64">พฤ</span><span style="text-align:center;font-size:14px;color:#4b5a64">ศ</span><span style="text-align:center;font-size:14px;color:#4b5a64">ส</span><sc-for list="{{ b.cells }}" as="d" hint-placeholder-count="35"><button sc-camel-on-click="{{ d.on }}" style="aspect-ratio:1;min-height:40px;border:0;border-radius:10px;background:{{ d.bg }};color:{{ d.fg }};font-size:15px;font-weight:600;padding:0">{{ d.label }}</button></sc-for></div><div style="font-size:14px;color:#4b5a64;margin-top:8px;text-align:center">{{ b.hint }}</div></div></sc-if></div></sc-if>
+<sc-if value="{{ b.isTwo }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px"><label style="display:flex;flex-direction:column;gap:6px;min-width:0"><span style="font-size:15px;font-weight:600">{{ b.a.k }} <span style="color:#b3261e">*</span></span><input size="1" value="{{ b.a.v }}" sc-camel-on-change="{{ b.a.on }}" placeholder="{{ b.a.ph }}" style="height:56px;border:2px solid #2f5fd0;border-radius:14px;padding:0 14px;font:600 17px 'IBM Plex Sans Thai';width:100%;box-sizing:border-box"></label><label style="display:flex;flex-direction:column;gap:6px;min-width:0"><span style="font-size:15px;font-weight:600">{{ b.b.k }} <span style="color:#b3261e">*</span></span><input size="1" value="{{ b.b.v }}" sc-camel-on-change="{{ b.b.on }}" placeholder="{{ b.b.ph }}" style="height:56px;border:2px solid #2f5fd0;border-radius:14px;padding:0 14px;font:600 17px 'IBM Plex Sans Thai';width:100%;box-sizing:border-box"></label></div></sc-if>
+<sc-if value="{{ b.isSCal }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #cfdcf0;border-radius:18px;background:#fff;padding:12px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;align-items:center;justify-content:space-between"><button sc-camel-on-click="{{ b.prev }}" style="width:48px;height:48px;border:2px solid #2f5fd0;border-radius:12px;background:#fff;color:#2f5fd0;display:flex;align-items:center;justify-content:center;opacity:{{ b.pOp }}"><span class="ms" style="font-size:28px">chevron_left</span></button><span style="font-size:18px;font-weight:700">{{ b.month }}</span><button sc-camel-on-click="{{ b.next }}" style="width:48px;height:48px;border:2px solid #2f5fd0;border-radius:12px;background:#fff;color:#2f5fd0;display:flex;align-items:center;justify-content:center;opacity:{{ b.nOp }}"><span class="ms" style="font-size:28px">chevron_right</span></button></div><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;background:#f3f7ff;border-radius:12px;padding:8px 2px"><span style="text-align:center;font-size:14px;color:#4b5a64">อา</span><span style="text-align:center;font-size:14px;color:#4b5a64">จ</span><span style="text-align:center;font-size:14px;color:#4b5a64">อ</span><span style="text-align:center;font-size:14px;color:#4b5a64">พ</span><span style="text-align:center;font-size:14px;color:#4b5a64">พฤ</span><span style="text-align:center;font-size:14px;color:#4b5a64">ศ</span><span style="text-align:center;font-size:14px;color:#4b5a64">ส</span></div><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px"><sc-for list="{{ b.cells }}" as="d" hint-placeholder-count="35"><button sc-camel-on-click="{{ d.on }}" style="aspect-ratio:1;min-height:42px;border:0;border-radius:12px;background:{{ d.bg }};color:{{ d.fg }};font-size:16px;font-weight:700;padding:0">{{ d.label }}</button></sc-for></div><div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid #dbe2e4;padding-top:10px"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:50%;background:#2bb8f0"></span><b style="font-size:13px">ช่วงเช้า</b><span style="font-size:13px;color:#5a6676">09:00 – 12:00</span></span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:50%;background:#f58a2b"></span><b style="font-size:13px">ช่วงบ่าย</b><span style="font-size:13px;color:#5a6676">13:00 – 16:00</span></span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:50%;background:#a855f7"></span><b style="font-size:13px">ช่วงเช้า – บ่าย</b><span style="font-size:13px;color:#5a6676">09:00 – 16:00</span></span></div></div></sc-if>
+<sc-if value="{{ b.isVit }}" hint-placeholder-val="{{ false }}"><div style="background:#eef4fb;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:700;color:#1c3d94">VITAL SIGNS</span><div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px" data-comment-anchor="87a1ae079f-div"><sc-for list="{{ b.cells }}" as="c" hint-placeholder-count="8"><label style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:13px;color:#4b5a64">{{ c.k }}</span><input size="1" value="{{ c.v }}" sc-camel-on-change="{{ c.on }}" sc-camel-read-only="{{ c.ro }}" style="height:46px;border:2px solid #cfdcf0;border-radius:10px;background:#fff;font:600 15px 'IBM Plex Sans Thai';padding:0 8px;width:100%;box-sizing:border-box"></label></sc-for></div></div></sc-if>
+<sc-if value="{{ b.isRadio }}" hint-placeholder-val="{{ false }}"><div style="background:#f7f9fc;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:12px" data-comment-anchor="59209619cf-div"><sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:15px;font-weight:700">{{ r.k }}</span><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;background:#e8eefb;border-radius:14px"><sc-for list="{{ r.opts }}" as="o" hint-placeholder-count="3"><button sc-camel-on-click="{{ o.on }}" style="min-height:44px;border:0;border-radius:10px;background:{{ o.bg }};color:{{ o.fg }};box-shadow:{{ o.sh }};font:700 14px inherit;font-family:inherit;padding:0 6px;cursor:pointer">{{ o.l }}</button></sc-for></div><sc-if value="{{ r.showIn }}" hint-placeholder-val="{{ false }}"><input size="1" value="{{ r.v }}" sc-camel-on-change="{{ r.onIn }}" placeholder="{{ r.ph }}" style="height:48px;border:2px solid #cfd6df;border-radius:10px;padding:0 10px;font:inherit;font-size:15px;width:100%;box-sizing:border-box"><span style="font-size:13px;color:#6b7a90">{{ r.hint }}</span></sc-if></div></sc-for></div></sc-if>
+<sc-if value="{{ b.isOrdHead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px;border-top:1px solid #dbe2e4;padding-top:12px;margin-top:4px;flex:none"><span class="ms" style="font-size:30px;color:#2563eb">receipt_long</span><b style="flex:1;font-size:17px">รายการยาที่สั่ง</b><span style="font-size:14px;color:#1a76d2">({{ b.n }} รายการ)</span></div></sc-if>
+<sc-if value="{{ b.isOrder }}" hint-placeholder-val="{{ false }}"><div style="border:1px solid #dbe2e4;border-radius:16px;background:#fff;overflow:hidden;flex:none"><div style="padding:12px 12px 10px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;font-weight:700;background:#eceff3;border-radius:99px;padding:4px 10px;flex:none">#{{ b.n }}</span><b style="flex:1;font-size:15px;line-height:1.3;min-width:0">{{ b.name }}</b></div><div style="display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:4px;font-size:14px;font-weight:700;background:{{ b.acctBg }};color:{{ b.acctFg }};border-radius:99px;padding:3px 10px 3px 6px"><span class="ms" style="font-size:20px;color:{{ b.acctIcFg }}">{{ b.acctIc }}</span>{{ b.acctText }}</span><span style="flex:1"></span><button sc-camel-on-click="{{ b.edit }}" aria-label="แก้ไข" style="width:44px;height:44px;border:0;border-radius:10px;background:#e8f0ff;color:#2563eb;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="ms" style="font-size:24px">edit</span></button><button sc-camel-on-click="{{ b.del }}" aria-label="ลบ" style="width:44px;height:44px;border:0;border-radius:10px;background:#fde0e0;color:#e5252b;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="ms" style="font-size:24px">delete</span></button></div><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 10px;font-size:13px;line-height:1.4"><span><b>จำนวน :</b> <span style="color:#6b7a90">{{ b.qty }} {{ b.unit }}</span></span><span><b>ราคา/{{ b.unit }} :</b> <span style="color:#6b7a90">{{ b.price }}</span></span><span style="grid-column:1 / -1"><b>วิธีใช้ :</b> <span style="color:#6b7a90">{{ b.method }}</span></span><span style="grid-column:1 / -1"><b>เวลา :</b> <span style="color:#6b7a90">{{ b.time }}</span></span><span style="grid-column:1 / -1"><b>เหตุผลการใช้ยา :</b> <span style="color:#6b7a90">{{ b.reason }}</span></span></div></div><div style="background:#edf1f6;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px"><span style="min-width:0"><b>หมายเหตุ :</b> <span style="color:#6b7a90">{{ b.note }}</span></span><b style="font-size:15px;color:#2563eb;white-space:nowrap">รวม : {{ b.total }}</b></div></div></sc-if>
+<sc-if value="{{ b.isOrdSum }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex:none"><span style="display:flex;flex-direction:column"><span style="font-size:14px;color:#4b5a64">ยอดรวมทั้งหมด</span><b style="font-size:24px;color:#1a76d2;line-height:1.2">{{ b.total }}</b></span><span style="display:flex;flex-direction:column;gap:2px;font-size:14px;text-align:right"><span>ยาในบัญชี: <b>{{ b.inN }}</b></span><span>ยานอกบัญชี: <b>{{ b.outN }}</b></span></span></div></sc-if>
+<sc-if value="{{ b.isChk }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ b.on }}" style="min-height:56px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;color:#1c2b4a;display:flex;align-items:center;gap:12px;padding:6px 14px;text-align:left;font-size:16px;font-weight:600"><span class="ms" style="font-size:32px;color:#2f5fd0">{{ b.icon }}</span><span style="flex: 1; font-weight: 500; font-size: 14px">{{ b.label }}</span></button></sc-if>
+<sc-if value="{{ b.isPInfo }}" hint-placeholder-val="{{ false }}"><div style="background:#eef4fb;border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;gap:4px"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font-size:14px"><span class="ms" style="font-size:18px;color:#4b5a64">badge</span><span style="color:#4b5a64">ชื่อ :</span><b style="font-weight:700;color:#1c2b4a;font-size:13px">{{ b.name }}</b><span style="width:1px;height:18px;background:#9aa6ad"></span><span style="color:#4b5a64">HN :</span><b style="font-weight:600;color:#1c2b4a">{{ b.hn }}</b></div><div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font-size:14px"><span class="ms" style="font-size:18px;color:#4b5a64">person</span><span style="color:#4b5a64">เพศ :</span><b style="font-weight:600;color:#1c2b4a">{{ b.sex }}</b><span style="width:1px;height:18px;background:#9aa6ad"></span><span style="color:#4b5a64">อายุ :</span><b style="font-weight:600;color:#1c2b4a">{{ b.ageN }}</b></div><div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font-size:14px"><span class="ms" style="font-size:18px;color:#4b5a64">person</span><span style="color:#4b5a64">สิทธิ :</span><b style="color:#1f9d4a;font-weight:600">{{ b.right }}</b><span style="width:1px;height:18px;background:#9aa6ad"></span><span style="color:#4b5a64">ประเภท :</span><b style="color:#e5252a;font-weight:600">{{ b.kind }}</b></div><div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font-size:14px"><span class="ms" style="font-size:18px;color:#4b5a64">medication</span><span style="color:#4b5a64">ประวัติแพ้ยา :</span><b style="color:#8a3a52;font-weight:600">{{ b.allergy }}</b><span style="width:1px;height:18px;background:#9aa6ad"></span><span class="ms" style="font-size:18px;color:#4b5a64">monitor_heart</span><span style="color:#4b5a64">โรคประจำตัว :</span><b style="font-weight:600;color:#1c2b4a">{{ b.dz }}</b></div><div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font-size:14px"><span class="ms" style="font-size:18px;color:#4b5a64">clinical_notes</span><span style="color:#4b5a64">ใบรับรองแพทย์ :</span><b style="font-weight:700;color:{{ b.certCol }}">{{ b.cert }}</b></div></div></sc-if>
+<sc-if value="{{ b.isGrid }}" hint-placeholder-val="{{ false }}"><div style="background:#eef4fb;border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 12px"><sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="6"><div style="display:flex;flex-direction:column;gap:1px;min-width:0;grid-column:{{ r.span }}"><span style="font-size:13px;color:#4b5a64">{{ r.k }}</span><span style="font-size:14px;font-weight:{{ r.fw }};color:{{ r.c }};line-height:1.35">{{ r.v }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ b.isVStart }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:20px;font-weight:700">ห้องตรวจ Telemed</div><div style="font-size:14px;color:#4b5a64">{{ b.s }}</div><div style="height:380px;border-radius:20px;background:repeating-linear-gradient(45deg,#1c2a31 0 10px,#22323a 10px 20px);position:relative;display:flex;align-items:center;justify-content:center"><span style="position:absolute;left:12px;top:12px;background:rgba(0,0,0,.6);color:#fff;border-radius:10px;padding:4px 10px;font-size:14px">{{ b.k }}</span><button sc-camel-on-click="{{ b.on }}" style="min-height:64px;padding:0 22px;border:0;border-radius:99px;background:#1f9d4a;color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px;box-shadow:0 8px 20px rgba(0,0,0,.35)"><span class="ms" style="font-size:30px">videocam</span>เริ่มต้นประชุมทางวิดีโอ</button></div></div></sc-if>
+<sc-if value="{{ b.isHRow }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px"><div style="font-size:22px;font-weight:700;line-height:1.3;flex:1 1 100%">{{ b.k }}</div><button sc-camel-on-click="{{ b.calOn }}" aria-label="ปฏิทิน" style="width:44px;height:44px;border:2px solid #2f5fd0;border-radius:12px;background:{{ b.calBg }};color:#2f5fd0;display:flex;align-items:center;justify-content:center;padding:0;flex:none"><span class="ms" style="font-size:26px">calendar_month</span></button><button sc-camel-on-click="{{ b.on }}" style="height:44px;padding:0 14px;border:0;border-radius:12px;background:#2f5fd0;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;gap:4px;flex:none"><span class="ms" style="font-size:22px">add</span>{{ b.label }}</button></div></sc-if>
+<sc-if value="{{ b.isShRow }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #cfdcf0;border-radius:14px;background:#fff;overflow:hidden;display:flex"><div style="width:6px;background:{{ b.dot }};flex:none"></div><div style="flex:1;min-width:0;padding:6px 4px 8px 12px;display:flex;flex-direction:column;gap:2px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size: 15px; font-weight: 600; line-height: 1.3">{{ b.t }}</span><span style="font-size:13px;font-weight:700;background:{{ b.dot }}33;color:#1c2b4a;border-radius:99px;padding:1px 10px">เวร{{ b.tag }}</span><span style="flex:1"></span><sc-for list="{{ b.ib }}" as="i" hint-placeholder-count="0"><button sc-camel-on-click="{{ i.on }}" aria-label="{{ i.l }}" style="width:32px;height:32px;border:0;background:none;color:{{ i.c }};display:flex;align-items:center;justify-content:center;padding:0"><span class="ms" style="font-size:22px">{{ i.icon }}</span></button></sc-for></div><div style="font-size:14.5px;color:#4b5a64;line-height:1.4">เวลา <b style="color: #1c2b4a; font-weight: 600">{{ b.tm }} น.</b></div><div style="font-size:14.5px;color:#4b5a64;line-height:1.4;padding-right:8px">แผนก/คลินิก <b style="color: #1c2b4a; font-weight: 600">{{ b.s }}</b></div></div></div></sc-if>
+<sc-if value="{{ b.isRxDoc }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #cfdcf0;border-radius:16px;background:#fff;overflow:hidden;flex:none"><div style="background:#f5f6f8;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:700;color:#1c3d94;display:flex;align-items:center;gap:6px"><span class="ms" style="font-size:22px">description</span>ใบสั่งยา (PRESCRIPTION)</span><span style="font-size:13px;color:#6b7a90">#Order ID: <b style="color:#1c2b4a">{{ b.order }}</b></span></div><div style="padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 10px;font-size:14px;border-bottom:1px solid #dbe2e4"><span style="grid-column:1/-1"><span style="color:#6b7a90">ผู้ป่วย</span> <b style="font-size:14px">{{ b.name }}</b> <span style="color:#6b7a90">/ HN: {{ b.hn }}</span></span><span><span style="color:#6b7a90">แพทย์</span><br><b>{{ b.doc }}</b></span><span><span style="color:#6b7a90">วันเวลา</span><br><b>{{ b.dt }}</b></span></div><div style="padding:6px 12px 10px"><div style="display:grid;grid-template-columns:24px minmax(0,1fr) 44px;gap:6px;padding:6px 0;font-size:13px;font-weight:600;color:#4b5a64;border-bottom:1px solid #dbe2e4"><span>#</span><span>รายการยา / วิธีใช้</span><span style="text-align:center">จำนวน</span></div><sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="2"><div style="display:grid;grid-template-columns:24px minmax(0,1fr) 44px;gap:6px;padding:8px 0;border-bottom:1px solid #eef1f4;align-items:center"><span style="color:#6b7a90">{{ r.i }}</span><span style="display:flex;flex-direction:column"><b style="font-size:13px;line-height:1.3">{{ r.name }}</b><span style="font-size:13px;color:#6b7a90">{{ r.use }}</span></span><b style="text-align:center;font-size:14px">{{ r.qty }}</b></div></sc-for><div style="font-size:14px;color:#4b5a64;padding-top:8px;text-align:right">รวม <b style="color:#2f5fd0">{{ b.cnt }}</b></div></div></div></sc-if>
+<sc-if value="{{ b.isHVisit }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid {{ b.bc }};border-radius:18px;background:#fff;overflow:hidden;flex:none"><button sc-camel-on-click="{{ b.tog }}" style="width:100%;border:0;text-align:left;font:inherit;color:inherit;padding:10px 12px 10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#f7f9fc;cursor:pointer"><span style="display:flex;flex-direction:column;min-width:0"><b style="font-size:15px;line-height:1.3">{{ b.t }}</b><span style="font-size:14px;color:#4b5a64;line-height:1.4">{{ b.doc }}</span></span><span style="display:flex;align-items:center;gap:2px;flex:none"><span class="ms" style="font-size:28px;color:#4b5a64">{{ b.chev }}</span></span></button><sc-if value="{{ b.open }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 14px;display:flex;flex-direction:column;gap:14px"><div style="display:flex;flex-direction:column;gap:8px"><button sc-camel-on-click="{{ b.tg }}" style="width:100%;border:0;background:none;font:inherit;color:inherit;padding:2px 0;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;cursor:pointer;text-align:left"><span style="width:16px;height:16px;border-radius:4px;background:#14a44d;flex:none"></span><span style="flex:1">General</span><span class="ms" style="font-size:28px;color:#4b5a64">{{ b.cg }}</span></button><sc-if value="{{ b.og }}" hint-placeholder-val="{{ false }}"><div style="background:#f3f9f5;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px"><sc-for list="{{ b.gen }}" as="g" hint-placeholder-count="6"><div style="font-size:13px;line-height:1.5;color:#5d7083;display:grid;grid-template-columns:104px minmax(0,1fr);gap:0 8px"><b style="color:#16345e">{{ g.k }}:</b><span>{{ g.v }}<sc-for list="{{ g.vit }}" as="p" hint-placeholder-count="0"><span style="display:inline-block;margin:0 10px 0 0;white-space:nowrap">{{ p.k }} : {{ p.v }}</span></sc-for></span></div></sc-for></div></sc-if><sc-if value="{{ b.cg2 }}" hint-placeholder-val="{{ false }}"><div style="background:#f3f9f5;border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.5;color:#5d7083"><b style="color:#16345e">Diagnosis:</b> {{ b.dx }}<br><b style="color:#16345e">ICD10:</b> {{ b.icd }}</div></sc-if></div><div style="display:flex;flex-direction:column;gap:8px"><button sc-camel-on-click="{{ b.tm }}" style="width:100%;border:0;background:none;font:inherit;color:inherit;padding:2px 0;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;cursor:pointer;text-align:left"><span style="width:16px;height:16px;border-radius:4px;background:#14a44d;flex:none"></span><span style="flex:1">Medicine ({{ b.nm }})</span><span class="ms" style="font-size:28px;color:#4b5a64">{{ b.cm }}</span></button><sc-if value="{{ b.om }}" hint-placeholder-val="{{ false }}"><div style="background:#f3f9f5;border-radius:14px;padding:4px 12px;display:flex;flex-direction:column"><sc-for list="{{ b.meds }}" as="m" hint-placeholder-count="2"><div style="padding:10px 0;border-bottom:1px solid #dbe2e4;display:flex;flex-direction:column;gap:3px"><b style="font-size:15px;color:#16345e">{{ m.name }}</b><span style="font-size:13px;color:#5d7083;line-height:1.5">{{ m.use }}</span></div></sc-for></div></sc-if></div><div style="display:flex;flex-direction:column;gap:8px"><button sc-camel-on-click="{{ b.tf }}" style="width:100%;border:0;background:none;font:inherit;color:inherit;padding:2px 0;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;cursor:pointer;text-align:left"><span style="width:16px;height:16px;border-radius:4px;background:#14a44d;flex:none"></span><span style="flex:1">E-Form ({{ b.nf }})</span><span class="ms" style="font-size:28px;color:#4b5a64">{{ b.cf }}</span></button><sc-if value="{{ b.of }}" hint-placeholder-val="{{ false }}"><div style="background:#f3f9f5;border-radius:14px;padding:4px 12px;display:flex;flex-direction:column"><sc-for list="{{ b.forms }}" as="f" hint-placeholder-count="2"><div style="padding:10px 0;border-bottom:1px solid #dbe2e4;display:flex;align-items:center;gap:10px"><span style="width:34px;height:34px;border-radius:8px;background:#fde0e0;color:#d93025;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none">PDF</span><span style="flex:1;font-size:14px;color:#1a63d6;text-decoration:underline;line-height:1.3">{{ f }}</span><span class="ms" style="font-size:26px;color:#2f5fd0">visibility</span></div></sc-for></div></sc-if></div></div></sc-if></div></sc-if>
+<sc-if value="{{ b.isHTabs }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px"><sc-for list="{{ b.tabs }}" as="t" hint-placeholder-count="2"><button sc-camel-on-click="{{ t.on }}" style="min-height:52px;border:2px solid {{ t.bc }};border-radius:14px;background:{{ t.bg }};color:{{ t.fg }};font-size:14px;font-weight:700;padding:0 8px">{{ t.l }} ({{ t.n }})</button></sc-for></div></sc-if>
+<sc-if value="{{ b.isSeg }}" hint-placeholder-val="{{ false }}"><div style="position:sticky;top:-10px;z-index:5;flex:none;margin:-10px -12px 0;padding:10px 12px 8px;background:#fff;box-shadow:0 4px 8px -4px rgba(30,50,90,.18)"><div style="display:grid;grid-template-columns:repeat({{ b.cols }},minmax(0,1fr));gap:4px;padding:4px;background:#e8eefb;border-radius:16px"><sc-for list="{{ b.tabs }}" as="t" hint-placeholder-count="3"><button sc-camel-on-click="{{ t.on }}" style="min-height:48px;border:0;border-radius:12px;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.sh }};font:700 13px inherit;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;padding:0 4px;cursor:pointer"><span class="ms" style="font-size:20px">{{ t.ic }}</span>{{ t.l }}</button></sc-for></div></div></sc-if>
+<sc-if value="{{ b.isAcc }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ b.on }}" style="width:100%;min-height:56px;border:2px solid #cfdcf0;border-radius:14px;background:#f3f7ff;color:#1c2b4a;display:flex;align-items:center;gap:10px;padding:0 12px 0 14px;font:700 15px inherit;font-family:inherit;text-align:left;cursor:pointer;flex:none"><span class="ms" style="font-size:26px;color:#2f5fd0">{{ b.icon }}</span><span style="flex:1;line-height:1.3">{{ b.label }}</span><span style="width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #cfdcf0;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:24px;color:#2f5fd0">{{ b.chev }}</span></span></button></sc-if>
+<sc-if value="{{ b.isReqHead }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:12px;background:#eef4ff;border-radius:18px;padding:12px 14px"><span style="width:52px;height:52px;border-radius:14px;background:#2563eb;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:30px;color:#fff">assignment</span></span><span style="display:flex;flex-direction:column"><b style="font-size:19px;line-height:1.3">{{ b.k }}</b><span style="font-size:13px;color:#5a6676">{{ b.s }}</span></span></div></sc-if>
+<sc-if value="{{ b.isReqCard }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #dbe6f7;border-radius:18px;background:#fff;overflow:hidden;flex:none"><div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f7f9fd;border-bottom:1px solid #e3e9f3"><b style="font-size:16px;color:#2563eb">{{ b.n }}</b><span style="font-size:14px;font-weight:700;background:{{ b.tbg }};color:{{ b.tfg }};border-radius:99px;padding:2px 14px">{{ b.tag }}</span></div><div style="padding:12px 14px;display:flex;flex-direction:column;gap:12px"><sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="4"><div style="display:flex;align-items:flex-start;gap:12px"><span class="ms" style="font-size:26px;color:#1a76d2;margin-top:2px">{{ r.ic }}</span><span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:14px;color:#5a6676">{{ r.l }}</span><span style="font-size:15px;font-weight:600;line-height:1.35">{{ r.v }}</span></span></div></sc-for></div></div></sc-if>
+<sc-if value="{{ b.isIcdAdd }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;flex:none"><div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:8px"><label style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:14px;font-weight:600">ICD-10 Code</span><sc-raw-select value="{{ b.code }}" sc-camel-on-change="{{ b.onCode }}" style="height:52px;border:2px solid #cfdcf0;border-radius:12px;background:#fff;font:inherit;font-size:14px;padding:0 6px;width:100%"><sc-for list="{{ b.codeOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select></label><label style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:14px;font-weight:600">ประเภท ICD-10</span><sc-raw-select value="{{ b.type }}" sc-camel-on-change="{{ b.onType }}" style="height:52px;border:2px solid #cfdcf0;border-radius:12px;background:#fff;font:inherit;font-size:14px;padding:0 6px;width:100%"><sc-for list="{{ b.typeOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select></label></div><button sc-camel-on-click="{{ b.add }}" style="height:52px;border:2px dashed #a855f7;border-radius:12px;background:#faf5ff;color:#9333ea;font:700 15px inherit;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;opacity:{{ b.op }};cursor:pointer"><span class="ms" style="font-size:26px">add</span>เพิ่มรหัส</button></div></sc-if>
+<sc-if value="{{ b.isIcdItem }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:#f3f7ff;border:1px solid #dbe6f7;border-radius:12px;padding:8px 8px 8px 14px;flex:none"><span style="font-size:14px;line-height:1.4"><span style="color:#5a6676">รหัสโรคที่ {{ b.n }}:</span> <b style="color:#1a63d6">{{ b.code }} ({{ b.tl }})</b></span><button sc-camel-on-click="{{ b.del }}" aria-label="ลบ" style="width:44px;height:44px;border:0;border-radius:10px;background:#fde0e0;color:#d93025;display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer"><span class="ms" style="font-size:24px">delete</span></button></div></sc-if>
+<sc-if value="{{ b.isPeRow }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border:1px solid #e3e9f3;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;flex:none"><span style="font-size:15px;font-weight:600">{{ b.k }}</span><div style="display:flex;flex-wrap:wrap;gap:6px 18px"><sc-for list="{{ b.opts }}" as="o" hint-placeholder-count="3"><button sc-camel-on-click="{{ o.on }}" style="min-height:44px;border:0;background:none;color:#1c2b4a;display:flex;align-items:center;gap:8px;padding:0;font:600 15px inherit;font-family:inherit;cursor:pointer"><span style="width:26px;height:26px;border-radius:50%;border:2px solid {{ o.bd }};display:flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none"><span style="width:14px;height:14px;border-radius:50%;background:{{ o.dot }}"></span></span>{{ o.l }}</button></sc-for></div></div></sc-if>
+<sc-if value="{{ b.isDxAdd }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:6px;flex:none"><span style="font-size:15px;font-weight:600">Diagnosis (การวินิจฉัยโรค)</span><div style="display:flex;gap:8px;align-items:stretch"><input size="1" value="{{ b.v }}" sc-camel-on-change="{{ b.on }}" placeholder="Diagnosis (ข้อความ)" style="flex:1;min-width:0;height:52px;border:2px solid #cfdcf0;border-radius:12px;padding:0 12px;font:inherit;font-size:15px;box-sizing:border-box"><button sc-camel-on-click="{{ b.add }}" style="flex:none;height:52px;padding:0 14px;border:2px solid #cfdcf0;border-radius:12px;background:#f3f6fb;color:#2563eb;font:700 15px inherit;font-family:inherit;display:flex;align-items:center;gap:4px;opacity:{{ b.op }};cursor:pointer"><span class="ms" style="font-size:22px">add</span>เพิ่ม</button></div></label></sc-if>
+<sc-if value="{{ b.isDxItem }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:#f3f7ff;border:1px solid #dbe6f7;border-radius:12px;padding:6px 8px 6px 14px;flex:none"><span style="font-size:15px;line-height:1.4"><span style="color:#5a6676">ข้อความที่ {{ b.n }}:</span> <b style="color:#1a63d6">{{ b.v }}</b></span><button sc-camel-on-click="{{ b.del }}" aria-label="ลบ" style="width:44px;height:44px;border:0;border-radius:10px;background:#fde0e0;color:#d93025;display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer"><span class="ms" style="font-size:24px">delete</span></button></div></sc-if>
+<sc-if value="{{ b.isHero }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding-top:36px"><div style="width:120px;height:120px;border-radius:50%;background:{{ b.bg }};display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:72px;color:{{ b.col }}">{{ b.icon }}</span></div><div style="font-size:25px;font-weight:700;line-height:1.3">{{ b.k }}</div><div style="font-size:16px;line-height:1.6;color:#4b5a64;white-space:pre-line">{{ b.s }}</div></div></sc-if>
+<sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><div style="font-size:{{ b.fs }}px;font-weight:700;line-height:1.3;margin-top:{{ b.mt }}px">{{ b.k }}</div></sc-if>
+<sc-if value="{{ b.isP }}" hint-placeholder-val="{{ false }}"></sc-if>
+<sc-if value="{{ b.isNote }}" hint-placeholder-val="{{ false }}"><div style="background:{{ b.bg }};color:{{ b.fg }};border-radius:{{ b.rad }}px;padding:{{ b.pad }};font-size:{{ b.fs }}px;line-height:1.4;display:flex;gap:{{ b.gap }}px;align-items:center"><span class="ms" style="font-size:{{ b.isz }}px">{{ b.icon }}</span><span>{{ b.k }}</span></div></sc-if>
+<sc-if value="{{ b.isIn }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:15px;font-weight:600">{{ b.k }} <span style="color:#b3261e">{{ b.req }}</span></span><input size="1" value="{{ b.v }}" sc-camel-on-change="{{ b.on }}" placeholder="{{ b.ph }}" style="height:56px;border:2px solid {{ b.bc }};border-radius:14px;padding:0 14px;font:{{ b.font }};width:100%;box-sizing:border-box;text-align:{{ b.ta }};letter-spacing:{{ b.ls }}" data-comment-anchor="76e02d5b0d-input"></label></sc-if>
+<sc-if value="{{ b.isSel }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:15px;font-weight:600">{{ b.k }} <span style="color:#b3261e">{{ b.req }}</span></span><sc-raw-select value="{{ b.v }}" sc-camel-on-change="{{ b.on }}" style="height:56px;border:2px solid #cfdcf0;border-radius:14px;background:#fff;font:inherit;font-size:16px;padding:0 10px;width:100%"><sc-for list="{{ b.opts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></sc-raw-select></label></sc-if>
+<sc-if value="{{ b.isTa }}" hint-placeholder-val="{{ false }}"><label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:15px;font-weight:600">{{ b.k }}</span><textarea rows="1" value="{{ b.v }}" sc-camel-on-change="{{ b.on }}" placeholder="{{ b.ph }}" style="height:52px;min-height:52px;border:2px solid #cfdcf0;border-radius:14px;padding:10px 12px;font:inherit;font-size:15px;line-height:1.5;resize:none"></textarea></label></sc-if>
+<sc-if value="{{ b.isKv }}" hint-placeholder-val="{{ false }}"><div style="background:#eef4fb;border-radius:16px;padding:2px 14px;display:flex;flex-direction:column"><sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="3"></sc-for></div></sc-if>
+<sc-if value="{{ b.isChips }}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center" data-comment-anchor="35d9399ddb-div"><sc-for list="{{ b.chips }}" as="h" hint-placeholder-count="3"><button sc-camel-on-click="{{ h.on }}" style="min-height:46px;padding:4px 14px;border:2px solid #2f5fd0;border-radius:99px;background:{{ h.bg }};color:{{ h.fg }};font-size:14px;font-weight:700">{{ h.label }}</button></sc-for></div></sc-if>
+<sc-if value="{{ b.isBtns }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:{{ b.jc }}"><sc-for list="{{ b.btns }}" as="x" hint-placeholder-count="2"><button sc-camel-on-click="{{ x.on }}" style="flex:{{ b.fl }};min-height:{{ b.mh }}px;border:2px solid {{ x.bc }};border-radius:14px;background:{{ x.bg }};color:{{ x.fg }};font-size:{{ b.fz }}px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;padding:{{ b.px }};opacity:{{ x.op }}" data-comment-anchor="0cc1da7f7c-button"><span class="ms" style="font-size:24px">{{ x.icon }}</span>{{ x.label }}</button></sc-for></div></sc-if>
+<sc-if value="{{ b.isCard }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid {{ b.bc }};border-radius:18px;background:#fff;padding:12px 14px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><span style="font-size:17px;font-weight:700;line-height:1.3">{{ b.t }}</span><sc-if value="{{ b.tag }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:700;background:{{ b.tbg }};color:{{ b.tfg }};border-radius:99px;padding:2px 10px;white-space:nowrap">{{ b.tag }}</span></sc-if></div><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="font-size:13px;color:#4b5a64;line-height:1.5">{{ b.s }}</div><div style="display:flex;gap:2px"><sc-for list="{{ b.ib }}" as="i" hint-placeholder-count="0"><button sc-camel-on-click="{{ i.on }}" aria-label="{{ i.l }}" style="width:30px;height:30px;border:0;background:none;color:{{ i.c }};display:flex;align-items:center;justify-content:center;padding:0"><span class="ms" style="font-size:22px">{{ i.icon }}</span></button></sc-for></div></div><sc-if value="{{ b.btns.length }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px"><sc-for list="{{ b.btns }}" as="x" hint-placeholder-count="1"><button sc-camel-on-click="{{ x.on }}" style="flex:1;min-height:50px;border:2px solid {{ x.bc }};border-radius:12px;background:{{ x.bg }};color:{{ x.fg }};font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;opacity:{{ x.op }}"><span class="ms" style="font-size:24px">{{ x.icon }}</span>{{ x.label }}</button></sc-for></div></sc-if></div></sc-if>
+<sc-if value="{{ b.isVideo }}" hint-placeholder-val="{{ false }}"><div style="height:{{ b.h }}px;flex:none;border-radius:18px;background:repeating-linear-gradient(45deg,#1c2a31 0 10px,#22323a 10px 20px);position:relative;display:flex;align-items:center;justify-content:center"><span style="font:500 12px 'IBM Plex Mono',monospace;color:#9fb1ba">วิดีโอผู้ป่วย</span><span style="position:absolute;left:10px;top:10px;background:rgba(0,0,0,.6);color:#fff;border-radius:10px;padding:4px 10px;font-size:14px">{{ b.k }}</span><sc-if value="{{ b.startOn }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ b.startGo }}" style="min-height:56px;padding:0 18px;border:0;border-radius:99px;background:#1f9d4a;color:#fff;font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 8px 20px rgba(0,0,0,.35)"><span class="ms" style="font-size:28px">videocam</span>เริ่มต้นประชุมทางวิดีโอ</button></sc-if></div></sc-if>
+<sc-if value="{{ b.isKpi }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px"><sc-for list="{{ b.kpis }}" as="k" hint-placeholder-count="4"><div style="border-radius:16px;background:#fff;border:2px solid #e3e9f1;padding:10px;display:flex;align-items:center;gap:10px"><span style="width:46px;height:46px;border-radius:50%;background:{{ k.bg }};display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:28px;color:{{ k.fg }}">{{ k.icon }}</span></span><span style="display:flex;flex-direction:column;min-width:0"><span style="font-size:13px;color:#4b5a64;line-height:1.25">{{ k.l }}</span><span style="display:flex;align-items:baseline;gap:4px"><b style="font-size:26px;line-height:1.1;color:{{ k.fg }}">{{ k.v }}</b><span style="font-size:13px;color:#6b7a90">เคส</span></span></span></div></sc-for></div></sc-if>
+<sc-if value="{{ b.isBars }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #e3e9f1;border-radius:16px;background:#fff;padding:14px"><div style="font-size:15px;font-weight:700;margin-bottom:10px">ปิดสิทธิ์สำเร็จ 30 วันล่าสุด</div><div style="display:flex;gap:6px"><div style="display:flex;flex-direction:column;justify-content:space-between;height:120px;font-size:12px;color:#6b7a90;text-align:right"><span>20</span><span>10</span><span>0</span></div><div style="flex:1;min-width:0"><div style="position:relative;height:120px;border-left:1px solid #cfd6df;border-bottom:1px solid #cfd6df;display:flex;align-items:flex-end;gap:2px;padding:0 2px;background:repeating-linear-gradient(to top,transparent 0 59px,#eef1f4 59px 60px)"><sc-for list="{{ b.bars }}" as="x" hint-placeholder-count="30"><span style="flex:1;height:{{ x.h }}px;background:#22a06b;border-radius:2px 2px 0 0"></span></sc-for></div><div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7a90;margin-top:4px"><span>{{ b.d0 }}</span><span>{{ b.d1 }}</span><span>{{ b.d2 }}</span></div></div></div></div></sc-if>
+<sc-if value="{{ b.isStat }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #e3e9f1;border-radius:16px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:12px"><div style="font-size:15px;font-weight:700">สรุปสถานะ</div><div style="display:flex;justify-content:center"><div style="width:150px;height:150px;border-radius:50%;background:{{ b.donut }};display:flex;align-items:center;justify-content:center"><div style="width:100px;height:100px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:12px;color:#6b7a90">รวมทั้งหมด</span><b style="font-size:24px;line-height:1.1;color:#1c3d94">{{ b.total }}</b><span style="font-size:12px;color:#6b7a90">เคส</span></div></div></div><sc-for list="{{ b.stat }}" as="s" hint-placeholder-count="3"><div style="border:1.5px solid #dbe6f3;background:#f6f9fe;border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:13px"><span style="width:10px;height:10px;border-radius:50%;background:{{ s.c }};flex:none"></span><b style="flex:1;color:{{ s.c }}">{{ s.l }}</b><b>{{ s.n }} เคส</b><span style="font-size:13px;color:#6b7a90;min-width:46px;text-align:right">{{ s.p }}%</span></div></sc-for></div></sc-if>
+<sc-if value="{{ b.isTbl }}" hint-placeholder-val="{{ false }}"><div style="border:2px solid #cfdcf0;border-radius:16px;background:#fff;padding:2px 12px"><sc-for list="{{ b.tbl }}" as="t" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #dbe2e4"><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:700;line-height:1.3"><span style="font:600 14px 'IBM Plex Mono',monospace;color:#1c2b4a">HN {{ t.hn }}</span> {{ t.nm }}</span><span style="font-size:13.5px;color:#4b5a64;line-height:1.4">เลขเคส {{ t.cs }} · แพทย์ {{ t.dc }}</span><span style="font-size:13.5px;color:#4b5a64;line-height:1.4">เวลาปิดสิทธิ์ {{ t.tm }}</span><span style="font-size:13.5px;color:#4b5a64;line-height:1.4">Authen Code {{ t.au }}</span></span><span style="font-size:14px;font-weight:700;border-radius:99px;padding:2px 10px;background:{{ t.bg }};color:{{ t.fg }}">{{ t.s }}</span></div></sc-for><sc-if value="{{ b.tblEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;text-align:center;color:#4b5a64;font-size:15px">ไม่พบรายการ</div></sc-if></div></sc-if>
+</sc-for>
+</div>
+<sc-if value="{{ cta }}" hint-placeholder-val="{{ false }}"><div style="flex:none;padding:12px 20px 18px;border-top:1px solid #dbe2e4"><button sc-camel-on-click="{{ cta.on }}" style="width:100%;height:64px;border:0;border-radius:16px;background:{{ cta.bg }};color:#fff;font-size:18px;font-weight:700;opacity:{{ cta.op }}">{{ cta.label }}</button></div></sc-if>
+<sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}"><div style="flex:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid #cfdcf0;background:#fff;padding:6px 2px 14px"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="4"><button sc-camel-on-click="{{ n.on }}" style="min-height:64px;border:0;background:none;color:{{ n.fg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13px;font-weight:{{ n.w }};line-height:1.2;padding:0 2px"><span class="ms" style="font-size:30px">{{ n.icon }}</span>{{ n.label }}</button></sc-for></div></sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="">
+class Component extends DCLogic {
+  init = { s:'login', hist:[], cid:'', pin:'', otp:'', secs:59, utab:'pid', hospital:'a', guest:{ unit:'a', right:'doctor' }, gstate:'none',
+    adate:null, hopen:{}, hsec:{}, htab:'his', histOpen:false, vitOpen:false, callOn:false, vit:{ bp:'0/0', hr:'0', temp:'0', o2:'0', rr:'0', wt:'55', ht:'155' }, pi:'', phx:'', desc:'', dnote:'', alg:{ drug:'unk', food:'unk', smoke:'unk', alc:'unk' }, algN:{}, peOpen:false, dxList:[], dxIn:'', pex:{}, pe:'', scalOpen:false, sfCal:false, ssm:0, sclin:'all', sfm:0, aFrom:null, aTo:null, apend:false, acal:false, acm:0, astat:'all', aq:'', cur:null, vbig:false, ttab:'gen', etab:'rx', anam:null, dx:'', icd:'', icds:[], icdSel:'', icdType:'principal', draft:false,
+    mtab:'drug', mq:'', mpick:null, mqty:'', mtime:'หลังอาหาร', mmethod:'รับประทาน', mreason:'', mnote:'', orders:[], rxOk:false,
+    oe:null, certTrue:true, certRest:false, certOther:false, restFrom:'', restTo:'', certOtherT:'', restOk:true, days:'1', certDetail:'', opinion:'', certSaved:false, doneIds:[], vn:'', pq:'', pmode:'record', pt:null, dq:'', dst:'all',
+    shifts:[{ id:1, day:26, clinic:'อายุรกรรม', type:'เช้า', from:'09:00', to:'12:00' }, { id:2, day:28, clinic:'อายุรกรรม', type:'บ่าย', from:'13:00', to:'16:00' }], sf:{ id:null, day:27, clinic:'อายุรกรรม', type:'เช้า', from:'09:00', to:'12:00' }, stype:'all' };
+  state = { ...this.init, bk:null };
+  componentDidMount() {
+    this.ld();
+    this.iv = setInterval(() => { this.ld(); if (this.state.s==='otp' && this.state.secs>0) this.setState(s => ({ secs:s.secs-1 })); }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  ld() { try { const v = JSON.parse(localStorage.getItem('da-booking') || 'null'); if (JSON.stringify(v) !== JSON.stringify(this.state.bk)) this.setState({ bk:v }); } catch (e) {} }
+  go = (s) => this.setState(st => ({ s, hist:[...st.hist, st.s] }));
+  back = () => this.setState(st => st.hist.length ? { s:st.hist[st.hist.length-1], hist:st.hist.slice(0,-1) } : {});
+  renderVals() {
+    const st = this.state, s = st.s, bk = st.bk;
+    const KINDS = ['DxAdd','DxItem','PeRow','OrdHead','OrdSum','IcdAdd','IcdItem','ReqHead','ReqCard','Acc','Seg','HTabs','HVisit','RxDoc','ShRow','HRow','Chk','Order','Vit','Radio','PInfo','VStart','Grid','SCal','Two','Cal','Sched','Head','Tabs','Hosp','Hero','H','P','Note','In','Sel','Ta','Kv','Chips','Btns','Card','Video','Kpi','Bars','Stat','Tbl'];
+    const B = (kind, p = {}) => { const o = { btnLabel:'', k:'', s:'', v:'', ph:'', req:'', on:()=>{}, opts:[], rows:[], chips:[], btns:[], bars:[], stat:[], tbl:[], kpis:[], tblEmpty:false, icon:'', col:'', bg:'', fg:'', bc:'#2f5fd0', t:'', tag:'', tbg:'', tfg:'', ib:[], fs:22, mt:0, h:190, font:"600 15px 'IBM Plex Sans Thai'", ta:'left', ls:'normal', ...p }; if (kind==='Seg') o.cols = p.two ? 2 : 3;
+    if (kind==='Btns') { const s = !!p.sm; Object.assign(o, { jc:s?'flex-end':'flex-start', fl:s?'0 0 auto':'1 1 40%', mh:s?40:54, fz:s?15:17, px:s?'0 12px':'0 6px' }); } if (kind==='Note') { const s = !!p.sm; Object.assign(o, { rad:s?10:14, pad:s?'6px 10px':'12px 14px', fs:s?13:16, gap:s?6:10, isz:s?18:26 }); } KINDS.forEach(x => { o['is'+x] = x===kind; }); return o; };
+    const f = k => e => this.setState({ [k]: e.target.value });
+    const dg = k => e => this.setState({ [k]: e.target.value.replace(/[^0-9]/g,'') });
+    const btn = (label, icon, on, primary, op = 1) => ({ label, icon, on, bg: primary?'#2f5fd0':'#fff', fg: primary?'#fff':'#2f5fd0', bc:'#2f5fd0', op });
+    const dbtn = (label, icon, on, op = 1) => ({ label, icon, on, bg:'#fff', fg:'#b3261e', bc:'#b3261e', op });
+    const chips = (arr, cur, set) => B('Chips', { chips: arr.map(([k, l]) => ({ label:l, on:() => set(k), bg: cur===k?'#2f5fd0':'#fff', fg: cur===k?'#fff':'#1c3d94' })) });
+    const kv = (rows) => B('Kv', { rows: rows.map(([k, v, col]) => ({ k, v, col: col || '#1c2b4a', fs:18 })) });
+    const sel = (k, v, opts, on) => B('Sel', { k, v, opts:opts.map(([a, b]) => ({ v:a, l:b })), on, req:'*' });
+    const inp = (k, v, on, ph, req) => B('In', { k, v, on, ph, req: req ? '*' : '' });
+    const ICDS = [['J02.9','J02.9 คออักเสบเฉียบพลัน'],['J06.9','J06.9 ติดเชื้อทางเดินหายใจส่วนบน'],['R51','R51 ปวดศีรษะ'],['I10','I10 ความดันโลหิตสูง'],['A01','A01 ไข้ไทฟอยด์'],['M25.56','M25.56 ปวดเข่า']];
+    const ICT = [['principal','Primary Diagnosis'],['comorbid','Comorbidity'],['complication','Complication'],['other','Other']];
+    const ICTL = Object.fromEntries(ICT);
+    const icdBlocks = () => {
+      const setL = arr => this.setState({ icds:arr, icd:arr[0] ? arr[0].code : '' });
+      const avail = ICDS.filter(([v]) => !st.icds.some(x => x.code===v));
+      const can = !!st.icdSel;
+      return [B('IcdAdd', { code:st.icdSel, type:st.icdType, onCode:e => this.setState({ icdSel:e.target.value }), onType:e => this.setState({ icdType:e.target.value }), codeOpts:[{ v:'', l:'เลือก ICD-10' }, ...avail.map(([v, l]) => ({ v, l }))], typeOpts:ICT.map(([v, l]) => ({ v, l })), op: can ? 1 : .5, add:() => { if (!can) return; setL([...st.icds, { code:st.icdSel, type:st.icdType }]); this.setState({ icdSel:'', icdType:'comorbid' }); } }),
+        ...st.icds.map((r, i) => B('IcdItem', { n:i+1, code:r.code, tl:ICTL[r.type], del:() => { setL(st.icds.filter((_, j) => j!==i)); } }))];
+    };
+    const tagOf = { wait:['รอคิวตรวจ','#fbefdc','#6e420a'], unpaid:['ตรวจแล้ว · รอชำระ','#e1ecfb','#1c3d94'], paid:['ตรวจแล้ว · ชำระแล้ว','#e6f3ea','#1d5a37'], cancel:['ยกเลิกนัด','#fbe4e2','#8c1d18'] };
+
+    // data
+    const base = [
+      { id:'s1', n:'ประยุทธ มีสุข', t:'10:40', day:26, hn:'650231', right:'ประกันสังคม', type:'ตรวจใหม่', cc:'ปวดเข่า', st:'wait' },
+      { id:'s3', n:'มาลี สุขใจ', t:'09:20', day:26, hn:'650102', right:'ชำระเงินเอง', type:'ตรวจใหม่', cc:'เวียนหัว', st:'paid' },
+      { id:'s4', n:'อำพร ดีเลิศ', t:'09:40', day:26, hn:'650377', right:'ประกันสังคม', type:'ตามนัดเดิม', cc:'ติดตามเบาหวาน', st:'cancel' }];
+    const live = bk && bk.confirmed ? [{ id:'live', live:true, n:'สมศรี ใจงาม', t:bk.time || '10:30', day:bk.date || 26, hn:'650488', right:'ประกันสังคม', type:'ตรวจใหม่', cc:[bk.chips, bk.symptom].filter(Boolean).join(' · ') || '—', st: st.doneIds.includes('live') ? 'unpaid' : 'wait', cert: bk.cert !== false }] : [];
+    const all = [...live, ...base];
+    const adate = st.adate || (live[0] ? live[0].day : 26);
+    const cur = st.cur ? (all.find(x => x.id===st.cur.id) || st.cur) : {};
+    const blocks = [];
+    let cta = null;
+    const C = (label, on, bg, op = 1) => ({ label, on, bg: bg || '#2f5fd0', op });
+    const mainTabs = ['appt','pts','dash','shifts'];
+
+    if (s==='login') { blocks.push(B('Hero', { icon:'medical_services', bg:'#e1ecfb', col:'#2f5fd0', k:'Doctor Assist', s:'สำหรับบุคลากร · แพทย์' })); cta = C('Continue with Provider ID', () => this.go('pid')); }
+    if (s==='pid') { blocks.push(B('H', { k:'เข้าสู่ระบบด้วย Provider ID', fs:25 }), B('P', { k:'กรอกเลขบัตรประชาชนและ PIN' }), inp('เลขบัตรประชาชน', st.cid, dg('cid'), '13 หลัก', true), inp('PIN', st.pin, dg('pin'), '6 หลัก', true)); cta = C('เข้าสู่ระบบ', () => this.setState({ s:'otp', hist:['login','pid'], secs:59, otp:'' })); }
+    if (s==='otp') {
+      blocks.push(B('H', { k:'ระบุรหัส OTP', fs:25 }), B('P', { k:'ส่งรหัสไปที่แอปหมอพร้อม หรือ LINE หมอพร้อมแล้ว' }),
+        B('In', { v:st.otp, on:dg('otp'), ph:'------', font:"600 30px 'IBM Plex Mono'", ta:'center', ls:'.3em' }),
+        B('Note', { icon:'timer', k: st.secs>0 ? 'ระบุรหัสภายใน '+st.secs+' วินาที' : 'หมดเวลา กดส่งรหัสอีกครั้ง', bg: st.secs>0?'#eef4fb':'#fbe4e2', fg: st.secs>0?'#4b5a64':'#8c1d18' }),
+        B('Btns', { btns:[btn('ส่งรหัสอีกครั้ง','refresh', () => { if (st.secs===0) this.setState({ secs:59, otp:'' }); }, false, st.secs===0?1:.4)] }));
+      cta = C('ยืนยัน', () => this.setState({ s:'user', hist:[] }));
+    }
+    const gname = { nurse:'พยาบาล', doctor:'แพทย์', pharm:'เภสัช' }[st.guest.right];
+    const uname = st.guest.unit==='a' ? 'โรงพยาบาลทดสอบ Telemedicine' : 'รพ.ศรีสุข';
+    if (s==='user') {
+      const enter = () => this.setState({ s:'appt', hist:[] });
+      blocks.push(B('Head', { k:'ยินดีต้อนรับ! นางสาว สุกัญญา พิมพ์ตีข้อ', on:() => this.setState({ s:'login', hist:[] }) }), B('Tabs', { chips:[['pid','PROVIDER ID'],['guest','GUEST']].map(([k, l]) => ({ label:l, on:() => this.setState({ utab:k }), bg: st.utab===k?'#2f5fd0':'#fff', fg: st.utab===k?'#fff':'#1c3d94' })) }));
+      if (st.utab==='pid') blocks.push(B('Hosp', { bc:'#cfdcf0', t:'โรงพยาบาลทดสอบ Telemedicine', s:'DB605', tag:'แพทย์', btnLabel:'เข้าใช้งาน', on:enter }));
+      else {
+        blocks.push(B('Btns', { btns:[btn('รายการขอสิทธิ์ผู้ใช้งาน','list_alt', () => this.setState({ s:'reqlist', hist:['user'] }), false)], sm:true }));
+        if (st.gstate!=='none') blocks.push(B('Hosp', { bc: st.gstate==='ok'?'#2e7d4f':'#cfdcf0', t:'โรงพยาบาลทดสอบ Telemedicine', s:'DB605 · '+(st.gstate==='ok'?'อนุมัติแล้ว':'รออนุมัติ'), tag:gname, btnLabel: st.gstate==='ok' ? 'เข้าใช้งาน' : 'จำลอง: อนุมัติคำขอ', on: st.gstate==='ok' ? enter : () => this.setState({ gstate:'ok' }) }));
+        cta = C('ขอสิทธิ์เข้าใช้งาน', () => this.go('ask'), '#2f5fd0');
+      }
+    }
+    if (s==='reqlist') {
+      const hosp = 'โรงพยาบาลทดสอบ Telemedicine', who = 'นางสาว สุกัญญา พิมพ์ตีข้อ';
+      const reqs = [['admin','6 กรกฎาคม 2569','ok'],['เภสัช','6 กรกฎาคม 2569','ok'],['พยาบาล','14 กรกฎาคม 2569','ok'],['แพทย์','20 ตุลาคม 2569', st.gstate==='ok' ? 'ok' : 'wait']];
+      blocks.push(B('ReqHead', { k:'รายการขอสิทธิ์ผู้ใช้งาน', s:'ทั้งหมด '+reqs.length+' รายการ' }));
+      reqs.forEach((r, i) => blocks.push(B('ReqCard', { n:'คำขอ #'+(i+1), tag: r[2]==='ok' ? 'อนุมัติ' : 'รออนุมัติ', tbg: r[2]==='ok' ? '#e3f5e8' : '#fbefdc', tfg: r[2]==='ok' ? '#1d7a3f' : '#6e420a', rows:[{ ic:'apartment', l:'หน่วยบริการ', v:hosp }, { ic:'badge', l:'สิทธิ์เข้าใช้งาน', v:r[0] }, { ic:'person', l:'ชื่อผู้ขอสิทธิ์', v:who }, { ic:'calendar_month', l:'วันที่ส่งคำขอสิทธิ์', v:r[1] }] })));
+      cta = C('ปิด', () => this.setState({ s:'user', hist:[] }), '#1a76d2');
+    }
+    if (s==='ask') { blocks.push(B('H', { k:'ขอสิทธิ์เข้าใช้งาน', fs:25 }), sel('หน่วยบริการ', st.guest.unit, [['a','โรงพยาบาลทดสอบ Telemedicine'],['b','รพ.ศรีสุข']], e => this.setState({ guest:{ ...st.guest, unit:e.target.value } })), sel('สิทธิ์ที่ต้องการ', st.guest.right, [['doctor','แพทย์'],['nurse','พยาบาล'],['pharm','เภสัช']], e => this.setState({ guest:{ ...st.guest, right:e.target.value } }))); cta = C('ส่งคำขอ', () => this.setState({ gstate:'pending', s:'user', hist:[] })); }
+
+    // appointments
+    if (s==='appt') {
+      const rFrom = st.aFrom ?? 26, rTo = st.aTo ?? Math.max(27, live[0] ? live[0].day : 27);
+      const OFFd = [0,31,61], DIMd = [31,30,31], acm = st.acm || 0;
+      const fmtd = n => { const m = n<=31?0:n<=61?1:2; return String(n-OFFd[m]).padStart(2,'0')+'/'+(10+m)+'/2569'; };
+      const pickD = n => { if (!st.apend) this.setState({ aFrom:n, aTo:n, apend:true }); else this.setState({ aFrom:Math.min(st.aFrom,n), aTo:Math.max(st.aFrom,n), apend:false, acal:false }); };
+      const cells = [...Array.from({ length:new Date(2026,9+acm,1).getDay() }, () => ({ label:'', on:()=>{}, bg:'transparent', fg:'#22313b' })), ...Array.from({ length:DIMd[acm] }, (_, i) => { const n = OFFd[acm]+i+1, end = n===rFrom || n===rTo, mid = n>rFrom && n<rTo; return { label:String(i+1), on:()=>pickD(n), bg:end?'#2f5fd0':mid?'#e1ecfb':'transparent', fg:end?'#fff':'#22313b' }; })];
+      const day = all.filter(x => x.day>=rFrom && x.day<=rTo);
+      const q = st.aq.trim().toLowerCase();
+      const cnt = k => day.filter(x => k==='all' ? true : k==='done' ? (x.st==='unpaid'||x.st==='paid') : x.st===k).length;
+      const stl = [['all','ทั้งหมด'],['wait','รอคิวตรวจ'],['done','ตรวจแล้ว'],['unpaid','รอชำระ'],['paid','ชำระแล้ว'],['cancel','ยกเลิก']];
+      const shown = day.filter(x => (st.astat==='all' ? true : st.astat==='done' ? (x.st==='unpaid'||x.st==='paid') : x.st===st.astat) && (!q || x.n.toLowerCase().includes(q) || x.hn.includes(q)));
+      blocks.push(B('H', { k:'ตารางนัดหมาย', fs:26 }), B('Cal', { label:'เลือกวันที่', text: rFrom===rTo ? fmtd(rFrom) : fmtd(rFrom)+' – '+fmtd(rTo), open:st.acal, tog:() => this.setState({ acal:!st.acal, apend:false }), month:['ตุลาคม','พฤศจิกายน','ธันวาคม'][acm]+' 2569', prev:() => { if (acm>0) this.setState({ acm:acm-1 }); }, next:() => { if (acm<2) this.setState({ acm:acm+1 }); }, pOp: acm>0?1:.3, nOp: acm<2?1:.3, cells, hint: st.apend ? 'เลือกวันสิ้นสุด' : 'แตะวันเริ่มต้น แล้วแตะวันสิ้นสุด' }),
+        B('Sel', { k:'สถานะ', v:st.astat, on:f('astat'), req:'', opts: stl.map(([k, l]) => ({ v:k, l:l+' ('+cnt(k)+')' })) }),
+        inp('ค้นหา', st.aq, f('aq'), 'ชื่อ-สกุล / HN'), B('P', { k:'เริ่มตรวจได้เมื่อถึงเวลานัด ถ้ายังไม่ถึงเวลา หรือเลยเวลานัดเกิน 5 นาที จะเข้าห้องตรวจไม่ได้' }));
+      shown.forEach(x => {
+        const tg = tagOf[x.st];
+        const gray = { label:'ยังไม่ถึงเวลาตรวจ', icon:'lock_clock', on:()=>{}, bg:'#e3e6ea', fg:'#4b5a64', bc:'#cfd6df', op:1 };
+        const start = x.st==='wait' ? [btn('เริ่มตรวจ','videocam', () => this.setState({ cur:x, s:'tele', callOn:false, hist:['appt'], anam:null, dx:'', icd:'', icds:[], icdSel:'', icdType:'principal', orders:[], rxOk:false, certSaved:false, ttab:'gen', etab:'rx', mpick:null, draft:false }), true)] : x.st==='cancel' ? [gray] : [btn('ดูรายละเอียด','description', () => this.setState({ cur:x, s:'detail', hist:['appt'] }), false)];
+        const tm = String(x.t).replace(' น.',''); const [hh, mm] = tm.split(':').map(Number); const e = hh*60+mm+10; const rng = tm+' - '+String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0');
+        const dtx = x.day<=31 ? x.day+' ต.ค.' : x.day<=61 ? (x.day-31)+' พ.ย.' : (x.day-61)+' ธ.ค.';
+        blocks.push(B('Sched', { bc: x.live && x.st==='wait' ? '#2f5fd0' : '#cfdcf0', n:x.n, hnText:x.hn || 'ยังไม่มี', age:({ s1:66, s3:47, s4:71 })[x.id] || 62, dt:dtx+' 2569', range:rng, right:x.right, kind:x.type, kBg: x.type==='ตรวจใหม่' ? '#fde0ea' : '#ece6fb', kFg: x.type==='ตรวจใหม่' ? '#d81b78' : '#5b3fb0', stText:tg[0], stBg:tg[1], stFg:tg[2], sym: x.live && bk ? (bk.chips || '–') : x.cc, sdet: x.live && bk ? (bk.symptom || '–') : '–', note:'', btns:start }));
+      });
+      if (!shown.length) blocks.push(B('P', { k:'ไม่มีรายการนัดหมาย' + (bk && !bk.confirmed ? ' (มีนัดใหม่รอพยาบาลยืนยัน)' : '') }));
+    }
+    if (s==='teleIntro') blocks.push(B('VStart', { k:cur.n, s:cur.n+' · '+cur.t+' น.', on:() => this.go('tele') }));
+
+    // telemed
+    if (s==='tele') {
+      const anam = st.anam===null ? cur.cc : st.anam;
+      blocks.push(B('Video', { k:cur.n, h: st.callOn ? (st.vbig ? 300 : 150) : 230, startOn: !st.callOn, startGo: () => this.setState({ callOn:true }) }), B('Seg', { tabs:[['gen','General','person'],['med','Medicine','medication'],['eform','E-Form','description']].map(([k, l, ic]) => ({ l, ic, on:() => this.setState({ ttab:k }), bg: st.ttab===k ? '#2f5fd0' : 'transparent', fg: st.ttab===k ? '#fff' : '#1c3d94', sh: st.ttab===k ? '0 2px 6px rgba(47,95,208,.35)' : 'none' })) }));
+      if (st.ttab==='gen') {
+        blocks.push(B('H', { k:'ข้อมูลคนไข้', fs:20 }), B('PInfo', { name:cur.n, hn:cur.hn, q:'3', age:'หญิง · 62 ปี', sex:'หญิง', ageN:'62 ปี', right:'สิทธิ'+cur.right, kind:cur.type, doc:'พญ.วรรณา ใจดี', allergy:'Penicillin', dz:'ความดันโลหิตสูง', cert: cur.live ? (bk && bk.cert ? 'ต้องการ' : 'ไม่ต้องการ') : 'ไม่ต้องการ', certCol: cur.live && bk && bk.cert ? '#1f9d4a' : '#6f7d87' }),
+          B('Acc', { label:'ประวัติการรักษา', icon:'history', chev:'chevron_right', on:() => this.go('hist') }),
+          B('Acc', { label:'VITAL SIGNS', icon:'monitor_heart', chev:st.vitOpen?'expand_less':'expand_more', on:() => this.setState({ vitOpen:!st.vitOpen }) }), ...(st.vitOpen ? [B('Vit', { cells:(() => { const w = parseFloat(st.vit.wt), h = parseFloat(st.vit.ht)/100; const bmi = w>0 && h>0 ? (w/(h*h)).toFixed(2) : '–'; const setV = k => e => this.setState({ vit:{ ...st.vit, [k]:e.target.value } }); return [['BP','bp'],['HR','hr'],['TEMP','temp'],['SpO2','o2'],['RR','rr'],['Wt','wt'],['Ht','ht']].map(([l,k]) => ({ k:l, v:st.vit[k], on:setV(k), ro:false })).concat([{ k:'BMI', v:bmi, on:()=>{}, ro:true }]); })() })] : []),
+          B('Ta', { k:'CC (Chief Complaint)', v:anam, on:f('anam'), ph:'อาการสำคัญ' }), B('Ta', { k:'PI (Present Illness)', v:st.pi, on:f('pi'), ph:'PI (Present Illness)' }), B('Ta', { k:'Past History (Add)', v:st.phx, on:f('phx'), ph:'Past History (Add)' }), B('Ta', { k:'Description', v:st.desc, on:f('desc'), ph:'Description' }), B('Ta', { k:'Doctor Note (บันทึกแพทย์)', v:st.dnote, on:f('dnote'), ph:'บันทึกของแพทย์' }),
+          B('H', { k:'ประวัติแพ้ยา / แพ้อาหาร / บุหรี่ / แอลกอฮอล์', fs:19, mt:6 }),
+          B('Radio', { rows:[['drug','แพ้ยา','ไม่แพ้','แพ้','',''],['food','แพ้อาหาร','ไม่แพ้','แพ้','',''],['smoke','สูบบุหรี่','ไม่สูบ','สูบ','ความถี่ในการสูบ','เช่น 5 มวน/วัน'],['alc','ดื่มแอลกอฮอล์','ไม่ดื่ม','ดื่ม','ความถี่ในการดื่ม','เช่น 3–5 ครั้ง/สัปดาห์']].map(([k,l,no,yes,ph,hint]) => ({ k:l, hint, ph, showIn: st.alg[k]==='yes', v:st.algN[k]||'', onIn:e => this.setState({ algN:{ ...st.algN, [k]:e.target.value } }), opts:[['unk','ไม่ทราบ'],['no',no],['yes',yes]].map(([v2,t2]) => ({ l:t2, on:() => this.setState({ alg:{ ...st.alg, [k]:v2 } }), bg: st.alg[k]===v2 ? ({ unk:'#6b7a90', no:'#1f9d4a', yes:'#d93025' })[v2] : 'transparent', fg: st.alg[k]===v2 ? '#fff' : '#4b5a64', sh: st.alg[k]===v2 ? '0 2px 6px rgba(0,0,0,.2)' : 'none' })) })) }),
+          B('Acc', { label:'Physical Examination (การตรวจร่างกาย)', icon:'stethoscope', open:st.peOpen, chev:st.peOpen?'expand_less':'expand_more', on:() => this.setState({ peOpen:!st.peOpen }) }), ...(st.peOpen ? [['head','ศีรษะและคอ (Head & Neck)'],['eyes','ตา (Eyes)'],['ears','หู (Ears)'],['nose','จมูก (Nose)'],['throat','คอ (Throat)'],['ext','แขนขา (Extremities)'],['skin','ผิวหนัง (Skin)']].map(([k, l]) => B('PeRow', { k:l, opts:[['nt','ไม่ได้ตรวจ'],['ok','ปกติ'],['ab','ไม่ปกติ']].map(([v, t]) => { const on = (st.pex[k] || 'nt')===v; return { l:t, on:() => this.setState({ pex:{ ...st.pex, [k]:v } }), bd: on ? '#2563eb' : '#c7ced8', dot: on ? '#2563eb' : 'transparent' }; }) })) : []),
+          B('H', { k:'การวินิจฉัย (แพทย์)', fs:20 }), B('DxAdd', { v:st.dxIn, on:f('dxIn'), op: st.dxIn.trim() ? 1 : .5, add:() => { const v = st.dxIn.trim(); if (!v) return; const l = [...st.dxList, v]; this.setState({ dxList:l, dxIn:'', dx:l.join(', ') }); } }), ...st.dxList.map((v, i) => B('DxItem', { n:i+1, v, del:() => { const l = st.dxList.filter((_, j) => j!==i); this.setState({ dxList:l, dx:l.join(', ') }); } })), ...icdBlocks(),
+          B('Btns', { btns:[dbtn('ล้างข้อมูล','delete', () => this.setState({ anam:'', dx:'', dxList:[], dxIn:'', icd:'', icds:[], icdSel:'', icdType:'principal', draft:false }))] }),
+          B('H', { k:'การรักษาปัจจุบัน', fs:20 }), kv([['อาการ', anam || '—'],['การวินิจฉัย', (st.dx||'—')+(st.icd?' ('+st.icd+')':'')]]));
+      }
+      if (st.ttab==='med') {
+        blocks.push(B('H', { k:'รายการสั่งการรักษา', fs:20 }), B('P', { k:'เพิ่มรายการยา เวชภัณฑ์ และบริการทางการแพทย์' }));
+        const cat = { drug:[['para','Paracetamol 500 mg'],['dex','Dextromethorphan 15 mg'],['amox','Amoxicillin 500 mg']], supply:[['s1','ผ้าก๊อซปลอดเชื้อ'],['s2','พลาสเตอร์ปิดแผล']], svc:[['v1','ตรวจเลือด FBS'],['v2','เอกซเรย์ปอด']], other:[['o1','ค่าจัดส่งยา']] };
+        const lab = { drug:'สั่งยา', supply:'เวชภัณฑ์', svc:'บริการทางการแพทย์', other:'บริการอื่น ๆ' };
+        const list = cat[st.mtab].filter(x => !st.mq || x[1].toLowerCase().includes(st.mq.toLowerCase()));
+        const pick = cat[st.mtab].find(x => x[0]===st.mpick);
+        blocks.push(B('Sel', { k:'ประเภทรายการ', v:st.mtab, on:e => this.setState({ mtab:e.target.value, mpick:null, mq:'' }), req:'', opts:Object.keys(lab).map(k => ({ v:k, l:lab[k] })) }), ...(st.mtab==='drug' ? [B('Acc', { label:'ประวัติการสั่งยา', icon:'history', chev:'chevron_right', on:() => this.go('mhist') })] : []),
+          B('Sel', { k:'ค้นหา'+lab[st.mtab], v:st.mpick || '', on:e => this.setState({ mpick:e.target.value || null }), req:'', opts:[{ v:'', l:'เลือก'+lab[st.mtab] }, ...cat[st.mtab].map(x => ({ v:x[0], l:x[1] }))] }));
+        if (pick && pick[0]==='amox') blocks.push(B('Note', { icon:'warning', k:'ผู้ป่วยแพ้ Penicillin ระวังการสั่ง Amoxicillin', bg:'#fdf6f8', fg:'#8a3a52' }));
+        if (pick) {
+          blocks.push(B('Card', { bc:'#7aa5f0', t:pick[1], s:'ราคา: 17 ฿ / '+(st.mtab==='drug'?'เม็ด':'หน่วย'), tag:'ในบัญชี', tbg:'#1f7a3a', tfg:'#fff' }));
+          blocks.push(inp('จำนวน'+(st.mtab==='drug'?' (เม็ด/กล่อง)':''), st.mqty, dg('mqty'), 'เช่น 20', true));
+          if (st.mtab==='drug') blocks.push(B('Sel', { k:'เวลาการใช้ยา', v:st.mtime, on:f('mtime'), req:'', opts:['เวลามีอาการ','ก่อนอาหาร','หลังอาหาร','ก่อนนอน'].map(v => ({ v, l:v })) }), B('Sel', { k:'วิธีการใช้ยา', v:st.mmethod, on:f('mmethod'), req:'', opts:['รับประทานครั้งละ 1 เม็ด','รับประทานครั้งละ 2 เม็ด','รับประทาน','ทา','หยอด'].map(v => ({ v, l:v })) }), B('Sel', { k:'เหตุผลการใช้ยา (EA)', v:st.mreason, on:f('mreason'), req:'', opts:['','บรรเทาอาการ','ลดไข้','ติดเชื้อ','อื่น ๆ'].map(v => ({ v, l:v || 'เลือกเหตุผล' })) }));
+          blocks.push(inp('หมายเหตุเพิ่มเติม (ถ้ามี)', st.mnote, f('mnote'), ''));
+          blocks.push(B('Btns', { btns:[btn('เพิ่ม'+lab[st.mtab]+'ในรายการ','add', () => { this.setState({ orders:[...st.orders, { id:Date.now(), key:pick[0], type:st.mtab, name:pick[1], qty:st.mqty||'1', extra: st.mtab==='drug' ? st.mmethod+' · '+st.mtime : st.mnote, reason:st.mreason }], mpick:null, mqty:'', mreason:'', mnote:'', rxOk:false }); }, true, 1)] }));
+        }
+        blocks.push(B('OrdHead', { n:st.orders.length }));
+        const hs = s => [...String(s)].reduce((x, c) => x + c.charCodeAt(0), 0);
+        let sumAll = 0, inN = 0, outN = 0;
+        st.orders.forEach((o, i) => { const h = hs(o.key || o.name), price = 5 + (h % 40), acct = h % 3 !== 0, q = Number(o.qty) || 1, tot = q * price, parts = String(o.extra || '').split(' · ');
+          sumAll += tot; acct ? inN++ : outN++;
+          blocks.push(B('Order', { n:i+1, name:o.name, acctText: acct ? 'ในบัญชี' : 'นอกบัญชี', acctIc: acct ? 'check_circle' : 'cancel', acctBg: acct ? '#dcf7e3' : '#fde0e0', acctFg: acct ? '#0f7b2f' : '#c4161c', acctIcFg: acct ? '#14a44d' : '#e5252b', qty:o.qty, unit: o.type==='drug' ? 'เม็ด' : 'หน่วย', price:price+'฿', method: o.type==='drug' ? (parts[0] || '-') : '-', time: o.type==='drug' ? (parts[1] || '-') : '-', reason:o.reason || '-', note: o.type==='drug' ? '-' : (o.extra || '-'), total:tot.toFixed(2)+'฿', edit:() => this.setState({ oe:{ id:o.id, qty:String(o.qty), extra:o.extra || '' }, s:'oedit', hist:[...st.hist, 'tele'] }), del:() => this.setState({ orders:st.orders.filter(x => x.id!==o.id), rxOk:false }) })); });
+        if (st.orders.length) blocks.push(B('OrdSum', { total:sumAll.toFixed(2)+' บาท', inN:inN+' รายการ', outN:outN+' รายการ' }));
+        if (!st.orders.length) blocks.push(B('P', { k:'ไม่พบข้อมูลการสั่งยา' }));
+      }
+      if (st.ttab==='eform') {
+        blocks.push(B('Seg', { two:true, tabs:[['rx','ใบสั่งยา','description'],['cert','ใบรับรองแพทย์','clinical_notes']].map(([k, l, ic]) => ({ l, ic, on:() => this.setState({ etab:k }), bg: st.etab===k ? '#2f5fd0' : 'transparent', fg: st.etab===k ? '#fff' : '#1c3d94', sh: st.etab===k ? '0 2px 6px rgba(47,95,208,.35)' : 'none' })) }));
+        if (st.etab==='rx') {
+          const drugs = st.orders.filter(o => o.type==='drug');
+          blocks.push(B('H', { k:'ใบสั่งยา', fs:20 }), kv([['ผู้ป่วย', cur.n+' · HN '+cur.hn],['การวินิจฉัย', (st.dx||'—')+(st.icd?' ('+st.icd+')':'')],['แพ้ยา','Penicillin','#8a3a52']]));
+          if (!drugs.length) blocks.push(B('P', { k:'ยังไม่มียาในรายการ เพิ่มได้ที่แท็บ Medicine' }));
+          else blocks.push(B('RxDoc', { order:'DA-20261027-001', name:cur.n, hn:cur.hn || '-', dt:'27/10/2569 10:20 น.', doc:'พญ.วรรณา ใจดี', cnt:drugs.length+' รายการ', rows:drugs.map((o, i) => ({ i:i+1, name:o.name, use:String(o.extra||'-'), qty:o.qty })) }));
+        } else {
+          blocks.push(B('H', { k:'ใบรับรองแพทย์', fs:20 }));
+          if (cur.cert !== false) blocks.push(B('Note', { icon:'info', k:'ผู้ป่วยต้องการออกใบรับรองแพทย์', bg:'#e1ecfb', fg:'#1c3d94' }));
+          const tg = k => () => this.setState({ [k]:!st[k], certSaved:false });
+          blocks.push(B('H', { k:'สรุปความเห็นและข้อแนะนำของแพทย์', fs:19, mt:4 }),
+            B('Chk', { icon:st.certTrue ? 'check_box' : 'check_box_outline_blank', label:'ผู้ป่วยได้มารับการตรวจรักษาในวันนี้จริง', checked:st.certTrue, on:tg('certTrue') }),
+            B('Chk', { icon:st.certRest ? 'check_box' : 'check_box_outline_blank', label:'สมควรหยุดพัก', checked:st.certRest, on:tg('certRest') }),
+            ...(st.certRest ? [B('Two', { a:{ k:'ตั้งแต่วันที่', v:st.restFrom, on:f('restFrom'), ph:'วว/ดด/ปปปป' }, b:{ k:'ถึงวันที่', v:st.restTo, on:f('restTo'), ph:'วว/ดด/ปปปป' } })] : []),
+            B('Chk', { icon:st.certOther ? 'check_box' : 'check_box_outline_blank', label:'อื่น ๆ (ระบุ)', checked:st.certOther, on:tg('certOther') }),
+            ...(st.certOther ? [B('Ta', { k:'ระบุ', v:st.certOtherT, on:f('certOtherT'), ph:'ระบุรายละเอียด' })] : []),
+            B('Btns', { btns:[btn(st.certSaved?'บันทึกแล้ว':'บันทึก', st.certSaved?'check_circle':'save', () => this.setState({ certSaved:true }), !st.certSaved)] }));
+        }
+      }
+      cta = C('จบการตรวจ', () => {
+        const vn = 'VN' + Math.floor(100000 + Math.random()*899999);
+        const drugs = st.orders.filter(o => o.type==='drug').map(o => o.key);
+        try { localStorage.setItem('da-rx', JSON.stringify({ patient:cur.n, hn:cur.hn, dx:st.icd || 'J02.9', drugs:drugs.length ? drugs : ['para'], allergy:'Penicillin', status:'new', ts:Date.now() })); } catch (e) {}
+        this.setState({ s:'finish', hist:[], vn, doneIds:[...st.doneIds, cur.id] });
+      }, '#a4506a');
+    }
+    if (s==='mhist') {
+      const hx = [{ key:'para', name:'Paracetamol 500 mg', qty:'20 เม็ด', use:'รับประทานครั้งละ 1 เม็ด', tm:'วันละ 3 ครั้ง หลังอาหาร' }, { key:'dex', name:'Dextromethorphan 15 mg', qty:'15 เม็ด', use:'รับประทานครั้งละ 1 เม็ด', tm:'วันละ 3 ครั้ง ก่อนนอน' }];
+      blocks.push(B('H', { k:'ประวัติการสั่งยา (Medicine History)', fs:22 }), B('P', { k:'3 ส.ค. 2569 · เก่าที่สุด – ล่าสุด' }));
+      hx.forEach(h => blocks.push(B('Card', { bc:'#cfdcf0', t:h.name, s:'จำนวน: '+h.qty+'\nวิธีใช้: '+h.use+'\nเวลา: '+h.tm, tag:'ในบัญชี', tbg:'#1f7a3a', tfg:'#fff', btns:[btn('เลือกยานี้','add', () => this.setState({ s:'tele', ttab:'med', mtab:'drug', mpick:h.key, mqty:h.qty.replace(/[^0-9]/g,''), hist:st.hist.slice(0, -1) }), true)] })));
+    }
+    if (s==='oedit' && st.oe) {
+      blocks.push(B('H', { k:'แก้ไขรายการที่สั่ง', fs:22 }), inp('จำนวน', st.oe.qty, e => this.setState({ oe:{ ...st.oe, qty:e.target.value.replace(/[^0-9]/g,'') } }), '', true), inp('วิธีใช้ / หมายเหตุ', st.oe.extra, e => this.setState({ oe:{ ...st.oe, extra:e.target.value } }), ''));
+      cta = C('บันทึก', () => this.setState({ orders:st.orders.map(x => x.id===st.oe.id ? { ...x, qty:st.oe.qty || x.qty, extra:st.oe.extra } : x), rxOk:false, s:'tele', hist:st.hist.slice(0, -1) }), '#2e7d4f');
+    }
+    if (s==='hist') {
+      const ex = 'ไม่ได้ตรวจ', pe = 'ศีรษะและคอ: '+ex+', ตา: '+ex+', หู: '+ex+', จมูก: '+ex+', คอ: '+ex+', หน้าอก: '+ex+', หัวใจ: '+ex+', ช่องท้อง: '+ex+', แขนขา: '+ex+', ผิวหนัง: '+ex+', ระบบประสาท: -';
+      const vp = s => s.split(' · ').map(x => { const [k, v] = x.split(': '); return { k, v }; });
+      const gen = (vit, cc, pi, ph, desc, note, dx, icd) => [['Vital signs', ''], ['CC (Chief Complaint)', cc], ['PI (Present Illness)', pi], ['Past History (Add)', ph], ['Description', desc], ['บันทึกแพทย์', note], ['แพ้ยา', 'ไม่ทราบ'], ['แพ้อาหาร', 'ไม่ทราบ'], ['สูบบุหรี่', 'ไม่ทราบ'], ['ดื่มแอลกอฮอล์', 'ไม่ทราบ'], ['การตรวจร่างกาย', pe], ['Diagnosis', dx], ['ICD10', icd]].map(r => ({ k:r[0], v:r[1], vit: r[0]==='Vital signs' ? vp(vit) : [], isVit: r[0]==='Vital signs' }));
+      const visits = [
+        { src:'HIS (HOSxP)', bc:'#b8657c', tbg:'#f6eaed', tfg:'#8a3a52', t:'12 ก.ย. 2569 · 10:15 น.', doc:'พญ.วรรณา ใจดี · รพ.ศรีสุข', gen:gen('BP: - · HR: 0 · T: 0 · SpO2: 0 · RR: 0 · Wt: 46 · Ht: 153 · BMI: 19.65', 'ปวดหัว', '-', '-', 'มีน้ำมูก', '-', 'Common cold (Acute nasopharyngitis)', 'J00 (Primary Diagnosis)'),
+          meds:[{ name:'paracetamol', use:'วิธีใช้: รับประทานครั้งละ 1 เม็ด | จำนวน: 20 (ไม่ระบุ) | ราคา: 0.5 ฿' }, { name:'chlorphenamine maleate', use:'วิธีใช้: รับประทานครั้งละ 1 เม็ด | จำนวน: 15 (ไม่ระบุ) | ราคา: 1 ฿' }], forms:['Medical Certificate', 'Prescription Certificate'] },
+        { src:'Doctor Assist', bc:'#2f5fd0', tbg:'#e1ecfb', tfg:'#1c3d94', t:'3 ส.ค. 2569 · 09:40 น.', doc:'นพ.ธีระ วงศ์ดี · Telemedicine · VN481975', gen:gen('BP: 128/80 · HR: 76 · T: 37.2 · SpO2: 98 · RR: 18 · Wt: 55 · Ht: 155 · BMI: 22.9', 'เจ็บคอ มีไข้ต่ำ', 'เป็นมา 3 วัน ไอตอนกลางคืน', 'ความดันโลหิตสูง', 'คอแดง', 'ดื่มน้ำมาก พักผ่อน', 'ติดเชื้อทางเดินหายใจส่วนบน', 'J06.9'),
+          meds:[{ name:'Paracetamol 500 mg', use:'วิธีใช้: รับประทานครั้งละ 1 เม็ด หลังอาหาร | จำนวน: 20 | ราคา: 0.5 ฿' }, { name:'Dextromethorphan 15 mg', use:'วิธีใช้: รับประทานครั้งละ 1 เม็ด หลังอาหาร | จำนวน: 15 | ราคา: 1 ฿' }], forms:['Prescription Certificate'] }];
+      blocks.push(B('H', { k:'ประวัติการรักษา', fs:24 }), B('P', { k:cur.n+' · HN '+cur.hn }));
+      const hk = src => src.startsWith('HIS') ? 'his' : 'da';
+      blocks.push(B('HTabs', { tabs:[['his','HIS','#8a3a52'],['da','Doctor Assist','#1c3d94']].map(([k, l, c]) => ({ l, n:visits.filter(v => hk(v.src)===k).length, bg: st.htab===k ? c : '#fff', fg: st.htab===k ? '#fff' : c, bc:c, on:() => this.setState({ htab:k }) })) }));
+      visits.forEach((v, i) => hk(v.src)===st.htab && blocks.push(B('HVisit', { ...v, open:!!st.hopen[i], tog:() => this.setState({ hopen:{ ...st.hopen, [i]:!st.hopen[i] } }), chev: st.hopen[i] ? 'expand_less' : 'expand_more', ...(() => { const sc = k => !!st.hsec[i+k], tg = k => () => this.setState({ hsec:{ ...st.hsec, [i+k]:!st.hsec[i+k] } }); const gx = x => (v.gen.find(g => g.k===x) || {}).v; return { og:!sc('g'), cg2:false, om:!sc('m') || false, of:!sc('f') || false, tg:tg('g'), tm:tg('m'), tf:tg('f'), cg:!sc('g') ? 'expand_less' : 'expand_more', cm: !sc('m') ? 'expand_less' : 'expand_more', cf: !sc('f') ? 'expand_less' : 'expand_more', nm:v.meds.length, nf:v.forms.length, dx:gx('Diagnosis'), icd:gx('ICD10') }; })() })));
+    }
+    if (s==='finish') { blocks.push(B('Hero', { icon:'check_circle', bg:'#e6f3ea', col:'#2e7d4f', k:'ส่งเข้า HOSxP สำเร็จ', s:'VN '+st.vn+'\nใบสั่งยาถูกส่งไปที่เภสัช\nยอดชำระแจ้งผู้ป่วยแล้ว' })); cta = C('กลับตารางนัดหมาย', () => this.setState({ s:'appt', hist:[], astat:'all' })); }
+    if (s==='detail') {
+      const dr = st.orders.filter(o => o.type==='drug').map(o => o.name+' × '+o.qty).join(', ');
+      blocks.push(B('H', { k:'รายละเอียดการตรวจ', fs:25 }), kv([['ผู้ป่วย', cur.n+' · HN '+cur.hn],['การวินิจฉัย', cur.live ? ((st.dx||'—')+(st.icd?' ('+st.icd+')':'')) : 'J06.9 ติดเชื้อทางเดินหายใจส่วนบน'],['รายการยา', cur.live ? (dr || '—') : 'Paracetamol 500 mg × 20'],['VN', cur.live ? (st.vn||'—') : 'VN482110','#8a3a52'],['สถานะ', tagOf[cur.st][0]]]));
+    }
+
+    // patients
+    if (s==='pts') {
+      const P = [['สมศรี ใจงาม','650488','1-2345-67890-12-3'],['ประยุทธ มีสุข','650231','3-1020-45678-90-1'],['มาลี สุขใจ','650102','1-5599-01234-56-7']];
+      const q = st.pq.trim().toLowerCase();
+      blocks.push(B('H', { k:'รายชื่อผู้ป่วย', fs:26 }), inp('ค้นหา', st.pq, f('pq'), 'ชื่อ-สกุล / HN / เลขบัตรประชาชน'));
+      P.filter(p => !q || p[0].toLowerCase().includes(q) || p[1].includes(q) || p[2].replace(/-/g,'').includes(q.replace(/-/g,''))).forEach(p => blocks.push(B('Card', { bc:'#cfdcf0', t:p[0], s:'HN '+p[1], btns:[btn('ดูเวชระเบียน','folder_open', () => this.setState({ pt:p, pmode:'record', s:'ptd', hist:['pts'] }), false), btn('รักษาล่าสุด','history', () => this.setState({ pt:p, pmode:'latest', s:'ptd', hist:['pts'] }), false)] })));
+    }
+    if (s==='ptd') {
+      const p = st.pt || ['','',''];
+      if (st.pmode==='record') blocks.push(B('H', { k:'เวชระเบียน', fs:25 }), kv([['ชื่อ-นามสกุล',p[0]],['HN',p[1]],['เลขบัตรประชาชน',p[2]],['แพ้ยา','Penicillin','#8a3a52'],['โรคประจำตัว','ความดันโลหิตสูง']]), B('H', { k:'ประวัติการรักษา', fs:20 }),
+        B('Card', { bc:'#b8657c', t:'12 ก.ย. 2569 · I10', s:'ความดันโลหิตสูง', tag:'HOSxP', tbg:'#f6eaed', tfg:'#8a3a52' }), B('Card', { bc:'#cfdcf0', t:'3 ส.ค. 2569 · J06.9', s:'ติดเชื้อทางเดินหายใจส่วนบน', tag:'Doctor Assist', tbg:'#e1ecfb', tfg:'#1c3d94' }));
+      else blocks.push(B('H', { k:'รักษาล่าสุด', fs:25 }), kv([['ผู้ป่วย', p[0]+' · HN '+p[1]],['วันที่','12 ก.ย. 2569'],['การวินิจฉัย','I10 ความดันโลหิตสูง'],['ยา','Amlodipine 5 mg วันละ 1 เม็ด'],['แพทย์','พญ.วรรณา ใจดี']]));
+    }
+
+    // dashboard
+    if (s==='dash') {
+      const dfm = n => { const x = new Date(2026, 9, 27 - n); return String(x.getDate()).padStart(2,'0')+'/'+String(x.getMonth()+1).padStart(2,'0'); };
+      const stat0 = [{ l:'ปิดสิทธิ์สำเร็จ', n:341, c:'#22a06b' }, { l:'รอดำเนินการ / retry', n:5, c:'#f59e0b' }, { l:'ไม่สำเร็จ', n:2, c:'#e5484d' }];
+      const tot = stat0.reduce((a, x) => a + x.n, 0); let acc = 0;
+      const dsh = { kpis:[{ l:'ปิดสิทธิ์แล้ว (วันนี้)', v:'12', icon:'check_circle', bg:'#e6f3ea', fg:'#1d9a5a' }, { l:'ปิดสิทธิ์แล้ว (สะสมทั้งหมด)', v:'348', icon:'layers', bg:'#e1ecfb', fg:'#1c5fd0' }, { l:'รอดำเนินการ', v:'5', icon:'hourglass_top', bg:'#fdf0d8', fg:'#d98a0b' }, { l:'ไม่สำเร็จ', v:'2', icon:'cancel', bg:'#fbe4e2', fg:'#d93025' }],
+        bars:Array.from({ length:30 }, (_, i) => ({ h:Math.round(120 * (0.08 + 0.8 * Math.abs(Math.sin(i * 1.7 + 1))) * (i > 20 ? 1 : 0.7)) })), d0:dfm(29), d1:dfm(15), d2:dfm(0),
+        stat:stat0.map(x => ({ ...x, p:(x.n / tot * 100).toFixed(1) })), total:tot, donut:'conic-gradient(' + stat0.map(x => { const a = acc / tot * 360; acc += x.n; return x.c + ' ' + a + 'deg ' + (acc / tot * 360) + 'deg'; }).join(',') + ')' };
+      const stMap = { ok:['สำเร็จ','#e6f3ea','#1d5a37'], wait:['รอดำเนินการ','#fbefdc','#6e420a'], fail:['ไม่สำเร็จ','#fbe4e2','#8c1d18'] };
+      const rows = [['650231','CS-0412','26 ต.ค.','ok'],['650102','CS-0411','26 ต.ค.','wait'],['650488','CS-0409','25 ต.ค.','ok'],['650377','CS-0405','25 ต.ค.','fail'],['650219','CS-0398','24 ต.ค.','ok']];
+      const q = st.dq.trim().toLowerCase();
+      const EXT = { '650231':{ nm:'ประยุทธ มีสุข', dc:'พญ.วรรณา ใจดี', tm:'26/10/2569 09:42', au:'AU-71829' }, '650102':{ nm:'สมศรี ใจงาม', dc:'นพ.ธีระ วงศ์ดี', tm:'-', au:'-' }, '650488':{ nm:'บุญมี ศรีดี', dc:'พญ.วรรณา ใจดี', tm:'25/10/2569 14:15', au:'AU-71544' }, '650377':{ nm:'อำพร ดีเลิศ', dc:'นพ.ธีระ วงศ์ดี', tm:'25/10/2569 10:30', au:'-' }, '650219':{ nm:'สมชาย รักดี', dc:'พญ.วรรณา ใจดี', tm:'24/10/2569 11:05', au:'AU-70986' } };
+      const tbl = rows.filter(r => (st.dst==='all' || r[3]===st.dst) && (!q || r[0].includes(q) || r[1].toLowerCase().includes(q))).map(r => ({ hn:r[0], cs:r[1], ...EXT[r[0]], d:r[2], s:stMap[r[3]][0], bg:stMap[r[3]][1], fg:stMap[r[3]][2] }));
+      blocks.push(B('H', { k:'แดชบอร์ด', fs:26 }), B('Kpi', { kpis:dsh.kpis }),
+        B('Bars', { bars:dsh.bars, d0:dsh.d0, d1:dsh.d1, d2:dsh.d2 }),
+        B('Stat', { stat:dsh.stat, total:dsh.total, donut:dsh.donut }),
+        B('H', { k:'ค้นหารายการปิดสิทธิ์', fs:19 }), inp('HN / เลขเคส / Authen', st.dq, f('dq'), ''), B('Sel', { k:'สถานะ', v:st.dst, on:f('dst'), req:'', opts:[['all','ทั้งหมด'],['ok','สำเร็จ'],['wait','รอดำเนินการ'],['fail','ไม่สำเร็จ']].map(([v, l]) => ({ v, l })) }), B('Tbl', { tbl, tblEmpty:!tbl.length }));
+    }
+
+    // shifts
+    if (s==='shifts') {
+      const sm = st.ssm || 0, OFFs = [0,31,61], DIMs = [31,30,31];
+      const tcol = { 'เช้า':['#d6f0fc','#0b6a93'], 'บ่าย':['#fde6cf','#a8560c'], 'เช้า-บ่าย':['#ecdcfb','#6b2bb3'] };
+      const dkey = n => { const m = n<=31?0:n<=61?1:2; return String(n-OFFs[m]).padStart(2,'0')+'/'+(10+m)+'/2569'; };
+      const byDay = {}; st.shifts.forEach(x => { byDay[x.day] = x; });
+      const cells = [...Array.from({ length:new Date(2026, 9+sm, 1).getDay() }, () => ({ label:'', on:()=>{}, bg:'transparent', fg:'#22313b' })), ...Array.from({ length:DIMs[sm] }, (_, i) => { const n = OFFs[sm]+i+1, past = n<=26, ex = byDay[n], c2 = ex ? tcol[ex.type] : null; return { label:String(i+1), bg: c2 ? c2[0] : 'transparent', fg: c2 ? c2[1] : (past ? '#9aa6ad' : '#22313b'), on: past ? ()=>{} : () => this.setState({ sf: ex ? { ...ex } : { id:null, day:n, clinic:'อายุรกรรม', type:'เช้า', from:'09:00', to:'12:00' }, s:'shiftForm', hist:['shifts'] }) }; })];
+      const list = st.shifts.filter(x => (st.stype==='all' || x.type===st.stype) && (st.sclin==='all' || x.clinic===st.sclin));
+      blocks.push(B('HRow', { k:'ตารางเวรแพทย์', label:'ลงเวรเพิ่ม', calOn:() => this.setState({ scalOpen:!st.scalOpen }), calBg: st.scalOpen ? '#e1ecfb' : '#fff', on:() => this.setState({ sf:{ id:null, day:27, clinic:'อายุรกรรม', type:'เช้า', from:'09:00', to:'12:00' }, s:'shiftForm', hist:['shifts'] }) }),
+        ...(st.scalOpen ? [B('SCal', { month:['ตุลาคม','พฤศจิกายน','ธันวาคม'][sm]+' 2569', prev:() => { if (sm>0) this.setState({ ssm:sm-1 }); }, next:() => { if (sm<2) this.setState({ ssm:sm+1 }); }, pOp: sm>0?1:.3, nOp: sm<2?1:.3, cells }), B('Note', { icon:'lock_clock', k:'หมายเหตุ: เวรที่ถึงวันที่ลงไว้แล้ว แก้ไข/ลบไม่ได้', bg:'#fff3d6', fg:'#6e420a', sm:true })] : []),
+        B('Sel', { k:'แผนก / คลินิก', v:st.sclin, on:f('sclin'), req:'', opts:[['all','ทั้งหมด'],['อายุรกรรม','อายุรกรรม'],['กระดูกและข้อ','กระดูกและข้อ'],['จักษุ (ตา)','จักษุ (ตา)']].map(([v, l]) => ({ v, l })) }),
+        B('Sel', { k:'ประเภทเวร', v:st.stype, on:f('stype'), req:'', opts:[['all','ทั้งหมด'],['เช้า','เช้า'],['บ่าย','บ่าย'],['เช้า-บ่าย','เช้า-บ่าย']].map(([v, l]) => ({ v, l })) }));
+      list.forEach(x => { const lock = x.day <= 26, dc = { 'เช้า':'#2bb8f0', 'บ่าย':'#f58a2b', 'เช้า-บ่าย':'#a855f7' }[x.type]; blocks.push(B('ShRow', { dot:dc, t:'วันที่ '+dkey(x.day), s:x.clinic, tm:x.from+' – '+x.to, tag:x.type, ib: lock ? [] : [{ icon:'edit', c:'#1c3d94', l:'แก้ไข', on:() => this.setState({ sf:{ ...x }, s:'shiftForm', hist:['shifts'] }) }, { icon:'delete', c:'#d93025', l:'ลบ', on:() => this.setState({ shifts:st.shifts.filter(y => y.id!==x.id) }) }] })); });
+      if (!list.length) blocks.push(B('P', { k:'ไม่มีรายการเวร' }));
+    }
+    if (s==='shiftForm') {
+      const sf = st.sf, set = (k, v) => this.setState({ sf:{ ...sf, [k]:v } });
+      const times = { 'เช้า':['09:00','12:00'], 'บ่าย':['13:00','16:00'], 'เช้า-บ่าย':['09:00','16:00'] };
+      blocks.push(B('H', { k: sf.id ? 'แก้ไขเวร' : 'ลงเวลาเวรแพทย์', fs:25 }), B('Cal', { label:'วันที่ *', text:(function(){ const m = sf.day<=31?0:sf.day<=61?1:2; return String(sf.day-[0,31,61][m]).padStart(2,'0')+'/'+(10+m)+'/2569'; })(), open:st.sfCal, tog:() => this.setState({ sfCal:!st.sfCal }), month:['ตุลาคม','พฤศจิกายน','ธันวาคม'][st.sfm]+' 2569', prev:() => { if (st.sfm>0) this.setState({ sfm:st.sfm-1 }); }, next:() => { if (st.sfm<2) this.setState({ sfm:st.sfm+1 }); }, pOp: st.sfm>0?1:.3, nOp: st.sfm<2?1:.3, hint:'แตะวันที่ต้องการ (วันที่ผ่านมาแล้วเลือกไม่ได้)',
+          cells:[...Array.from({ length:new Date(2026, 9+st.sfm, 1).getDay() }, () => ({ label:'', on:()=>{}, bg:'transparent', fg:'#22313b' })), ...Array.from({ length:[31,30,31][st.sfm] }, (_, i) => { const n = [0,31,61][st.sfm]+i+1, past = n<=26, a = n===sf.day; return { label:String(i+1), on: past ? ()=>{} : () => this.setState({ sf:{ ...sf, day:n }, sfCal:false }), bg: a?'#2f5fd0':'transparent', fg: a?'#fff':(past?'#9aa6ad':'#22313b') }; })] }),
+        sel('แผนก / คลินิก', sf.clinic, [['อายุรกรรม','อายุรกรรม'],['กระดูกและข้อ','กระดูกและข้อ'],['จักษุ (ตา)','จักษุ (ตา)']], e => set('clinic', e.target.value)),
+        sel('ประเภทเวร', sf.type, [['เช้า','เช้า'],['บ่าย','บ่าย'],['เช้า-บ่าย','เช้า-บ่าย']], e => this.setState({ sf:{ ...sf, type:e.target.value, from:times[e.target.value][0], to:times[e.target.value][1] } })),
+        B('Two', { a:{ k:'เวลาเริ่ม', v:sf.from, on:e => set('from', e.target.value), ph:'09:00' }, b:{ k:'เวลาสิ้นสุด', v:sf.to, on:e => set('to', e.target.value), ph:'12:00' } }));
+      cta = C('บันทึกเวร', () => this.setState({ shifts: sf.id ? st.shifts.map(x => x.id===sf.id ? { ...sf } : x) : [...st.shifts, { ...sf, id:Date.now() }], s:'shifts', hist:[] }), '#2e7d4f');
+    }
+    const nav = [['appt','ตารางนัดหมาย','event_note'],['pts','รายชื่อผู้ป่วย','groups'],['dash','แดชบอร์ด','monitoring'],['shifts','ตั้งค่า','settings']].map(([k, l, i]) => ({ label:l, icon:i, fg: s===k?'#2f5fd0':'#4b5a64', w: s===k?700:500, on:() => this.setState({ s:k, hist:[] }) }));
+    return { topRight: s==='tele' ? 'พญ.วรรณา ใจดี' : '', isLogin: s==='login', doLogin: () => this.setState({ s:'user', hist:[] }), reset: () => this.setState({ ...this.init }), showBack: st.hist.length > 0 && !mainTabs.includes(s) && s!=='finish', back: this.back, blocks, cta, nav, showNav: mainTabs.includes(s) };
+  }
+}
+</script>
+
+
+</body></html>
