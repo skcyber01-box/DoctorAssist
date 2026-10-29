@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doctor Assist · เยี่ยมบ้าน</title>
+<!-- เมื่อเปิดผ่าน index.html (อยู่ใน iframe): ซ่อนแถบบน และจัดกรอบมือถือให้พอดีจอ -->
+<script>if (window.parent !== window) document.documentElement.classList.add('embedded');</script>
+<link rel="stylesheet" href="assets/chw.css">
+</head>
+<body>
+<nav class="rolebar" aria-label="เลือกบทบาท">
+  <span>เลือกบทบาท</span>
+  <a href="patient.html">ผู้ป่วย</a><a href="nurse.html">พยาบาล</a><a href="doctor.html">แพทย์</a><a href="pharmacist.html">เภสัช</a><a href="admin.html">Admin</a><a href="chw.html" class="on" aria-current="page">อสม./จนท.</a>
+</nav>
+
+<div class="stage">
+  <div class="phone">
+    <div class="status" aria-hidden="true"><b>09:41</b><b>●●● 100%</b></div>
+    <main class="screen" id="screen" tabindex="-1"></main>
+    <div class="cta" id="cta" hidden></div>
+    <nav class="nav" id="nav" aria-label="เมนูหลัก" hidden>
+      <button type="button" data-tab="home"><span class="ms" aria-hidden="true">home_health</span>เยี่ยมบ้าน</button>
+      <button type="button" data-tab="devices"><span class="ms" aria-hidden="true">devices_other</span>อุปกรณ์ &amp; โรค</button>
+      <button type="button" data-tab="claims"><span class="ms" aria-hidden="true">payments</span>เบิกจ่าย</button>
+    </nav>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+</div>
+
+<script src="assets/chw-data.js"></script>
+<script src="assets/chw.js"></script>
+</body>
+</html>
