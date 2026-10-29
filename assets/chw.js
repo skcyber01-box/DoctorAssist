@@ -6,8 +6,8 @@
   var screen = $('screen'), cta = $('cta'), nav = $('nav'), phone = document.querySelector('.phone');
 
   var ROLES = {
-    vhv: { label: 'อสม.', who: 'อสม. มาลัย ใจดี', where: 'ม.3 บ้านหนองบัว · รพ.สต.บ้านหนองบัว', login: 'เข้าสู่ระบบด้วย ThaiD', badge: 'ThaiD' },
-    officer: { label: 'นักวิชาการสาธารณสุข', who: 'นางสาวกมลวรรณ สุขดี', where: 'นักวิชาการสาธารณสุข · รพ.สต.บ้านหนองบัว', login: 'Continue with ProviderID', badge: 'PROVIDER' }
+    vhv: { label: 'อสม.', who: 'อสม. มาลัย ใจดี', where: 'ม.3 บ้านหนองบัว · รพ.สต.บ้านหนองบัว', login: 'Login with ProviderID', badge: 'PROVIDER' },
+    officer: { label: 'นักวิชาการสาธารณสุข', who: 'นางสาวกมลวรรณ สุขดี', where: 'นักวิชาการสาธารณสุข · รพ.สต.บ้านหนองบัว', login: 'Login with ProviderID', badge: 'PROVIDER' }
   };
 
   var S = { s: 'login', role: 'vhv', tab: 'home', v: null, done: {}, open: {} };
@@ -239,8 +239,8 @@
       (v.verified
         ? '<div class="card"><h3>' + ms('verified_user') + 'ยืนยันตัวตนแล้ว</h3><dl class="kv"><dt>เลขบัตร</dt><dd>' + esc(h.cid) + '</dd><dt>สิทธิ</dt><dd>' + esc(h.right) + '</dd><dt>หน่วยบริการหลัก</dt><dd>' + esc(h.unit) + '</dd>' +
             (S.role === 'officer' ? '<dt>Authen Code</dt><dd>' + esc(v.authen) + '</dd>' : '<dt>ปิดสิทธิ์</dt><dd style="color:var(--warn)">รอ จนท. รพ.สต.</dd>') + '</dl></div>'
-        : '<div class="card"><h3>' + ms('id_card') + 'ยืนยันตัวตนผู้ป่วย</h3><p>ใช้บัตรประชาชนกับเครื่องอ่านบัตร หรือให้ผู้ป่วยสแกน ThaiD ' + (S.role === 'officer' ? 'ระบบจะตรวจสิทธิและปิดสิทธิ์ให้ (ได้ Authen Code ใช้เบิก)' : 'ระบบจะตรวจสิทธิ ส่วนการปิดสิทธิ์ทำโดย จนท. รพ.สต.') + '</p>' +
-            '<div style="margin-top:12px"><button type="button" class="btn" data-go="verify">' + ms('contactless') + 'อ่านบัตร / สแกน ThaiD</button></div></div>') +
+        : '<div class="card"><h3>' + ms('id_card') + 'ยืนยันตัวตนผู้ป่วย</h3><p>ใช้บัตรประชาชนกับเครื่องอ่านบัตร หรือให้ผู้ป่วยยืนยันตัวตนด้วย Health ID ' + (S.role === 'officer' ? 'ระบบจะตรวจสิทธิและปิดสิทธิ์ให้ (ได้ Authen Code ใช้เบิก)' : 'ระบบจะตรวจสิทธิ ส่วนการปิดสิทธิ์ทำโดย จนท. รพ.สต.') + '</p>' +
+            '<div style="margin-top:12px"><button type="button" class="btn" data-go="verify">' + ms('contactless') + 'อ่านบัตร / ยืนยันด้วย Health ID</button></div></div>') +
       '</div><div class="card"><label class="check"><input type="checkbox" data-consent' + (v.consent ? ' checked' : '') + '><span>ผู้ป่วยหรือญาติยินยอมให้บันทึกข้อมูลสุขภาพ และส่งต่อให้แพทย์ปรึกษาทางไกล<small>เป็นเงื่อนไขการเบิกบริการ Telemedicine</small></span></label></div>';
   }
 
