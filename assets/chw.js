@@ -168,8 +168,7 @@
     var r = ROLES[S.role];
     screen.innerHTML =
       '<div class="login">' +
-        '<div class="logo">Dr.</div>' +
-        '<svg class="logo-line" viewBox="0 0 74 14" aria-hidden="true"><path d="M0 7h26l4-6 5 12 4-9 3 3h32" fill="none" stroke="#4a7fd6" stroke-width="2"/></svg>' +
+        '<img class="logo-img" src="' + (window.DA_LOGO || 'assets/dr-assist-logo.webp') + '" alt="Dr.Assist" width="200" height="170">' +
         '<h1>เยี่ยมบ้าน</h1>' +
         '<p>สำหรับ อสม. และเจ้าหน้าที่ รพ.สต.</p>' +
         '<div class="seg" role="group" aria-label="เลือกบทบาท">' +
